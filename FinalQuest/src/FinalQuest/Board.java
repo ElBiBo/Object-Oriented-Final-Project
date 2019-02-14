@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package FinalQuest;
 
 import java.awt.Color;
@@ -21,6 +16,14 @@ import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+/**
+ *
+ * This class primarily handles drawing various objects to the screen
+ * It also keeps track of how many objects are on the screen, updates their 
+ * positions
+ * 
+ * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
+ */
 public class Board extends JPanel implements ActionListener {
 
     private Timer timer;
@@ -36,7 +39,7 @@ public class Board extends JPanel implements ActionListener {
     private final int end_stage = 5000;
     private int level = 1;
 
-    private final int[][] pos = {
+    private final int[][] pos = { // Starting alien positions
         {238, 29}, {250, 59}, {1380, 89},
         {780, 109}, {580, 139}, {680, 239},
         {790, 259}, {760, 50}, {790, 150},
@@ -48,15 +51,21 @@ public class Board extends JPanel implements ActionListener {
         {820, 128}, {490, 170}, {700, 30}
     };
 
+    /**
+     * Constructor
+     */
     public Board() {
 
         initBoard();
     }
 
+    /**
+     * Initialize our board
+     */
     private void initBoard() {
 
-        addKeyListener(new TAdapter());
-        setFocusable(true);
+        addKeyListener(new TAdapter()); //check for key input
+        setFocusable(true); // pay attention to this window
         setBackground(Color.BLACK);
         ingame = true;
 
@@ -70,6 +79,9 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
     }
 
+    /**
+     * Initialize our aliens and drop them all into our board
+     */
     public void initAliens() {
         
         aliens = new ArrayList<>();
@@ -79,6 +91,11 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Ignore the default swing paintComponent function. This is where 
+     * we decide what screen we are on. It will also be what we have to edit
+     * to put our menus and possibly extra levels in
+     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -94,15 +111,19 @@ public class Board extends JPanel implements ActionListener {
 
         Toolkit.getDefaultToolkit().sync();
     }
-
+    
+    /**
+     * Draw all the active objects on our board
+     */
     private void drawObjects(Graphics g) {
 
-        if (spaceship.isVisible()) {
+        
+        if (spaceship.isVisible()) { // draw our spaceship first
             g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),
                     this);
         }
 
-        List<Missile> ms = spaceship.getMissiles();
+        List<Missile> ms = spaceship.getMissiles(); // then our spaceship's shots
 
         for (Missile missile : ms) {
             if (missile.isVisible()) {
@@ -111,16 +132,21 @@ public class Board extends JPanel implements ActionListener {
             }
         }
 
-        for (Alien alien : aliens) {
+        for (Alien alien : aliens) { // then the aliens
             if (alien.isVisible()) {
                 g.drawImage(alien.getImage(), alien.getX(), alien.getY(), this);
             }
         }
 
+        // game GUI. right now it just has aliens left, but we can 
+        // change this to display game score, level and lives
         g.setColor(Color.WHITE);
         g.drawString("Aliens left: " + aliens.size(), 5, 15);
     }
 
+    /**
+     * You're dead, draw game over
+     */
     private void drawGameOver(Graphics g) {
 
         String msg = "Game Over";
@@ -133,6 +159,10 @@ public class Board extends JPanel implements ActionListener {
                 B_HEIGHT / 2);
     }
 
+    
+    /*
+    * Update all our objects and repaint
+    */
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -147,6 +177,9 @@ public class Board extends JPanel implements ActionListener {
         repaint();
     }
 
+    /**
+     * Stop our game timer if we are not currently playing
+     */
     private void inGame() {
 
         if (!ingame) {
@@ -158,6 +191,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Move our ship, if necessary
+     */
     private void updateShip() {
 
         if (spaceship.isVisible()) {
@@ -166,6 +202,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * move or destroy our player's missiles
+     */
     private void updateMissiles() {
 
         List<Missile> ms = spaceship.getMissiles();
@@ -182,6 +221,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * move our aliens
+     */
     private void updateAliens() {
 
         if (stage_count >= end_stage || aliens.size() <= 0) {
@@ -202,6 +244,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * check to see if anything has hit anything
+     */
     public void checkCollisions() {
 
         Rectangle r3 = spaceship.getBounds();
@@ -237,6 +282,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
 
+    /**
+     * Check our spaceship class for what to do when a button is pressed
+     * or released
+     */
     private class TAdapter extends KeyAdapter {
 
         @Override
