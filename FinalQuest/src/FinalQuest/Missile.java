@@ -8,17 +8,21 @@ package FinalQuest;
 public class Missile extends Sprite {
 
     private final int BOARD_WIDTH = 1280;
-    private final int MISSILE_SPEED = 4;
+    private int missile_speed;
+    private int dy;
 
     /**
      * Constructor
      * 
      * @param x starting x coordinate for our missile
      * @param y starting y coordinate for our missile
+     * @param speed the speed of our missile. Should normally be 4
+     * @param direction the direction of our missile. 0 is straight positive is down diagonal and negative is up diagonal
      */
-    public Missile(int x, int y) {
+    public Missile(int x, int y, int speed, int direction) {
         super(x, y);
-
+        missile_speed = speed;
+        dy = direction;
         initMissile();
     }
     
@@ -28,13 +32,21 @@ public class Missile extends Sprite {
      */
     private void initMissile() {
         
-        loadImage("src/resources/missile.png"); // sprite image
+        if (missile_speed > 0)// sprite image
+        {
+            loadImage("src/resources/missile.png");
+        }
+        else
+        {
+            loadImage("src/resources/enemy_missile.png");
+        }
         getImageDimensions(); // find the size of our image to use for collisions
     }
 
     public void move() {
         
-        x += MISSILE_SPEED; //move missile straight to the right
+        x += missile_speed; //move missile straight to the right
+        y += dy;
         
         if (x > BOARD_WIDTH) //missile gets destroyed if it goes off the screen
             visible = false;

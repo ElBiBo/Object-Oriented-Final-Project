@@ -1,32 +1,34 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package FinalQuest;
 
 /**
- * Alien child of our sprite class. Controls the AI of our alien.
- * 
- * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
+ * This class makes a continuous scrolling background of stars
+ * @author Marco Tacca
  */
-public class Alien extends Sprite {
+public class Background extends Sprite {
 
-    private final int INITIAL_X = 1280;
-
+    
     /**
      * Constructor
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
      */
-    public Alien(int x, int y) {
+    public Background(int x, int y) {
         super(x, y);
 
-        initAlien();
+        initBackground();
     }
 
     /**
      * Init our alien by assigning it an image and getting it's dimensions
     */
-    private void initAlien() {
+    private void initBackground() {
 
-        loadImage("src/resources/Bomber.png");
+        loadImage("src/resources/space_background.png");
         getImageDimensions();
     }
 
@@ -39,9 +41,9 @@ public class Alien extends Sprite {
     public void move() {
 
         if (x < 0  - width) {
-            x = INITIAL_X;
+            x = width;
         }
 
-        x -= 2;
+        x -= 1;
     }
 }
