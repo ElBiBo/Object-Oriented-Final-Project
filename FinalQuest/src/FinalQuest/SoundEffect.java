@@ -1,8 +1,11 @@
 package FinalQuest;
 
 import java.io.*;
+import java.io.File;
 import java.net.URL;
 import javax.sound.sampled.*;
+import java.applet.Applet;
+import java.applet.AudioClip;
    
 /**
  * This enum encapsulates all the sound effects of a game, so as to separate the sound playing
@@ -26,40 +29,52 @@ public enum SoundEffect {
    public static Volume volume = Volume.LOW;
    
    // Each sound effect has its own clip, loaded with its own sound file.
-   private Clip clip;
+  Clip clip;
+  
+  AudioInputStream audioInputStream; 
+  
+    
    
    // Constructor to construct each element of the enum with its own sound file.
    SoundEffect(String soundFileName) {
       try {
-         // Use URL (instead of File) to read from disk and JAR.
-         URL url = this.getClass().getClassLoader().getResource(soundFileName);
-         // Set up an audio input stream piped from the sound file.
-         AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(url);
-         // Get a clip resource.
-         clip = AudioSystem.getClip();
-         // Open audio clip and load samples from the audio input stream.
-         clip.open(audioInputStream);
-      } catch (UnsupportedAudioFileException e) {
-         e.printStackTrace();
-      } catch (IOException e) {
-         e.printStackTrace();
-      } catch (LineUnavailableException e) {
-         e.printStackTrace();
+           // create AudioInputStream object 
+        audioInputStream =  
+                AudioSystem.getAudioInputStream(new File(soundFileName).getAbsoluteFile()); 
+          
+        // create clip reference 
+        clip = AudioSystem.getClip(); 
+          
+        // open audioInputStream to the clip 
+        clip.open(audioInputStream); 
+      } catch(Exception e){
+          e.printStackTrace();
       }
+      
    }
    
    // Play or Re-play the sound effect from the beginning, by rewinding.
    public void play() {
-      if (volume != Volume.MUTE) {
+       
+       
+       if (volume != Volume.MUTE) {
+
          if (clip.isRunning())
+
             clip.stop();   // Stop the player if it is still running
+
          clip.setFramePosition(0); // rewind to the beginning
+         
+         new Thread(){//multi-tasking stuff
+             public void run(){
          clip.start();     // Start playing
+             }
+             
+         }.start();
+         
       }
-   }
+         
+    }
    
-   // Optional static method to pre-load all the sound files.
-   static void init() {
-      values(); // calls the constructor for all the elements
-   }
+   
 }
