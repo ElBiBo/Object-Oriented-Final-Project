@@ -22,6 +22,8 @@ public class SpaceShip extends Sprite {
     private final int START_Y;
     private int invincibility_count;
     private int remaining_lives;
+    private int respawn_count;
+    private String game_mode;
     
     
     /**
@@ -34,8 +36,6 @@ public class SpaceShip extends Sprite {
         START_X = x;
         START_Y = y;
         initCraft();
-        //SoundEffect.init();
-        //SoundEffect.LASER.play();
         
     }
 
@@ -51,6 +51,7 @@ public class SpaceShip extends Sprite {
         missile_speed = 4;
         remaining_lives = 3;
         score = 0;
+        game_mode = "gametime";
         loadImage("src/resources/Assaultboat.png");
         getImageDimensions();
     }
@@ -60,25 +61,36 @@ public class SpaceShip extends Sprite {
      * Also prevents the player from moving off the screen
      */
     public void move() {
+        
+        if (game_mode == "gametime")
+        {
+            x += dx;
+            y += dy;
 
-        x += dx;
-        y += dy;
-
-        //left border
-        if (x < 1) {
-            x = 1;
+            //left border
+            if (x < 1) {
+                x = 1;
+            }
+            //right border
+            if (x > 1280-width) {
+                x = 1280-width;
+            }
+            // top border
+            if (y < 1) {
+                y = 1;
+            }
+            // bottom border
+            if (y > 960-height) {
+                y = 960-height;
+            }
         }
-        //right border
-        if (x > 1280-width) {
-            x = 1280-width;
-        }
-        // top border
-        if (y < 1) {
-            y = 1;
-        }
-        // bottom border
-        if (y > 960-height) {
-            y = 960-height;
+        else if (game_mode == "dead"){
+            respawn_count -= 1;
+            if (respawn_count <= 0)
+            {
+                SoundEffect.PLAYER_RESPAWN.play();
+                game_mode = "gametime";
+            }
         }
     }
 
@@ -104,10 +116,18 @@ public class SpaceShip extends Sprite {
      * otherwise it's game over!
      */
     public int die(){
+        SoundEffect.PLAYER_EXPLODE.play();
         invincibility_count = 200;
         remaining_lives -=1;
         x = START_X;
         y = START_Y;
+        
+        if (remaining_lives <= 0)
+            game_mode = "gameover";
+        else {
+            respawn_count = 100;
+            game_mode = "dead";
+        }
         return remaining_lives;
     }
     
@@ -137,6 +157,39 @@ public class SpaceShip extends Sprite {
     }
     
     /**
+     * Before the player appears again, there are a few seconds of down time
+     * 
+     * @return  returns true if the respawning period is finished, otherwise false
+     */
+    public boolean isRespawning(){
+        return respawn_count > 0;
+    }
+    /**
+     * Used by the game to check the current game status. Used for pausing, 
+     * unpausing shifting between menus and entering the main game mode.
+     * @return  returns a string describing the current game status
+     */
+    public String checkMode(){
+        return game_mode;
+    }
+    
+    /**
+     * Toggles between pause and normal game play
+     */
+    public void pause()
+    {
+        if (game_mode == "gametime")
+        {
+            game_mode = "pause";
+        }
+        else if (game_mode == "pause")
+        {
+            game_mode = "gametime";
+            
+        }
+    }
+    
+    /**
      *  A quick check to see if the player is invincible. True if they are, 
      * False if they are not.
      * @return  true if player is invincible, otherwise false
@@ -153,37 +206,7 @@ public class SpaceShip extends Sprite {
         score += newPoints;
     }
     
-    /**
-     * Check for key press events so the player can control the space ship
-     * @param e the last key pressed
-     */
-    public void keyPressed(KeyEvent e) {
-
-        int key = e.getKeyCode();
-
-        if (key == KeyEvent.VK_SPACE) { // fire missile on space
-            fire();
-            SoundEffect.LASER.play();
-        }
-        if (key == KeyEvent.VK_S) { // enable spread fire mode (DEBUG PURPOSES)
-            spreadFire();
-        }
-        if (key == KeyEvent.VK_LEFT) { // move left
-            dx = -3;
-        }
-
-        if (key == KeyEvent.VK_RIGHT) { // move right
-            dx = 3;
-        }
-
-        if (key == KeyEvent.VK_UP) { // move up
-            dy = -3;
-        }
-
-        if (key == KeyEvent.VK_DOWN) { // move down
-            dy = 3;
-        }
-    }
+    
 
     /**
      * Create a missile when activated. No more than num_missiles
@@ -195,12 +218,14 @@ public class SpaceShip extends Sprite {
             case "normal":
                 if (missiles.size() < num_missiles)
                 {
+                    SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
                 }
                 break;
             case "spread":
                 if (missiles.size() < num_missiles*3)
                 {
+                    SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
@@ -209,6 +234,7 @@ public class SpaceShip extends Sprite {
             case "double spread":
                 if (missiles.size() < num_missiles*5)
                 {
+                    SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
@@ -219,6 +245,7 @@ public class SpaceShip extends Sprite {
             default:
                 if (missiles.size() < num_missiles)
                 {
+                    SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
                 }
                 break;            
@@ -247,6 +274,40 @@ public class SpaceShip extends Sprite {
      */
     public void normalFire() {
         firing_mode = "normal";
+    }
+    
+    /**
+     * Check for key press events so the player can control the space ship
+     * @param e the last key pressed
+     */
+    public void keyPressed(KeyEvent e) {
+
+        int key = e.getKeyCode();
+
+        if (key == KeyEvent.VK_SPACE && game_mode == "gametime") { // fire missile on space
+            fire();            
+        }
+        if (key == KeyEvent.VK_S && game_mode == "gametime") { // enable spread fire mode (DEBUG PURPOSES, DELETE LATER)
+            spreadFire();
+        }
+        if (key == KeyEvent.VK_P) { // Pause the game
+            pause();
+        }
+        if (key == KeyEvent.VK_LEFT && game_mode == "gametime") { // move left
+            dx = -3;
+        }
+
+        if (key == KeyEvent.VK_RIGHT && game_mode == "gametime") { // move right
+            dx = 3;
+        }
+
+        if (key == KeyEvent.VK_UP && game_mode == "gametime") { // move up
+            dy = -3;
+        }
+
+        if (key == KeyEvent.VK_DOWN && game_mode == "gametime") { // move down
+            dy = 3;
+        }
     }
     /**
      * Check for key release events so the player can control the space ship

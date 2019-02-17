@@ -41,10 +41,10 @@ public class Alien1 extends Sprite {
      * Init our alien by assigning it an image and getting it's dimensions
     */
     private void initAlien() {
-        fire_rate = 300;
+        fire_rate = 300;  //how often lasers are fired
         fire_count = ThreadLocalRandom.current().nextInt(100, fire_rate + 1);
-        health = 1;
-        missile_speed = -5;
+        health = 1; // how many times they can be hit before dying 
+        missile_speed = -5; // how fast their lasers move
         missiles = new ArrayList<>();
         loadImage("src/resources/Bomber.png");
         getImageDimensions();
@@ -57,6 +57,14 @@ public class Alien1 extends Sprite {
      */
     public int damage(){
         health -= 1;
+        if (health > 0)
+        {
+            SoundEffect.ALIEN_EXPLODE.play();
+        }
+        else
+        {
+            SoundEffect.ALIEN_EXPLODE.play();
+        }
         return health;
     }
 
@@ -83,6 +91,7 @@ public class Alien1 extends Sprite {
      * destroyed first
      */
     public void fire() {
+        
         missiles.add(new Missile(x, y + height / 2, missile_speed,0));
     }
     

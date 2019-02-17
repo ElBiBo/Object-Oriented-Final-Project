@@ -102,10 +102,18 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-
+            
+        game_mode = spaceship.checkMode();
         switch (game_mode) {
+            case "dead":
+                drawObjects(g);
+                break;
             case "gametime":  
                 drawObjects(g);
+                break;
+            case "pause":
+                drawObjects(g);
+                drawPause(g);
                 break;
             case "gameover":
                 drawGameOver(g);
@@ -125,7 +133,7 @@ public class Board extends JPanel implements ActionListener {
         g.drawImage(background1.getImage(), background1.getX(), background1.getY(), this);
         g.drawImage(background2.getImage(), background2.getX(), background2.getY(), this);
         
-        if (spaceship.isVisible() && spaceship.invincibilityFlash()) { // draw our spaceship first
+        if (spaceship.isVisible() && spaceship.invincibilityFlash() && !spaceship.isRespawning()) { // draw our spaceship first
             g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),
                     this);
         }
@@ -149,7 +157,6 @@ public class Board extends JPanel implements ActionListener {
                     if (missile.isVisible()) 
                     {
                         g.drawImage(missile.getImage(), missile.getX(), missile.getY(), this);
-                        
                     }
                 }
             }
@@ -181,6 +188,20 @@ public class Board extends JPanel implements ActionListener {
                 B_HEIGHT / 2);
     }
 
+    /**
+     * The game is paused, draw a big pause in the middle of the screen
+     */
+    private void drawPause(Graphics g) {
+
+        String msg = "PAUSED!";
+        Font small = new Font("Impact", Font.BOLD, 100);
+        FontMetrics fm = getFontMetrics(small);
+
+        g.setColor(Color.white);
+        g.setFont(small);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2,
+                B_HEIGHT / 2);
+    }
     
     /*
     * Update all our objects and repaint
@@ -189,14 +210,15 @@ public class Board extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 
         inGame();
+        if (game_mode == "gametime" || game_mode == "dead")
+        {
+            updateBackground();
+            updateShip();
+            updateMissiles();
+            updateAliens();
 
-        updateBackground();
-        updateShip();
-        updateMissiles();
-        updateAliens();
-
-        checkCollisions();
-
+            checkCollisions();
+        }
         repaint();
     }
 
@@ -206,7 +228,7 @@ public class Board extends JPanel implements ActionListener {
     private void inGame() {
 
         if (game_mode != "gametime") {
-            timer.stop();
+            //timer.stop();
         }
         else
         {
@@ -227,6 +249,7 @@ public class Board extends JPanel implements ActionListener {
             
             spaceship.move();
         }
+        
     }
 
     /**
