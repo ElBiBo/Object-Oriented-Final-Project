@@ -9,15 +9,16 @@ package FinalQuest;
 public class Alien extends Sprite {
 
     private final int INITIAL_X = 1280;
+    private final String DIFFICULTY;
 
     /**
      * Constructor
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
      */
-    public Alien(int x, int y) {
+    public Alien(int x, int y, String D) {
         super(x, y);
-
+        DIFFICULTY = D;
         initAlien();
     }
 

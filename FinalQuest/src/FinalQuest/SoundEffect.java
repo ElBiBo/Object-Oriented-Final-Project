@@ -19,8 +19,10 @@ import java.applet.AudioClip;
 public enum SoundEffect {
    LASER("src/resources/Laser_Shoot3.wav"),             // laser blast
    ALIEN_EXPLODE("src/resources/alien_death.wav"),      // aliens get blown up
+   ALIEN_HIT("src/resources/alien_hit.wav"),            // aliens get damaged
    PLAYER_EXPLODE("src/resources/player_death.wav"),    // player blows up
    PLAYER_RESPAWN("src/resources/revive.wav"),          // player comes back to life
+   LIFE_UP("src/resources/new_life.wav"),               // player gains a life
    POWERUP("src/resources/Powerup3.wav");               // Powerup
    
    // Nested class for specifying volume

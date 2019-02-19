@@ -1,24 +1,28 @@
-
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package FinalQuest;
 
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Alien child of our sprite class. Controls the AI of our alien.
- * Behavior should be:
- * - fly in a straight line
- * - occasionally fire a laser
- * - be destroyed with 1 hit
- * - be destroyed if it flies off the screen (player gets no points though)
- * - 100 points if destroyed by the player
+ * Another alien. Slightly tougher. Behavior includes:
+ * - Moves in a straight line from right to left
+ * - Fires 3 shots to the left (diagonal up/down and straight ahead), once every x seconds
+ * - If hit once, it makes a damage sound
+ * - If hit twice, it is destroyed (player gains 300 points)
+ * - Will fly off the screen to the left if not destroyed
+ * - If player collides with it, player is destroyed
  * @author Marco Tacca
  */
-public class Alien1 extends Sprite {
+public class Alien2 extends Sprite {
 
     private final int INITIAL_X = 1280;
-    private final int POINTS = 100;
+    private final int POINTS = 300;
     private int laser_rate;
     private int fire_count;
     private int fire_rate;
@@ -26,6 +30,7 @@ public class Alien1 extends Sprite {
     private int move_speed;
     private List<Missile> missiles;
     private int missile_speed;
+    private int vert_adjust;
     private final String DIFFICULTY;
     
 
@@ -35,7 +40,7 @@ public class Alien1 extends Sprite {
      * @param y starting y coordinate for the alien
      * @param d is the difficulty of the alien: normal, hard, unforgiving
      */
-    public Alien1(int x, int y, String D) {
+    public Alien2(int x, int y, String D) {
         super(x, y);
         DIFFICULTY = D;
         initAlien();
@@ -47,29 +52,32 @@ public class Alien1 extends Sprite {
     private void initAlien() {
         if (DIFFICULTY == "normal")
         {
-            fire_rate = 300;  //how often lasers are fired
-            health = 1; // how many times they can be hit before dying 
+            fire_rate = 400;  //how often lasers are fired
+            health = 2; // how many times they can be hit before dying 
             missile_speed = -5; // how fast their lasers move
             move_speed = 2; // how fast the alien moves
+            vert_adjust = 1; // how much the missile spreads
         }
         else if (DIFFICULTY == "hard")
         {
-            fire_rate = 250;  //how often lasers are fired
-            health = 1; // how many times they can be hit before dying 
+            fire_rate = 300;  //how often lasers are fired
+            health = 2; // how many times they can be hit before dying 
             missile_speed = -7; // how fast their lasers move
-            move_speed = 4; // how fast the alien moves
+            move_speed = 3; // how fast the alien moves
+            vert_adjust = 2; // how much the missile spreads
         }
         else if (DIFFICULTY == "unforgiving")
         {
             fire_rate = 100;  //how often lasers are fired
-            health = 2; // how many times they can be hit before dying 
+            health = 3; // how many times they can be hit before dying 
             missile_speed = -12; // how fast their lasers move
-            move_speed = 6; // how fast the alien moves
+            move_speed = 5; // how fast the alien moves
+            vert_adjust = 3;// how much the missile spreads
         }
         
         fire_count = ThreadLocalRandom.current().nextInt(fire_rate-100, fire_rate + 1);
         missiles = new ArrayList<>();
-        loadImage("src/resources/Bomber.png");
+        loadImage("src/resources/BomberB.png");
         getImageDimensions();
     }
     
@@ -117,6 +125,8 @@ public class Alien1 extends Sprite {
     public void fire() {
         
         missiles.add(new Missile(x, y + height / 2, missile_speed,0));
+        missiles.add(new Missile(x, y + height / 2, missile_speed,vert_adjust));
+        missiles.add(new Missile(x, y + height / 2, missile_speed,vert_adjust*-1));
     }
     
     /**
@@ -136,3 +146,4 @@ public class Alien1 extends Sprite {
             visible = false;
     }
 }
+    

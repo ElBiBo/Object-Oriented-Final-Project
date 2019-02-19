@@ -20,10 +20,14 @@ public class SpaceShip extends Sprite {
     private int score;
     private final int START_X;
     private final int START_Y;
+    private final int LIFE_POINTS = 100000;
+    private final String DIFFICULTY;
+    private int move_speed;
     private int invincibility_count;
     private int remaining_lives;
     private int respawn_count;
     private String game_mode;
+    private int life_score;
     
     
     /**
@@ -31,10 +35,11 @@ public class SpaceShip extends Sprite {
      * @param x starting x coordinate for the player
      * @param y starting y coordinate for the player
      */
-    public SpaceShip(int x, int y) {
+    public SpaceShip(int x, int y, String d) {
         super(x, y);
         START_X = x;
         START_Y = y;
+        DIFFICULTY = d;
         initCraft();
         
     }
@@ -44,13 +49,30 @@ public class SpaceShip extends Sprite {
      * Also create a list for keeping track of our ship's missiles
      */
     private void initCraft() {
+        if (DIFFICULTY == "normal")
+        {
+            remaining_lives = 5;
+            move_speed = 3;
         
+        }
+        else if (DIFFICULTY == "hard")
+        {
+            remaining_lives = 3;
+            move_speed = 5;
+        
+        }
+        else if (DIFFICULTY == "unforgiving")
+        {
+            remaining_lives = 1;
+            move_speed = 7;
+        
+        }
         missiles = new ArrayList<>();
         firing_mode = "normal";
         num_missiles = 5;
-        missile_speed = 4;
-        remaining_lives = 3;
+        missile_speed = move_speed + (move_speed/3);
         score = 0;
+        life_score = LIFE_POINTS;
         game_mode = "gametime";
         loadImage("src/resources/Assaultboat.png");
         getImageDimensions();
@@ -204,6 +226,12 @@ public class SpaceShip extends Sprite {
      */
     public void addPoints(int newPoints){
         score += newPoints;
+        if (score >= life_score)
+        {
+            life_score += LIFE_POINTS;
+            remaining_lives++;
+            SoundEffect.LIFE_UP.play();
+        }
     }
     
     
@@ -294,19 +322,19 @@ public class SpaceShip extends Sprite {
             pause();
         }
         if (key == KeyEvent.VK_LEFT && game_mode == "gametime") { // move left
-            dx = -3;
+            dx = move_speed * -1;
         }
 
         if (key == KeyEvent.VK_RIGHT && game_mode == "gametime") { // move right
-            dx = 3;
+            dx = move_speed;
         }
 
         if (key == KeyEvent.VK_UP && game_mode == "gametime") { // move up
-            dy = -3;
+            dy = move_speed * -1;
         }
 
         if (key == KeyEvent.VK_DOWN && game_mode == "gametime") { // move down
-            dy = 3;
+            dy = move_speed;
         }
     }
     /**

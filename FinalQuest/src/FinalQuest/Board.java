@@ -29,7 +29,7 @@ public class Board extends JPanel implements ActionListener {
     private Timer timer;
     private SpaceShip spaceship;
     private Background background1, background2;
-    private List<Alien1> aliens;
+    private List<Alien2> aliens;
     private final int B_WIDTH = 1280;
     private final int B_HEIGHT = 960;
     private final int ICRAFT_X = 40;
@@ -39,7 +39,7 @@ public class Board extends JPanel implements ActionListener {
     private final int END_STAGE = 5000;
     private int level = 1;
     private String game_mode = "gametime";
-    private String difficulty = "normal";
+    private String difficulty = "normal";  //valid values: normal, hard, unforgiving
 
     private final int[][] pos = { // Starting alien positions
         {238, 29}, {250, 59}, {1380, 89},
@@ -72,7 +72,7 @@ public class Board extends JPanel implements ActionListener {
         
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
 
-        spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y);
+        spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
         background1 = new Background(0,0);
         background2 = new Background(background1.width,0);
         
@@ -90,7 +90,7 @@ public class Board extends JPanel implements ActionListener {
         aliens = new ArrayList<>();
 
         for (int[] p : pos) {
-            aliens.add(new Alien1(p[0]+1000, p[1]*3));
+            aliens.add(new Alien2(p[0]+1000, p[1]*3, difficulty));
         }
     }
 
@@ -149,7 +149,7 @@ public class Board extends JPanel implements ActionListener {
 
         List<Missile> ems;
         
-        for (Alien1 alien : aliens) { // then the aliens
+        for (Alien2 alien : aliens) { // then the aliens
             if (alien.isVisible()) {
                 g.drawImage(alien.getImage(), alien.getX(), alien.getY(), this);
                 ems = alien.getMissiles(); // then our aliens' shots
@@ -270,7 +270,7 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         
-        for (Alien1 alien : aliens) { // then the aliens
+        for (Alien2 alien : aliens) { // then the aliens
             if (alien.isVisible()) {
                 ms = alien.getMissiles();
                 for (int i = 0; i < ms.size(); i++) {
@@ -307,7 +307,7 @@ public class Board extends JPanel implements ActionListener {
 
         for (int i = 0; i < aliens.size(); i++) {
 
-            Alien1 a = aliens.get(i);
+            Alien2 a = aliens.get(i);
             
             if (a.isVisible()) {
                 a.move();
@@ -324,7 +324,7 @@ public class Board extends JPanel implements ActionListener {
 
         Rectangle r3 = spaceship.getBounds();
 
-        for (Alien1 alien : aliens) {
+        for (Alien2 alien : aliens) {
             
             Rectangle r2 = alien.getBounds();
 
@@ -340,7 +340,7 @@ public class Board extends JPanel implements ActionListener {
         }
         Rectangle r2;
         List<Missile> ms;
-        for (Alien1 alien : aliens) { // check alien missile collisions
+        for (Alien2 alien : aliens) { // check alien missile collisions
             if (alien.isVisible()) {
                 ms = alien.getMissiles();
                 for (int i = 0; i < ms.size(); i++) {
@@ -366,7 +366,7 @@ public class Board extends JPanel implements ActionListener {
 
         for (Missile m : ms) { // check player missile collisions
             Rectangle r1 = m.getBounds();
-            for (Alien1 alien : aliens) {
+            for (Alien2 alien : aliens) {
                 r2 = alien.getBounds();
                 if (r1.intersects(r2)) {
                     m.setVisible(false);
