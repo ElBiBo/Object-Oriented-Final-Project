@@ -44,6 +44,21 @@ public class Alien2 extends Sprite {
         super(x, y);
         DIFFICULTY = D;
         initAlien();
+        move_speed = 2; 
+    }
+    
+    /**
+     * Constructor, to adjust the speed, if needed
+     * @param x starting x coordinate for the alien
+     * @param y starting y coordinate for the alien
+     * @param D is the difficulty of the alien: normal, hard, unforgiving
+     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 2
+     */
+    public Alien2(int x, int y, String D, int s) {
+        super(x, y);
+        DIFFICULTY = D;
+        initAlien();
+        move_speed = s;
     }
 
     /**
@@ -54,24 +69,24 @@ public class Alien2 extends Sprite {
         {
             fire_rate = 400;  //how often lasers are fired
             health = 2; // how many times they can be hit before dying 
-            missile_speed = -5; // how fast their lasers move
-            move_speed = 2; // how fast the alien moves
+            move_speed += 0; // how fast the alien moves
+            missile_speed = (move_speed+3)*-1; // how fast their lasers move
             vert_adjust = 1; // how much the missile spreads
         }
         else if (DIFFICULTY == "hard")
         {
             fire_rate = 300;  //how often lasers are fired
             health = 2; // how many times they can be hit before dying 
-            missile_speed = -7; // how fast their lasers move
-            move_speed = 3; // how fast the alien moves
+            move_speed += 2; // how fast the alien moves
+            missile_speed = (move_speed+3)*-1; // how fast their lasers move
             vert_adjust = 2; // how much the missile spreads
         }
         else if (DIFFICULTY == "unforgiving")
         {
             fire_rate = 100;  //how often lasers are fired
             health = 3; // how many times they can be hit before dying 
-            missile_speed = -12; // how fast their lasers move
-            move_speed = 5; // how fast the alien moves
+            move_speed += 4; // how fast the alien moves
+            missile_speed = (move_speed+6)*-1; // how fast their lasers move
             vert_adjust = 3;// how much the missile spreads
         }
         

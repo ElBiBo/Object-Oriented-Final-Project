@@ -165,11 +165,11 @@ public class Alien6 extends Sprite {
                 x -= move_speed;
                 if (y< pos[1])
                 {
-                    y++;
+                    y += move_speed / 3;
                 }
                 else
                 {
-                    y--;
+                    y -= move_speed / 3;
                 }
                 if (x<pos[0])
                 {

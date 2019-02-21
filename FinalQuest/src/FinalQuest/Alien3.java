@@ -42,8 +42,23 @@ public class Alien3 extends Sprite {
         super(x, y);
         DIFFICULTY = D;
         initAlien();
+        move_speed = 4;
     }
-
+    
+    /**
+     * Constructor, to adjust the speed, if needed
+     * @param x starting x coordinate for the alien
+     * @param y starting y coordinate for the alien
+     * @param D is the difficulty of the alien: normal, hard, unforgiving
+     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 4
+     */
+    public Alien3(int x, int y, String D, int s) {
+        super(x, y);
+        DIFFICULTY = D;
+        initAlien();
+        move_speed = s;
+    }
+    
     /**
      * Init our alien by assigning it an image and getting it's dimensions
     */
@@ -52,22 +67,22 @@ public class Alien3 extends Sprite {
         {
             fire_rate = 250;  //how often lasers are fired
             health = 1; // how many times they can be hit before dying 
-            missile_speed = -8; // how fast their lasers move
-            move_speed = 4; // how fast the alien moves
+            move_speed += 0; // how fast the alien moves
+            missile_speed = (move_speed+4)*-1; // how fast their lasers move
         }
         else if (DIFFICULTY == "hard")
         {
             fire_rate = 150;  //how often lasers are fired
             health = 1; // how many times they can be hit before dying 
-            missile_speed = -10; // how fast their lasers move
-            move_speed = 6; // how fast the alien moves
+            move_speed += 2; // how fast the alien moves
+            missile_speed = (move_speed+4)*-1; // how fast their lasers move
         }
         else if (DIFFICULTY == "unforgiving")
         {
             fire_rate = 50;  //how often lasers are fired
             health = 2; // how many times they can be hit before dying 
-            missile_speed = -14; // how fast their lasers move
-            move_speed = 8; // how fast the alien moves
+            move_speed += 4; // how fast the alien moves
+            missile_speed = (move_speed+6)*-1; // how fast their lasers move
         }
         
         fire_count = ThreadLocalRandom.current().nextInt(fire_rate-100, fire_rate + 1);

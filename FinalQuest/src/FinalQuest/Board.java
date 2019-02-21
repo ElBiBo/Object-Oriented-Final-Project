@@ -36,10 +36,11 @@ public class Board extends JPanel implements ActionListener {
     private final int ICRAFT_Y = B_HEIGHT/2;
     private final int DELAY = 15;
     private int stage_count = 0;
-    private final int END_STAGE = 5000;
+    private final int END_STAGE = 12000;
     private int level = 1;
     private String game_mode = "gametime";
     private String difficulty = "normal";  //valid values: normal, hard, unforgiving
+    private int wave_count = 0;
 
     /*private final int[][] pos = { // Starting alien positions
         {238, 29}, {250, 59}, {1380, 89},
@@ -103,11 +104,59 @@ public class Board extends JPanel implements ActionListener {
         /*for (int[] p : pos) {
             aliens.add(new Alien4(p[0]+1000, p[1]*3, difficulty));
         }*/
-        for (int i = 0;i<13;i++)
-        {
-            aliens.add(new Alien6(B_WIDTH+100*i, 50, difficulty, spaceship));
-            aliens.add(new Alien6(B_WIDTH+100*i, B_HEIGHT-50, difficulty, spaceship));
+        
+        switch (wave_count){
+            case 0:
+                for (int i = 0;i<13;i++)
+                {
+                    aliens.add(new Alien1(B_WIDTH+100*i, 50+i*30, difficulty));
+                    aliens.add(new Alien1(B_WIDTH+100*i, B_HEIGHT-50-i*30, difficulty));
+                }
+                wave_count++;
+                break;
+            case 1:
+                for (int i = 0;i<13;i++)
+                {
+                    aliens.add(new Alien2(B_WIDTH+100*i, 50+i*30, difficulty));
+                    aliens.add(new Alien2(B_WIDTH+100*i, B_HEIGHT-50-i*30, difficulty));
+                }
+                wave_count++;
+                break;
+            case 2:
+                for (int i = 0;i<13;i++)
+                {
+                    aliens.add(new Alien3(B_WIDTH+100*i, 50, difficulty));
+                    aliens.add(new Alien3(B_WIDTH+100*i, B_HEIGHT-50, difficulty));
+                }
+                wave_count++;
+                break;
+            case 3:
+                for (int i = 0;i<13;i++)
+                {
+                    aliens.add(new Alien4(B_WIDTH+100*i, 50, difficulty));
+                    aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-50, difficulty));
+                }
+                wave_count++;
+                break;
+            case 4:
+                for (int i = 0;i<13;i++)
+                {
+                    aliens.add(new Alien5(B_WIDTH+100*i, 50, difficulty));
+                    aliens.add(new Alien5(B_WIDTH+100*i, B_HEIGHT-50, difficulty));
+                }
+                wave_count++;
+                break;
+            case 5:
+                for (int i = 0;i<13;i++)
+                {
+                    aliens.add(new Alien6(B_WIDTH+100*i, 50, difficulty, spaceship));
+                    aliens.add(new Alien6(B_WIDTH+50+100*i, B_HEIGHT-50, difficulty, spaceship));
+                }
+                wave_count = 0;
+                break;
+                
         }
+        
         
         
     }
@@ -185,8 +234,13 @@ public class Board extends JPanel implements ActionListener {
         
         Font small = new Font("Impact", Font.BOLD, 30);
         FontMetrics fm = getFontMetrics(small);
-
-        g.setColor(Color.yellow);
+        if (difficulty == "normal")
+            g.setColor(Color.white);
+        else if (difficulty == "hard")
+            g.setColor(Color.yellow);
+        else if (difficulty == "unforgiving")
+            g.setColor(Color.red);
+        
         g.setFont(small);g.drawString("Score: " + spaceship.getScore(), 5, 35);
         g.setFont(small);g.drawString("Lives: " + spaceship.getLives(), 300, 35);
     }
