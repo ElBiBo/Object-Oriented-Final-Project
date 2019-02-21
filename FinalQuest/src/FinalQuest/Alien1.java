@@ -13,6 +13,7 @@ import java.util.List;
  * - be destroyed with 1 hit
  * - be destroyed if it flies off the screen (player gets no points though)
  * - 100 points if destroyed by the player
+ * - If player collides with it, player is destroyed
  * @author Marco Tacca
  */
 public class Alien1 extends Sprite {
@@ -33,7 +34,7 @@ public class Alien1 extends Sprite {
      * Constructor
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
-     * @param d is the difficulty of the alien: normal, hard, unforgiving
+     * @param D is the difficulty of the alien: normal, hard, unforgiving
      */
     public Alien1(int x, int y, String D) {
         super(x, y);
@@ -116,14 +117,13 @@ public class Alien1 extends Sprite {
      */
     public void fire() {
         
-        missiles.add(new Missile(x, y + height / 2, missile_speed,0));
+        missiles.add(new Missile(x-width, y -2 + height / 2, missile_speed,0));
     }
     
     /**
      *  Alien's AI
-     * currently moves it to the left until it reaches the end of the screen
-     * then pops it back to the right side of the screen
-     * We will program some more interesting AI here
+     * moves to the left until it reaches the end of the screen
+     * then is destroyed. It also has a laser it fires.
      */
     public void move() {
         fire_count +=1;

@@ -134,6 +134,14 @@ public class SpaceShip extends Sprite {
     }
     
     /**
+     * Used to get the ship's position, if needed.
+     * @return  an int array with the x,y coordinates of the ship
+     */
+    public int[] getPos(){
+        return new int[]{x,y};
+    }
+    
+    /**
      * Invoked whenever the player dies. The lose a life, if they have any
      * otherwise it's game over!
      */

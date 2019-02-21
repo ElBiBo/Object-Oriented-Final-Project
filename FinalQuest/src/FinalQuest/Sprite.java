@@ -1,13 +1,15 @@
 package FinalQuest;
 import java.awt.Image;
 import java.awt.Rectangle;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.ImageIcon;
 
 /**
  * Our general sprite parent class
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
  */
-public class Sprite {
+public class Sprite{
 
     protected int x;
     protected int y;
@@ -15,6 +17,11 @@ public class Sprite {
     protected int height;
     protected boolean visible;
     protected Image image;
+    private final int POINTS = 100;
+    private List<Missile> missiles = new ArrayList<>();
+    private int health;
+    private int missile_speed;
+        
 
     /**
      * Constructor
@@ -26,6 +33,8 @@ public class Sprite {
         this.x = x;
         this.y = y;
         visible = true;
+        health = 1;
+        missile_speed = 0;
     }
 
     /**
@@ -96,5 +105,48 @@ public class Sprite {
      */
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
+    }
+    
+    public List<Missile> getMissiles()
+    {
+        return missiles;
+    }
+    
+    /**
+     * Create a missile when activated. 
+     */
+    public void fire() {
+        
+        missiles.add(new Missile(x, y + height / 2, missile_speed,0));
+    }
+    
+    /**
+     *  Used for movement
+     */
+    public void move()
+    {
+        
+    }
+    public int getPoints(){
+        return POINTS;
+    }
+    
+    /**
+     * This damages the alien and then returns its current health
+     * if health <= 0 it should be destroyed
+     * otherwise it makes a sound and takes some damage
+     * @return  the alien's current health
+     */
+    public int damage(){
+        health -= 1;
+        if (health > 0)
+        {
+            SoundEffect.ALIEN_HIT.play();
+        }
+        else
+        {
+            SoundEffect.ALIEN_EXPLODE.play();
+        }
+        return health;
     }
 }
