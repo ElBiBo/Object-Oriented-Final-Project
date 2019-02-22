@@ -1,6 +1,8 @@
 
 package FinalQuest;
 
+import static java.lang.Math.cos;
+import static java.lang.Math.sin;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +30,10 @@ public class Alien3 extends Sprite {
     private List<Missile> missiles;
     private int missile_speed;
     private final String DIFFICULTY;
-    private int y_move;
-    private int y_adjust;
-    
+    private final double ORIGIN_Y;
+    private final double RADIUS;
+    private double angle;
+    private double direction;
 
     /**
      * Constructor
@@ -43,6 +46,19 @@ public class Alien3 extends Sprite {
         DIFFICULTY = D;
         initAlien();
         move_speed = 4;
+        RADIUS = 200;
+        if (y<960/2)
+        {
+            ORIGIN_Y = y+RADIUS;
+            angle = Math.PI /-2;
+            direction = -1;
+        }
+        else
+        {
+            ORIGIN_Y = y-RADIUS;
+            angle = Math.PI /2;
+            direction = 1;
+        }
     }
     
     /**
@@ -57,6 +73,47 @@ public class Alien3 extends Sprite {
         DIFFICULTY = D;
         initAlien();
         move_speed = s;
+        RADIUS = 200;
+        if (y<960/2)
+        {
+            ORIGIN_Y = y+RADIUS;
+            angle = Math.PI /-2;
+            direction = -1;
+        }
+        else
+        {
+            ORIGIN_Y = y-RADIUS;
+            angle = Math.PI /2;
+            direction = 1;
+        }
+    }
+    
+    /**
+     * Constructor, to adjust the speed, if needed
+     * @param x starting x coordinate for the alien
+     * @param y starting y coordinate for the alien
+     * @param D is the difficulty of the alien: normal, hard, unforgiving
+     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 4
+     * @param r adjust the radius of the sin wave for tighter or looser curves. default is 200
+     */
+    public Alien3(int x, int y, String D, int s, double r) {
+        super(x, y);
+        DIFFICULTY = D;
+        initAlien();
+        move_speed = s;
+        RADIUS = r;
+        if (y<960/2)
+        {
+            ORIGIN_Y = y+RADIUS;
+            angle = Math.PI /-2;
+            direction = -1;
+        }
+        else
+        {
+            ORIGIN_Y = y-RADIUS;
+            angle = Math.PI /2;
+            direction = 1;
+        }
     }
     
     /**
@@ -87,8 +144,6 @@ public class Alien3 extends Sprite {
         
         fire_count = ThreadLocalRandom.current().nextInt(fire_rate-100, fire_rate + 1);
         missiles = new ArrayList<>();
-        y_move = 0;
-        y_adjust = 1;
         
         loadImage("src/resources/Bomber2.png");
         getImageDimensions();
@@ -153,21 +208,10 @@ public class Alien3 extends Sprite {
             fire();
         }
         x -= move_speed;
-        y += y_move;
-        y_move += y_adjust;
-        if (y_move >= 20 || y_move <= -20) 
+        if (x <= 1280)
         {
-            y_adjust = y_adjust * -1;
-        }
-        if (y <0 && move_speed < 0) 
-        {
-            y_move = move_speed;
-            y_adjust = 1;
-        } 
-        else if(y > 900 && move_speed > 0)
-        {
-            y_move = move_speed*-1;
-            y_adjust = -1;
+            angle +=(double) move_speed/80* direction /(RADIUS/200);
+            y = (int) Math.round(ORIGIN_Y + sin(angle)*RADIUS);
         }
         if (x < 0-width) //alien gets destroyed if it goes off the screen
             visible = false;

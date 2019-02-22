@@ -42,17 +42,7 @@ public class Board extends JPanel implements ActionListener {
     private String difficulty = "normal";  //valid values: normal, hard, unforgiving
     private int wave_count = 0;
 
-    /*private final int[][] pos = { // Starting alien positions
-        {238, 29}, {250, 59}, {1380, 89},
-        {780, 109}, {580, 139}, {680, 239},
-        {790, 259}, {760, 50}, {790, 150},
-        {980, 209}, {560, 45}, {510, 70},
-        {930, 159}, {590, 80}, {530, 60},
-        {940, 59}, {990, 30}, {920, 200},
-        {900, 259}, {660, 50}, {540, 90},
-        {810, 220}, {860, 20}, {740, 180},
-        {820, 128}, {490, 170}, {700, 30}
-    };*/
+   
     private final int[][] pos = { // Starting alien positions
         {238, 29}, {250, 59}, {1380, 89},
         {780, 109}, {580, 139}, {680, 239},
@@ -104,8 +94,9 @@ public class Board extends JPanel implements ActionListener {
         /*for (int[] p : pos) {
             aliens.add(new Alien4(p[0]+1000, p[1]*3, difficulty));
         }*/
-        
-        switch (wave_count){
+        //wave_count = 2;
+        aliens.add(new Asteroid(B_WIDTH, 50, difficulty));
+        /*switch (wave_count){
             case 0:
                 for (int i = 0;i<13;i++)
                 {
@@ -156,7 +147,7 @@ public class Board extends JPanel implements ActionListener {
                 break;
                 
         }
-        
+        */
         
         
     }

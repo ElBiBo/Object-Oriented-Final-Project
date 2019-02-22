@@ -33,6 +33,7 @@ public class Alien2 extends Sprite {
     private int vert_adjust;
     private final String DIFFICULTY;
     
+    
 
     /**
      * Constructor
