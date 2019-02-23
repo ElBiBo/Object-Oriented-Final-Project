@@ -78,6 +78,7 @@ public class Board extends JPanel implements ActionListener {
         background1 = new Background(0,0);
         background2 = new Background(background1.width,0);
         
+        MusicPlayer.MUSIC.play();//Start background Music
         initAliens();
 
         timer = new Timer(DELAY, this);
