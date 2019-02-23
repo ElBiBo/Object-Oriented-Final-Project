@@ -243,6 +243,7 @@ public class Board extends JPanel implements ActionListener {
     private void drawGameOver(Graphics g) {
 
         String msg = "Game Over";
+        MusicPlayer.MUSIC.stop();//Start background Music
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
 
