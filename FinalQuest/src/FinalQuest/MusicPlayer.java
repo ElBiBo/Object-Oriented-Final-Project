@@ -67,7 +67,7 @@ public enum MusicPlayer{
          clip.setFramePosition(0); // rewind to the beginning
          
          new Thread(){//multi-tasking stuff
-             public void loop(){
+             public void run(){
                  
             clip.loop(Clip.LOOP_CONTINUOUSLY);
 
@@ -79,6 +79,10 @@ public enum MusicPlayer{
       }
     
     }
+    
+    public void stop(){
+            clip.stop();//Stop music if dead
+        }
 }
     
     
