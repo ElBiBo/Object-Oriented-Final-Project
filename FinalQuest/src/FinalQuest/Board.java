@@ -19,13 +19,13 @@ import javax.swing.Timer;
 /**
  *
  * This class primarily handles drawing various objects to the screen
- * It also keeps track of how many objects are on the screen, updates their 
+ * It also keeps track of how many objects are on the screen, updates their
  * positions
- * 
+ *
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
  */
 public class Board extends JPanel implements ActionListener {
-
+    
     private Timer timer;
     private SpaceShip spaceship;
     private Background background1, background2;
@@ -41,8 +41,8 @@ public class Board extends JPanel implements ActionListener {
     private String game_mode = "gametime";
     private String difficulty = "normal";  //valid values: normal, hard, unforgiving
     private int wave_count = 0;
-
-   
+    
+    
     private final int[][] pos = { // Starting alien positions
         {238, 29}, {250, 59}, {1380, 89},
         {780, 109}, {580, 139}, {680, 239},
@@ -54,49 +54,49 @@ public class Board extends JPanel implements ActionListener {
         {810, 220}, {860, 20}, {740, 180},
         {820, 128}, {490, 170}, {700, 30}
     };
-
+    
     /**
      * Constructor
      */
     public Board() {
-
+        
         initBoard();
     }
-
+    
     /**
      * Initialize our board
      */
     private void initBoard() {
-
+        
         addKeyListener(new TAdapter()); //check for key input
         setFocusable(true); // pay attention to this window
         setBackground(Color.BLACK);
         
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
-
+        
         spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
         background1 = new Background(0,0);
         background2 = new Background(background1.width,0);
         
         initAliens();
-
+        
         timer = new Timer(DELAY, this);
         timer.start();
     }
-
+    
     /**
      * Initialize our aliens and drop them all into our board
      */
     public void initAliens() {
         
         aliens = new ArrayList<>();
-
+        
         /*for (int[] p : pos) {
-            aliens.add(new Alien4(p[0]+1000, p[1]*3, difficulty));
+        aliens.add(new Alien4(p[0]+1000, p[1]*3, difficulty));
         }*/
         //wave_count = 2;
         aliens.add(new Asteroid(B_WIDTH, 50, difficulty));
-        /*switch (wave_count){
+        switch (wave_count){
             case 0:
                 for (int i = 0;i<13;i++)
                 {
@@ -147,26 +147,23 @@ public class Board extends JPanel implements ActionListener {
                 break;
                 
         }
-        */
-        
-        
     }
-
+    
     /**
-     * Ignore the default swing paintComponent function. This is where 
+     * Ignore the default swing paintComponent function. This is where
      * we decide what screen we are on. It will also be what we have to edit
      * to put our menus and possibly extra levels in
      */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-            
+        
         game_mode = spaceship.checkMode();
         switch (game_mode) {
             case "dead":
                 drawObjects(g);
                 break;
-            case "gametime":  
+            case "gametime":
                 drawObjects(g);
                 break;
             case "pause":
@@ -176,9 +173,9 @@ public class Board extends JPanel implements ActionListener {
             case "gameover":
                 drawGameOver(g);
                 break;
-            default:  
+            default:
                 game_mode = "mainmenu";
-                break;       
+                break;
         }
         Toolkit.getDefaultToolkit().sync();
     }
@@ -187,7 +184,7 @@ public class Board extends JPanel implements ActionListener {
      * Draw all the active objects on our board
      */
     private void drawObjects(Graphics g) {
-
+        
         g.drawImage(background1.getImage(), background1.getX(), background1.getY(), this);
         g.drawImage(background2.getImage(), background2.getX(), background2.getY(), this);
         
@@ -195,16 +192,16 @@ public class Board extends JPanel implements ActionListener {
             g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),
                     this);
         }
-
+        
         List<Missile> ms = spaceship.getMissiles(); // then our spaceship's shots
-
+        
         for (Missile missile : ms) {
             if (missile.isVisible()) {
-                g.drawImage(missile.getImage(), missile.getX(), 
+                g.drawImage(missile.getImage(), missile.getX(),
                         missile.getY(), this);
             }
         }
-
+        
         List<Missile> ems;
         
         for (Sprite alien : aliens) { // then the aliens
@@ -212,15 +209,15 @@ public class Board extends JPanel implements ActionListener {
                 g.drawImage(alien.getImage(), alien.getX(), alien.getY(), this);
                 ems = alien.getMissiles(); // then our aliens' shots
                 for (Missile missile : ems) {
-                    if (missile.isVisible()) 
+                    if (missile.isVisible())
                     {
                         g.drawImage(missile.getImage(), missile.getX(), missile.getY(), this);
                     }
                 }
             }
         }
-
-        // game GUI. right now it just has game score, but we can 
+        
+        // game GUI. right now it just has game score, but we can
         // change this to display level and lives later
         
         Font small = new Font("Impact", Font.BOLD, 30);
@@ -235,31 +232,31 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(small);g.drawString("Score: " + spaceship.getScore(), 5, 35);
         g.setFont(small);g.drawString("Lives: " + spaceship.getLives(), 300, 35);
     }
-
+    
     /**
      * You're dead, draw game over
      */
     private void drawGameOver(Graphics g) {
-
+        
         String msg = "Game Over";
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
-
+        
         g.setColor(Color.white);
         g.setFont(small);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2,
                 B_HEIGHT / 2);
     }
-
+    
     /**
      * The game is paused, draw a big pause in the middle of the screen
      */
     private void drawPause(Graphics g) {
-
+        
         String msg = "PAUSED!";
         Font small = new Font("Impact", Font.BOLD, 100);
         FontMetrics fm = getFontMetrics(small);
-
+        
         g.setColor(Color.white);
         g.setFont(small);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2,
@@ -271,7 +268,7 @@ public class Board extends JPanel implements ActionListener {
     */
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        
         inGame();
         if (game_mode == "gametime" || game_mode == "dead")
         {
@@ -279,17 +276,17 @@ public class Board extends JPanel implements ActionListener {
             updateShip();
             updateMissiles();
             updateAliens();
-
+            
             checkCollisions();
         }
         repaint();
     }
-
+    
     /**
      * Stop our game timer if we are not currently playing
      */
     private void inGame() {
-
+        
         if (game_mode != "gametime") {
             //timer.stop();
         }
@@ -298,7 +295,7 @@ public class Board extends JPanel implements ActionListener {
             stage_count +=1;
         }
     }
-
+    
     private void updateBackground() {
         background1.move();
         background2.move();
@@ -307,25 +304,25 @@ public class Board extends JPanel implements ActionListener {
      * Move our ship, if necessary
      */
     private void updateShip() {
-
+        
         if (spaceship.isVisible()) {
             
             spaceship.move();
         }
         
     }
-
+    
     /**
      * move or destroy our player's missiles
      */
     private void updateMissiles() {
-
+        
         List<Missile> ms = spaceship.getMissiles();
-
+        
         for (int i = 0; i < ms.size(); i++) {
-
+            
             Missile m = ms.get(i);
-
+            
             if (m.isVisible()) {
                 m.move();
             } else {
@@ -338,7 +335,7 @@ public class Board extends JPanel implements ActionListener {
                 ms = alien.getMissiles();
                 for (int i = 0; i < ms.size(); i++) {
                     Missile m = ms.get(i);
-                    if (m.isVisible()) 
+                    if (m.isVisible())
                     {
                         if (m.isVisible()) {
                             m.move();
@@ -351,12 +348,12 @@ public class Board extends JPanel implements ActionListener {
         }
         
     }
-
+    
     /**
      * move our aliens
      */
     private void updateAliens() {
-
+        
         if (aliens.size() <= 0) {
             initAliens();
             
@@ -367,9 +364,9 @@ public class Board extends JPanel implements ActionListener {
             game_mode = "gameover";
             return;
         }
-
+        
         for (int i = 0; i < aliens.size(); i++) {
-
+            
             Sprite a = aliens.get(i);
             
             if (a.isVisible()) {
@@ -379,18 +376,18 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
-
+    
     /**
      * check to see if anything has hit anything
      */
     public void checkCollisions() {
-
+        
         Rectangle r3 = spaceship.getBounds();
-
+        
         for (Sprite alien : aliens) {
             
             Rectangle r2 = alien.getBounds();
-
+            
             if (r3.intersects(r2) && !spaceship.isInvincibile()) {
                 
                 if (spaceship.die() <= 0)
@@ -410,7 +407,7 @@ public class Board extends JPanel implements ActionListener {
                     Missile m = ms.get(i);
                     r2 = m.getBounds();
                     r3 = spaceship.getBounds();
-                    if (r2.intersects(r3) && !spaceship.isInvincibile()) 
+                    if (r2.intersects(r3) && !spaceship.isInvincibile())
                     {
                         ms.remove(i);
                         if (spaceship.die() <= 0)
@@ -419,14 +416,14 @@ public class Board extends JPanel implements ActionListener {
                             alien.setVisible(false);
                             game_mode = "gameover";
                             
-                           
+                            
                         }
                     }
                 }
             }
         }
         ms = spaceship.getMissiles();
-
+        
         for (Missile m : ms) { // check player missile collisions
             Rectangle r1 = m.getBounds();
             for (Sprite alien : aliens) {
@@ -442,18 +439,18 @@ public class Board extends JPanel implements ActionListener {
             }
         }
     }
-
+    
     /**
      * Check our spaceship class for what to do when a button is pressed
      * or released
      */
     private class TAdapter extends KeyAdapter {
-
+        
         @Override
         public void keyReleased(KeyEvent e) {
             spaceship.keyReleased(e);
         }
-
+        
         @Override
         public void keyPressed(KeyEvent e) {
             spaceship.keyPressed(e);

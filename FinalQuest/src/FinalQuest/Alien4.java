@@ -145,7 +145,7 @@ public class Alien4 extends Sprite {
     
     /**
      *  Alien's AI
-     * Moves in a z pattern going left, then diagonally back and finally left 
+     * Moves in a z pattern going left, then diagonally back and finally left
      * again (and off the screen). Rapidly fires 3 times in a row between cooldowns
      */
     public void move() {
@@ -188,7 +188,7 @@ public class Alien4 extends Sprite {
                 break;
             default:
                 x -= move_speed;
-                break;    
+                break;
         }
         if (x < 0-width) //alien gets destroyed if it goes off the screen
             visible = false;

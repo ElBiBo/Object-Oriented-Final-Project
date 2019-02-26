@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Alien child of our sprite class. Controls the AI of our alien.
  * Behavior should be:
- * - fly in a straight line then do 3 loops before continuing in a straight 
+ * - fly in a straight line then do 3 loops before continuing in a straight
  *   line again
  * - frequently fires a laser
  * - be destroyed with 1 hit

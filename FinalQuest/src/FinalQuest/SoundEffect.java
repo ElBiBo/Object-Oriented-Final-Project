@@ -6,7 +6,7 @@ import java.net.URL;
 import javax.sound.sampled.*;
 import java.applet.Applet;
 import java.applet.AudioClip;
-   
+
 /**
  * This enum encapsulates all the sound effects of a game, so as to separate the sound playing
  * codes from the game codes.
@@ -17,66 +17,63 @@ import java.applet.AudioClip;
  * 4. You can use the static variable SoundEffect.volume to mute the sound.
  */
 public enum SoundEffect {
-   LASER("src/resources/Laser_Shoot3.wav"),             // laser blast
-   ALIEN_EXPLODE("src/resources/alien_death.wav"),      // aliens get blown up
-   ALIEN_HIT("src/resources/alien_hit.wav"),            // aliens get damaged
-   PLAYER_EXPLODE("src/resources/player_death.wav"),    // player blows up
-   PLAYER_RESPAWN("src/resources/revive.wav"),          // player comes back to life
-   LIFE_UP("src/resources/new_life.wav"),               // player gains a life
-   POWERUP("src/resources/Powerup3.wav");               // Powerup
-   
-   // Nested class for specifying volume
-   public static enum Volume {
-      MUTE, LOW, MEDIUM, HIGH
-   }
-   
-   public static Volume volume = Volume.LOW;
-   
-   // Each sound effect has its own clip, loaded with its own sound file.
-  Clip clip;
-  
-  AudioInputStream audioInputStream; 
-  
+    LASER("src/resources/Laser_Shoot3.wav"),             // laser blast
+    ALIEN_EXPLODE("src/resources/alien_death.wav"),      // aliens get blown up
+    ALIEN_HIT("src/resources/alien_hit.wav"),            // aliens get damaged
+    PLAYER_EXPLODE("src/resources/player_death.wav"),    // player blows up
+    PLAYER_RESPAWN("src/resources/revive.wav"),          // player comes back to life
+    LIFE_UP("src/resources/new_life.wav"),               // player gains a life
+    POWERUP("src/resources/Powerup3.wav");               // Powerup
     
-   
-   // Constructor to construct each element of the enum with its own sound file.
-   SoundEffect(String soundFileName) {
-      try {
-           // create AudioInputStream object 
-        audioInputStream =  
-                AudioSystem.getAudioInputStream(new File(soundFileName).getAbsoluteFile()); 
-          
-        // create clip reference 
-        clip = AudioSystem.getClip(); 
-          
-        // open audioInputStream to the clip 
-        clip.open(audioInputStream); 
-      } catch(Exception e){
-          e.printStackTrace();
-      }
-      
-   }
-   
-   // Play or Re-play the sound effect from the beginning, by rewinding.
-   public void play() {
-       
-       
-       if (volume != Volume.MUTE) {
-
-         if (clip.isRunning())
-
-            clip.stop();   // Stop the player if it is still running
-
-         clip.setFramePosition(0); // rewind to the beginning
-         
-         new Thread(){//multi-tasking stuff
-             public void run(){
-         clip.start();     // Start playing
-             }
-             
-         }.start();
-         
-      }
-         
+    // Nested class for specifying volume
+    public static enum Volume {
+        MUTE, LOW, MEDIUM, HIGH
+    }
+    
+    public static Volume volume = Volume.LOW;
+    
+    // Each sound effect has its own clip, loaded with its own sound file.
+    Clip clip;
+    
+    AudioInputStream audioInputStream;
+    
+    
+    
+    // Constructor to construct each element of the enum with its own sound file.
+    SoundEffect(String soundFileName) {
+        try {
+            // create AudioInputStream object
+            audioInputStream =
+                    AudioSystem.getAudioInputStream(new File(soundFileName).getAbsoluteFile());
+            
+            // create clip reference
+            clip = AudioSystem.getClip();
+            
+            // open audioInputStream to the clip
+            clip.open(audioInputStream);
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        
+    }
+    
+    // Play or Re-play the sound effect from the beginning, by rewinding.
+    public void play() {
+        
+        
+        if (volume != Volume.MUTE) {
+            
+            if (clip.isRunning())
+                
+                clip.stop();   // Stop the player if it is still running
+            
+            clip.setFramePosition(0); // rewind to the beginning
+            
+            new Thread(){//multi-tasking stuff
+                public void run(){
+                    clip.start();     // Start playing
+                }                
+            }.start();            
+        }
     }
 }

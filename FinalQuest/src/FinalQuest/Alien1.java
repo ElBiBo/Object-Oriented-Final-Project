@@ -17,7 +17,7 @@ import java.util.List;
  * @author Marco Tacca
  */
 public class Alien1 extends Sprite {
-
+    
     private final int INITIAL_X = 1280;
     private final int POINTS = 100;
     private int laser_rate;
@@ -29,7 +29,7 @@ public class Alien1 extends Sprite {
     private int missile_speed;
     private final String DIFFICULTY;
     
-
+    
     /**
      * Constructor
      * @param x starting x coordinate for the alien
@@ -42,7 +42,7 @@ public class Alien1 extends Sprite {
         initAlien();
         move_speed = 2;
     }
-
+    
     /**
      * Constructor, to adjust the speed, if needed
      * @param x starting x coordinate for the alien
@@ -56,11 +56,11 @@ public class Alien1 extends Sprite {
         initAlien();
         move_speed = s;
     }
-
+    
     
     /**
      * Init our alien by assigning it an image and getting it's dimensions
-    */
+     */
     private void initAlien() {
         if (DIFFICULTY == "normal")
         {
@@ -72,7 +72,7 @@ public class Alien1 extends Sprite {
         else if (DIFFICULTY == "hard")
         {
             fire_rate = 250;  //how often lasers are fired
-            health = 1; // how many times they can be hit before dying 
+            health = 1; // how many times they can be hit before dying
             move_speed += 2; // how fast the alien moves
             missile_speed = (move_speed+3)*-1; // how fast their lasers move
         }
@@ -108,9 +108,9 @@ public class Alien1 extends Sprite {
         }
         return health;
     }
-
+    
     /**
-     * This is just an accessor for the ship's score 
+     * This is just an accessor for the ship's score
      * @return  the number of points destroying the alien is worth
      */
     public int getPoints(){
@@ -128,7 +128,7 @@ public class Alien1 extends Sprite {
     
     /**
      * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being 
+     * missiles can be fired without one of the previous missiles being
      * destroyed first
      */
     public void fire() {

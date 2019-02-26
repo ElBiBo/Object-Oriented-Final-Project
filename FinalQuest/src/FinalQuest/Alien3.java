@@ -19,7 +19,7 @@ import java.util.List;
  * @author Marco Tacca
  */
 public class Alien3 extends Sprite {
-
+    
     private final int INITIAL_X = 1280;
     private final int POINTS = 300;
     private int laser_rate;
@@ -34,7 +34,7 @@ public class Alien3 extends Sprite {
     private final double RADIUS;
     private double angle;
     private double direction;
-
+    
     /**
      * Constructor
      * @param x starting x coordinate for the alien
@@ -118,26 +118,26 @@ public class Alien3 extends Sprite {
     
     /**
      * Init our alien by assigning it an image and getting it's dimensions
-    */
+     */
     private void initAlien() {
         if (DIFFICULTY == "normal")
         {
             fire_rate = 250;  //how often lasers are fired
-            health = 1; // how many times they can be hit before dying 
+            health = 1; // how many times they can be hit before dying
             move_speed += 0; // how fast the alien moves
             missile_speed = (move_speed+4)*-1; // how fast their lasers move
         }
         else if (DIFFICULTY == "hard")
         {
             fire_rate = 150;  //how often lasers are fired
-            health = 1; // how many times they can be hit before dying 
+            health = 1; // how many times they can be hit before dying
             move_speed += 2; // how fast the alien moves
             missile_speed = (move_speed+4)*-1; // how fast their lasers move
         }
         else if (DIFFICULTY == "unforgiving")
         {
             fire_rate = 50;  //how often lasers are fired
-            health = 2; // how many times they can be hit before dying 
+            health = 2; // how many times they can be hit before dying
             move_speed += 4; // how fast the alien moves
             missile_speed = (move_speed+6)*-1; // how fast their lasers move
         }
@@ -168,9 +168,9 @@ public class Alien3 extends Sprite {
         }
         return health;
     }
-
+    
     /**
-     * This is just an accessor for the ship's score 
+     * This is just an accessor for the ship's score
      * @return  the number of points destroying the alien is worth
      */
     public int getPoints(){
@@ -188,7 +188,7 @@ public class Alien3 extends Sprite {
     
     /**
      * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being 
+     * missiles can be fired without one of the previous missiles being
      * destroyed first
      */
     public void fire() {

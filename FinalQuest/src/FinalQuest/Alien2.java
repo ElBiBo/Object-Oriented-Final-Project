@@ -1,8 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+* To change this license header, choose License Headers in Project Properties.
+* To change this template file, choose Tools | Templates
+* and open the template in the editor.
+*/
 package FinalQuest;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @author Marco Tacca
  */
 public class Alien2 extends Sprite {
-
+    
     private final int INITIAL_X = 1280;
     private final int POINTS = 300;
     private int laser_rate;
@@ -34,7 +34,7 @@ public class Alien2 extends Sprite {
     private final String DIFFICULTY;
     
     
-
+    
     /**
      * Constructor
      * @param x starting x coordinate for the alien
@@ -45,7 +45,7 @@ public class Alien2 extends Sprite {
         super(x, y);
         DIFFICULTY = D;
         initAlien();
-        move_speed = 2; 
+        move_speed = 2;
     }
     
     /**
@@ -61,15 +61,15 @@ public class Alien2 extends Sprite {
         initAlien();
         move_speed = s;
     }
-
+    
     /**
      * Init our alien by assigning it an image and getting it's dimensions
-    */
+     */
     private void initAlien() {
         if (DIFFICULTY == "normal")
         {
             fire_rate = 400;  //how often lasers are fired
-            health = 2; // how many times they can be hit before dying 
+            health = 2; // how many times they can be hit before dying
             move_speed += 0; // how fast the alien moves
             missile_speed = (move_speed+3)*-1; // how fast their lasers move
             vert_adjust = 1; // how much the missile spreads
@@ -77,7 +77,7 @@ public class Alien2 extends Sprite {
         else if (DIFFICULTY == "hard")
         {
             fire_rate = 300;  //how often lasers are fired
-            health = 2; // how many times they can be hit before dying 
+            health = 2; // how many times they can be hit before dying
             move_speed += 2; // how fast the alien moves
             missile_speed = (move_speed+3)*-1; // how fast their lasers move
             vert_adjust = 2; // how much the missile spreads
@@ -85,7 +85,7 @@ public class Alien2 extends Sprite {
         else if (DIFFICULTY == "unforgiving")
         {
             fire_rate = 100;  //how often lasers are fired
-            health = 3; // how many times they can be hit before dying 
+            health = 3; // how many times they can be hit before dying
             move_speed += 4; // how fast the alien moves
             missile_speed = (move_speed+6)*-1; // how fast their lasers move
             vert_adjust = 3;// how much the missile spreads
@@ -115,9 +115,9 @@ public class Alien2 extends Sprite {
         }
         return health;
     }
-
+    
     /**
-     * This is just an accessor for the ship's score 
+     * This is just an accessor for the ship's score
      * @return  the number of points destroying the alien is worth
      */
     public int getPoints(){
@@ -135,7 +135,7 @@ public class Alien2 extends Sprite {
     
     /**
      * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being 
+     * missiles can be fired without one of the previous missiles being
      * destroyed first
      */
     public void fire() {
@@ -162,4 +162,4 @@ public class Alien2 extends Sprite {
             visible = false;
     }
 }
-    
+

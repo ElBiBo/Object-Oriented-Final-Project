@@ -6,11 +6,11 @@ import javax.swing.JFrame;
 /**
  *
  * The main driver for our program
- * 
+ *
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
  */
 public class FinalQuest extends JFrame {
-
+    
     /**
      * Constructor
      */
@@ -30,7 +30,7 @@ public class FinalQuest extends JFrame {
         setLocationRelativeTo(null); //center's the window
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //close program on clicking x
     }
-
+    
     /**
      * Main function
      * @param args needs no parameters

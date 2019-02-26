@@ -2,18 +2,18 @@ package FinalQuest;
 
 /**
  * Controls the logic for our missiles
- * 
+ *
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
  */
 public class Missile extends Sprite {
-
+    
     private final int BOARD_WIDTH = 1280;
     private int missile_speed;
     private int dy;
-
+    
     /**
      * Constructor
-     * 
+     *
      * @param x starting x coordinate for our missile
      * @param y starting y coordinate for our missile
      * @param speed the speed of our missile. Should normally be 4
@@ -26,9 +26,9 @@ public class Missile extends Sprite {
         initMissile();
     }
     
-     /**
-     * Initiate our missile 
-     * 
+    /**
+     * Initiate our missile
+     *
      */
     private void initMissile() {
         
@@ -42,7 +42,7 @@ public class Missile extends Sprite {
         }
         getImageDimensions(); // find the size of our image to use for collisions
     }
-
+    
     public void move() {
         
         x += missile_speed; //move missile straight to the right
