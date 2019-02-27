@@ -41,19 +41,7 @@ public class Board extends JPanel implements ActionListener {
     private String game_mode = "gametime";
     private String difficulty = "normal";  //valid values: normal, hard, unforgiving
     private int wave_count = 0;
-    
-    
-    private final int[][] pos = { // Starting alien positions
-        {238, 29}, {250, 59}, {1380, 89},
-        {780, 109}, {580, 139}, {680, 239},
-        {790, 259}, {760, 50}, {790, 150},
-        {980, 209}, {560, 45}, {510, 70},
-        {930, 159}, {590, 80}, {530, 60},
-        {940, 59}, {990, 30}, {920, 200},
-        {900, 259}, {660, 50}, {540, 90},
-        {810, 220}, {860, 20}, {740, 180},
-        {820, 128}, {490, 170}, {700, 30}
-    };
+    private Stage stage; 
     
     /**
      * Constructor
@@ -71,6 +59,7 @@ public class Board extends JPanel implements ActionListener {
         addKeyListener(new TAdapter()); //check for key input
         setFocusable(true); // pay attention to this window
         setBackground(Color.BLACK);
+        Stage stage = new Stage(difficulty, spaceship);
         
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         
@@ -91,63 +80,8 @@ public class Board extends JPanel implements ActionListener {
     public void initAliens() {
         
         aliens = new ArrayList<>();
+        aliens =  stage.sendWave();
         
-        /*for (int[] p : pos) {
-        aliens.add(new Alien4(p[0]+1000, p[1]*3, difficulty));
-        }*/
-        //wave_count = 2;
-        aliens.add(new Asteroid(B_WIDTH, 50, difficulty));
-        switch (wave_count){
-            case 0:
-                for (int i = 0;i<13;i++)
-                {
-                    aliens.add(new Alien1(B_WIDTH+100*i, 50+i*30, difficulty));
-                    aliens.add(new Alien1(B_WIDTH+100*i, B_HEIGHT-50-i*30, difficulty));
-                }
-                wave_count++;
-                break;
-            case 1:
-                for (int i = 0;i<13;i++)
-                {
-                    aliens.add(new Alien2(B_WIDTH+100*i, 50+i*30, difficulty));
-                    aliens.add(new Alien2(B_WIDTH+100*i, B_HEIGHT-50-i*30, difficulty));
-                }
-                wave_count++;
-                break;
-            case 2:
-                for (int i = 0;i<13;i++)
-                {
-                    aliens.add(new Alien3(B_WIDTH+100*i, 50, difficulty));
-                    aliens.add(new Alien3(B_WIDTH+100*i, B_HEIGHT-50, difficulty));
-                }
-                wave_count++;
-                break;
-            case 3:
-                for (int i = 0;i<13;i++)
-                {
-                    aliens.add(new Alien4(B_WIDTH+100*i, 50, difficulty));
-                    aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-50, difficulty));
-                }
-                wave_count++;
-                break;
-            case 4:
-                for (int i = 0;i<13;i++)
-                {
-                    aliens.add(new Alien5(B_WIDTH+100*i, 50, difficulty));
-                    aliens.add(new Alien5(B_WIDTH+100*i, B_HEIGHT-50, difficulty));
-                }
-                wave_count++;
-                break;
-            case 5:
-                for (int i = 0;i<13;i++)
-                {
-                    aliens.add(new Alien6(B_WIDTH+100*i, 50, difficulty, spaceship));
-                    aliens.add(new Alien6(B_WIDTH+50+100*i, B_HEIGHT-50, difficulty, spaceship));
-                }
-                wave_count = 0;
-                break;
-                
-        }
     }
     
     /**
