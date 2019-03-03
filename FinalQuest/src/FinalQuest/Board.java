@@ -36,7 +36,6 @@ public class Board extends JPanel implements ActionListener {
     private final int ICRAFT_Y = B_HEIGHT/2;
     private final int DELAY = 15;
     private int stage_count = 0;
-    private final int END_STAGE = 12000;
     private int level = 1;
     private String game_mode = "gametime";
     private String difficulty = "normal";  //valid values: normal, hard, unforgiving
@@ -226,10 +225,7 @@ public class Board extends JPanel implements ActionListener {
         if (game_mode != "gametime") {
             //timer.stop();
         }
-        else
-        {
-            stage_count +=1;
-        }
+        
     }
     
     private void updateBackground() {
@@ -295,21 +291,24 @@ public class Board extends JPanel implements ActionListener {
             
             return;
         }
-        else if (stage_count >= END_STAGE)
-        {
-            game_mode = "gameover";
-            return;
-        }
         
+        Sprite reinforce = null;
         for (int i = 0; i < aliens.size(); i++) {
             
             Sprite a = aliens.get(i);
-            
+            if (reinforce == null)
+            {
+               reinforce = a.checkReinforcements();
+            }
             if (a.isVisible()) {
                 a.move();
             } else {
                 aliens.remove(i);
             }
+        }
+        if (reinforce != null)
+        {
+            aliens.add(reinforce);
         }
     }
     

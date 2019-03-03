@@ -39,8 +39,8 @@ public class Alien1 extends Sprite {
     public Alien1(int x, int y, String D) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
         move_speed = 2;
+        initAlien();
     }
     
     /**
@@ -53,8 +53,8 @@ public class Alien1 extends Sprite {
     public Alien1(int x, int y, String D, int s) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
         move_speed = s;
+        initAlien();
     }
     
     

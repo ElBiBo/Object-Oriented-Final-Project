@@ -42,9 +42,10 @@ public class Alien4 extends Sprite {
     public Alien4(int x, int y, String D) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
+        
         INITIAL_Y = y;
         bend = 380;
+        initAlien();
     }
     
     /**
@@ -57,9 +58,9 @@ public class Alien4 extends Sprite {
     public Alien4(int x, int y, String D, int b) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
         INITIAL_Y = y;
         bend = b;
+        initAlien();
     }
     
     /**

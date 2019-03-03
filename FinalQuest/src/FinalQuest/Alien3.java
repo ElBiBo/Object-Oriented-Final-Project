@@ -44,7 +44,6 @@ public class Alien3 extends Sprite {
     public Alien3(int x, int y, String D) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
         move_speed = 4;
         RADIUS = 200;
         if (y<960/2)
@@ -59,6 +58,7 @@ public class Alien3 extends Sprite {
             angle = Math.PI /2;
             direction = 1;
         }
+        initAlien();
     }
     
     /**
@@ -71,7 +71,6 @@ public class Alien3 extends Sprite {
     public Alien3(int x, int y, String D, int s) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
         move_speed = s;
         RADIUS = 200;
         if (y<960/2)
@@ -86,10 +85,11 @@ public class Alien3 extends Sprite {
             angle = Math.PI /2;
             direction = 1;
         }
+        initAlien();
     }
     
     /**
-     * Constructor, to adjust the speed, if needed
+     * Constructor, to adjust the speed, if needed, as well as the sin wave
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
      * @param D is the difficulty of the alien: normal, hard, unforgiving
@@ -99,7 +99,6 @@ public class Alien3 extends Sprite {
     public Alien3(int x, int y, String D, int s, double r) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
         move_speed = s;
         RADIUS = r;
         if (y<960/2)
@@ -114,6 +113,7 @@ public class Alien3 extends Sprite {
             angle = Math.PI /2;
             direction = 1;
         }
+        initAlien();
     }
     
     /**

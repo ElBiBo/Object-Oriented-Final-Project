@@ -47,7 +47,6 @@ public class Alien5 extends Sprite {
     public Alien5(int x, int y, String D) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
         ORIGIN_X = 640;
         RADIUS = 200;
         if (y<960/2)
@@ -62,8 +61,7 @@ public class Alien5 extends Sprite {
             angle = Math.PI /2;
             direction = 1;
         }
-        
-        
+        initAlien();
     }
     
     /**
@@ -76,7 +74,6 @@ public class Alien5 extends Sprite {
     public Alien5(int x, int y, String D, double r) {
         super(x, y);
         DIFFICULTY = D;
-        initAlien();
         ORIGIN_X = 640;
         RADIUS = r;
         if (y<960/2)
@@ -91,8 +88,7 @@ public class Alien5 extends Sprite {
             angle = Math.PI /2;
             direction = 1;
         }
-        
-        
+        initAlien();
     }
     
     /**

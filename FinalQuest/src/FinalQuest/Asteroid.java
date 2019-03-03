@@ -44,50 +44,74 @@ public class Asteroid extends Sprite {
     private int frame;
     private int delay;
     private int vert;
+    private int direction;
+    private final int max = 7;
+    private final int min = 0;
     
     
     /**
      * Constructor
-     * @param x starting x coordinate for the alien
-     * @param y starting y coordinate for the alien
+     * @param x starting x coordinate for the asteroid
+     * @param y starting y coordinate for the asteroid
      * @param D is the difficulty of the alien: normal, hard, unforgiving
      */
     public Asteroid(int x, int y, String D) {
         super(x, y);
         DIFFICULTY = D;
-        initAsteroid();
         move_speed = 6;
         vert = 0;
+        if (Math.random() >= 0.5) {
+            direction = -1;
+        } else {
+            direction = 1;
+        }
+        frame = (int)(Math.random()*((max-min)+1))+min;;
+        initAsteroid();
     }
     
     /**
      * Constructor, to adjust the speed, if needed
-     * @param x starting x coordinate for the alien
-     * @param y starting y coordinate for the alien
+     * @param x starting x coordinate for the asteroid
+     * @param y starting y coordinate for the asteroid
      * @param D is the difficulty of the alien: normal, hard, unforgiving
-     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 2
+     * @param s an integer value for how quickly the asteroid moves, adjusted for difficulty. default is 2
      */
     public Asteroid(int x, int y, String D, int s) {
         super(x, y);
         DIFFICULTY = D;
-        initAsteroid();
         move_speed = s;
         vert = 0;
+        if (Math.random() >= 0.5) {
+            direction = -1;
+        } else {
+            direction = 1;
+        }
+        frame = (int)(Math.random()*((max-min)+1))+min;;
+        initAsteroid();
+        initAsteroid();
     }
     
     /**
      * Constructor, to adjust the speed, if needed
-     * @param x starting x coordinate for the alien
-     * @param y starting y coordinate for the alien
+     * @param x starting x coordinate for the asteroid
+     * @param y starting y coordinate for the asteroid
      * @param D is the difficulty of the alien: normal, hard, unforgiving
      * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 2
+     * @param vert  speed the asteroid moves vertically, default is 0
      */
     public Asteroid(int x, int y, String D, int s, int vert) {
         super(x, y);
         DIFFICULTY = D;
-        initAsteroid();
         move_speed = s;
         this.vert = vert;
+        if (Math.random() >= 0.5) {
+            direction = -1;
+        } else {
+            direction = 1;
+        }
+        frame = (int)(Math.random()*((max-min)+1))+min;;
+        initAsteroid();
+        initAsteroid();
     }
     
     
@@ -155,12 +179,14 @@ public class Asteroid extends Sprite {
         delay++;
         if (delay > 3)
         {
-            frame++;
+            frame += direction;
             delay = 0;
         }
         
         if (frame>=8)
             frame = 0;
+        if (frame<0)
+            frame = 7;
         if (x < 0-width) //alien gets destroyed if it goes off the screen
             visible = false;
     }

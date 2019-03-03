@@ -48,7 +48,6 @@ public class Alien6 extends Sprite {
         super(x, y);
         ship = s;
         DIFFICULTY = D;
-        initAlien();
         ORIGIN_X = 640;
         if (y<960/2)
         {
@@ -62,7 +61,7 @@ public class Alien6 extends Sprite {
             angle = Math.PI /2;
             direction = 1;
         }
-        
+        initAlien();
         
     }
     

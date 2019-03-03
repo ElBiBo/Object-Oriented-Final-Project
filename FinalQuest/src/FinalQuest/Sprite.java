@@ -158,4 +158,15 @@ public class Sprite{
         }
         return health;
     }
+    
+    /**
+     * Some sprites (usually bosses) have reinforcements that help them out
+     * This is used to return sprites, or lists of sprites to Board
+     * @return  returns a single sprite if a sprite is waiting to be added to a list, otherwise null
+     */
+    public Sprite checkReinforcements()
+    {
+        Sprite temp = null;
+        return temp;
+    }
 }
