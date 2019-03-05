@@ -18,8 +18,8 @@ import java.net.URL;
  */
 public enum MusicPlayer{
     
-   MUSIC("src/resources/MainBackgroundMusic.wav");        // laser blast
-            // Powerup
+   MUSIC("src/resources/MainBackgroundMusic.wav");        
+            
    
     // Nested class for specifying volume
     public static enum Volume {
