@@ -28,7 +28,9 @@ public class SpaceShip extends Sprite {
     private int respawn_count;
     private String game_mode;
     private int life_score;
-    
+    private String sprite_type;
+    private int count;
+    private int dummy;
     
     /**
      * Constructor
@@ -37,11 +39,12 @@ public class SpaceShip extends Sprite {
      */
     public SpaceShip(int x, int y, String d) {
         super(x, y);
+        this.count = 0;
+        this.sprite_type = "player";
         START_X = x;
         START_Y = y;
         DIFFICULTY = d;
-        initCraft();
-        
+        initCraft();   
     }
 
     /**
@@ -73,7 +76,7 @@ public class SpaceShip extends Sprite {
         missile_speed = move_speed + (move_speed/3);
         score = 0;
         life_score = LIFE_POINTS;
-        game_mode = "gametime";
+        startingMode();
         loadImage("src/resources/Assaultboat.png");
         getImageDimensions();
     }
@@ -83,7 +86,6 @@ public class SpaceShip extends Sprite {
      * Also prevents the player from moving off the screen
      */
     public void move() {
-        
         if (game_mode == "gametime")
         {
             x += dx;
@@ -98,8 +100,8 @@ public class SpaceShip extends Sprite {
                 x = 1280-width;
             }
             // top border
-            if (y < 1) {
-                y = 1;
+            if (y < 32) {
+                y = 32;
             }
             // bottom border
             if (y > 960-height) {
@@ -111,11 +113,139 @@ public class SpaceShip extends Sprite {
             if (respawn_count <= 0)
             {
                 SoundEffect.PLAYER_RESPAWN.play();
-                game_mode = "gametime";
+                gametimeMode();
             }
         }
+        else if (game_mode == "starting")
+        {
+            switch (count){
+                case 0:
+                    x = -200;
+                    y = y+110;
+                    dummy = 25;
+                    count++;
+                    break;
+                case 1:
+                    if (x <= START_X+100)
+                    {
+                        x+= dummy/4;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                    break;
+                case 2:
+                    if (y > START_Y)
+                    {
+                        y -= 2;
+                    }
+                    if (x > START_X+100)
+                    {
+                        x+=dummy/4;
+                        dummy--;
+                        
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                    break;
+                case 3:
+                    x -= 3;
+                    if (x <= START_X)
+                    {
+                        count++;
+                    }
+                    break;
+            }
+            
+        }
+        else if (game_mode == "boss")
+        {
+            if (x > START_X+5)
+            {
+                x -= 4;
+            }
+            else if (x < START_X-5)
+            {
+                x += 4;
+            }
+            if (y > START_Y+5)
+            {
+                y -= 4;
+            }
+            else if (y < START_Y-5)
+            {
+                y += 4;
+            }   
+        }
     }
-
+    
+    /**
+     * A boss is coming! WARNING!!!
+     */
+    public void bossMode()
+    {
+        count = 0;
+            
+        game_mode = "boss";
+    }
+    
+    /**
+     * Adjusts mode to dead. This is when a player has died, but still has lives
+     */
+    public void deadMode()
+    {
+        count = 0;
+        game_mode = "dead";
+    }
+    
+    /**
+     * Adjusts mode to gametime. This is our main game mode
+     */
+    public void gametimeMode()
+    {
+        count = 0;
+        game_mode = "gametime";
+    }
+    
+    /**
+     * Adjusts mode to gameover. This is when a player run out of lives
+     */
+    public void gameoverMode()
+    {
+        count = 0;
+        game_mode = "gameover";
+    }
+    
+     /**
+     * Adjusts mode to menu. We are back at our main menu!
+     */
+    public void menuMode()
+    {
+        count = 0;
+        game_mode = "menu";
+    }
+    
+    /**
+     * Adjusts mode to pause. This pauses gameplay
+     */
+    public void pauseMode()
+    {
+        count = 0;
+        game_mode = "pause";
+    }
+    
+     /**
+     * Adjusts mode to starting. This is used at the beginning of a level
+     */
+    public void startingMode()
+    {
+        count = 0;
+        game_mode = "starting";
+    }
+    
     /**
      * Returns a list of missiles that have been fired.
      * Used to find their coordinates for drawing them
@@ -140,7 +270,7 @@ public class SpaceShip extends Sprite {
     public int[] getPos(){
         return new int[]{x,y};
     }
-    
+        
     /**
      * Invoked whenever the player dies. The lose a life, if they have any
      * otherwise it's game over!
@@ -153,10 +283,10 @@ public class SpaceShip extends Sprite {
         y = START_Y;
         
         if (remaining_lives <= 0)
-            game_mode = "gameover";
+            gameoverMode();
         else {
             respawn_count = 100;
-            game_mode = "dead";
+            deadMode();
         }
         return remaining_lives;
     }
@@ -210,12 +340,11 @@ public class SpaceShip extends Sprite {
     {
         if (game_mode == "gametime")
         {
-            game_mode = "pause";
+            pauseMode();
         }
         else if (game_mode == "pause")
         {
-            game_mode = "gametime";
-            
+            gametimeMode();
         }
     }
     

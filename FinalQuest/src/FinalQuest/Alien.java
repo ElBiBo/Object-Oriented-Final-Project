@@ -10,6 +10,7 @@ public class Alien extends Sprite {
 
     private final int INITIAL_X = 1280;
     private final String DIFFICULTY;
+    private String sprite_type;
 
     /**
      * Constructor
@@ -18,6 +19,7 @@ public class Alien extends Sprite {
      */
     public Alien(int x, int y, String D) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         initAlien();
     }

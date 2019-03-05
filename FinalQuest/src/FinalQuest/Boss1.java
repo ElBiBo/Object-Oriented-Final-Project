@@ -37,7 +37,7 @@ public class Boss1 extends Sprite {
     private int reinforce;
     private List<Sprite> reinforcement_list = new ArrayList<>();
     private int count = 0;
-    
+    private String sprite_type;
     
     /**
      * Constructor
@@ -47,6 +47,7 @@ public class Boss1 extends Sprite {
      */
     public Boss1(int x, int y, String D) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = 4;
         initAlien();
@@ -61,6 +62,7 @@ public class Boss1 extends Sprite {
      */
     public Boss1(int x, int y, String D, int s) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = s;
         initAlien();

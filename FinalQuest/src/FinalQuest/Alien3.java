@@ -34,6 +34,7 @@ public class Alien3 extends Sprite {
     private final double RADIUS;
     private double angle;
     private double direction;
+    private String sprite_type;
     
     /**
      * Constructor
@@ -43,6 +44,7 @@ public class Alien3 extends Sprite {
      */
     public Alien3(int x, int y, String D) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = 4;
         RADIUS = 200;
@@ -70,6 +72,7 @@ public class Alien3 extends Sprite {
      */
     public Alien3(int x, int y, String D, int s) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = s;
         RADIUS = 200;
@@ -98,6 +101,7 @@ public class Alien3 extends Sprite {
      */
     public Alien3(int x, int y, String D, int s, double r) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = s;
         RADIUS = r;

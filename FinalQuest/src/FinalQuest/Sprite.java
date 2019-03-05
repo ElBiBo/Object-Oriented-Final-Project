@@ -24,6 +24,7 @@ public class Sprite{
     private List<Missile> missiles = new ArrayList<>();
     private int health;
     private int missile_speed;
+    private String sprite_type;
     
     
     /**
@@ -32,7 +33,7 @@ public class Sprite{
      * @param y starting y coordinate for the sprite
      */
     public Sprite(int x, int y) {
-        
+        sprite_type = "sprite";
         this.x = x;
         this.y = y;
         visible = true;

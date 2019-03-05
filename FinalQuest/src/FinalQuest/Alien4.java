@@ -31,7 +31,7 @@ public class Alien4 extends Sprite {
     private int behavior;
     private final int INITIAL_Y;
     private int bend;
-    
+    private String sprite_type;
     
     /**
      * Constructor
@@ -41,6 +41,7 @@ public class Alien4 extends Sprite {
      */
     public Alien4(int x, int y, String D) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         
         INITIAL_Y = y;
@@ -57,6 +58,7 @@ public class Alien4 extends Sprite {
      */
     public Alien4(int x, int y, String D, int b) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         INITIAL_Y = y;
         bend = b;

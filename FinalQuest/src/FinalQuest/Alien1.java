@@ -28,7 +28,7 @@ public class Alien1 extends Sprite {
     private List<Missile> missiles;
     private int missile_speed;
     private final String DIFFICULTY;
-    
+    private String sprite_type;
     
     /**
      * Constructor
@@ -38,6 +38,7 @@ public class Alien1 extends Sprite {
      */
     public Alien1(int x, int y, String D) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = 2;
         initAlien();
@@ -52,6 +53,7 @@ public class Alien1 extends Sprite {
      */
     public Alien1(int x, int y, String D, int s) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = s;
         initAlien();

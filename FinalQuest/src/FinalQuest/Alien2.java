@@ -32,7 +32,7 @@ public class Alien2 extends Sprite {
     private int missile_speed;
     private int vert_adjust;
     private final String DIFFICULTY;
-    
+    private String sprite_type;
     
     
     /**
@@ -43,6 +43,7 @@ public class Alien2 extends Sprite {
      */
     public Alien2(int x, int y, String D) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = 2;
         initAlien();
@@ -57,6 +58,7 @@ public class Alien2 extends Sprite {
      */
     public Alien2(int x, int y, String D, int s) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = s;
         initAlien();

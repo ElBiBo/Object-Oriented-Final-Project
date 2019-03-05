@@ -10,6 +10,7 @@ public class Missile extends Sprite {
     private final int BOARD_WIDTH = 1280;
     private int missile_speed;
     private int dy;
+    private String sprite_type;
     
     /**
      * Constructor
@@ -21,6 +22,7 @@ public class Missile extends Sprite {
      */
     public Missile(int x, int y, int speed, int direction) {
         super(x, y);
+        this.sprite_type = "missile";
         missile_speed = speed;
         dy = direction;
         initMissile();

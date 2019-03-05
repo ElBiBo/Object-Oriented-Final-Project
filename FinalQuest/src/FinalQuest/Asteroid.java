@@ -5,25 +5,12 @@
 */
 package FinalQuest;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.scene.transform.Transform;
 import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
-import sun.awt.image.ToolkitImage;
 
 /**
  * A tumbling meteor to get in the way of our ship.
@@ -47,6 +34,7 @@ public class Asteroid extends Sprite {
     private int direction;
     private final int max = 7;
     private final int min = 0;
+    private String sprite_type;
     
     
     /**
@@ -57,6 +45,7 @@ public class Asteroid extends Sprite {
      */
     public Asteroid(int x, int y, String D) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = 6;
         vert = 0;
@@ -74,10 +63,11 @@ public class Asteroid extends Sprite {
      * @param x starting x coordinate for the asteroid
      * @param y starting y coordinate for the asteroid
      * @param D is the difficulty of the alien: normal, hard, unforgiving
-     * @param s an integer value for how quickly the asteroid moves, adjusted for difficulty. default is 2
+     * @param s an integer value for how quickly the asteroid moves, adjusted for difficulty. default is 6
      */
     public Asteroid(int x, int y, String D, int s) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = s;
         vert = 0;
@@ -96,11 +86,12 @@ public class Asteroid extends Sprite {
      * @param x starting x coordinate for the asteroid
      * @param y starting y coordinate for the asteroid
      * @param D is the difficulty of the alien: normal, hard, unforgiving
-     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 2
+     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 6
      * @param vert  speed the asteroid moves vertically, default is 0
      */
     public Asteroid(int x, int y, String D, int s, int vert) {
         super(x, y);
+        this.sprite_type = "enemy";
         DIFFICULTY = D;
         move_speed = s;
         this.vert = vert;
@@ -187,7 +178,9 @@ public class Asteroid extends Sprite {
             frame = 0;
         if (frame<0)
             frame = 7;
-        if (x < 0-width) //alien gets destroyed if it goes off the screen
+        
+        //asteroid gets destroyed if it goes off the screen
+        if ((x < 0-width) || (y < 0-height && vert < 0) || (y > 960 && vert > 0) ) 
             visible = false;
     }
     

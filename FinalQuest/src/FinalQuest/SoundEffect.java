@@ -23,6 +23,7 @@ public enum SoundEffect {
     PLAYER_EXPLODE("src/resources/player_death.wav"),    // player blows up
     PLAYER_RESPAWN("src/resources/revive.wav"),          // player comes back to life
     LIFE_UP("src/resources/new_life.wav"),               // player gains a life
+    ALERT("src/resources/alert.wav"),                    // warning alarm
     POWERUP("src/resources/Powerup3.wav");               // Powerup
     
     // Nested class for specifying volume

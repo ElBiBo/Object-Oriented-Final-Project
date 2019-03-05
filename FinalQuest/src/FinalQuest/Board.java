@@ -28,24 +28,28 @@ public class Board extends JPanel implements ActionListener {
     
     private Timer timer;
     private SpaceShip spaceship;
-    private Background background1, background2;
     private List<Sprite> aliens;
+    private List<Background> background;
+    private Background GUI_bar, GUI_bar_player, warning;
     private final int B_WIDTH = 1280;
     private final int B_HEIGHT = 960;
-    private final int ICRAFT_X = 40;
+    private final int ICRAFT_X = 200;
     private final int ICRAFT_Y = B_HEIGHT/2;
     private final int DELAY = 15;
     private int stage_count = 0;
     private int level = 1;
-    private String game_mode = "gametime";
-    private String difficulty = "normal";  //valid values: normal, hard, unforgiving
+    private String game_mode;
+    private String difficulty;  
     private int wave_count = 0;
-    private Stage stage; 
+    private Stage stage;
+    private int num_players;
     
     /**
      * Constructor
      */
     public Board() {
+        this.difficulty = "normal";
+        this.num_players = 1;
         
         initBoard();
     }
@@ -63,10 +67,11 @@ public class Board extends JPanel implements ActionListener {
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         
         spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
-        background1 = new Background(0,0);
-        background2 = new Background(background1.width,0);
-        
+        GUI_bar = new Background(400,0,"src/resources/GUIbar.png");
+        GUI_bar_player = new Background(0,0,"src/resources/GUIbarplayer.png");
+        warning = new Background(0,0,"src/resources/warning.png");
         MusicPlayer.MUSIC.play();//Start background Music
+        initBG();
         initAliens();
         
         timer = new Timer(DELAY, this);
@@ -74,13 +79,30 @@ public class Board extends JPanel implements ActionListener {
     }
     
     /**
+     * Initiate all our background sprites
+     */
+    public void initBG(){
+        background = new ArrayList<>();
+        
+        Background tmp = stage.background();
+        
+        while (tmp != null)
+        {
+            background.add(tmp);
+            tmp = stage.background();
+        }
+        
+    }
+    /**
      * Initialize our aliens and drop them all into our board
      */
     public void initAliens() {
-        
+        if (stage.getWave() == 11)
+        {
+            spaceship.bossMode();
+        }
         aliens = new ArrayList<>();
         aliens =  stage.sendWave();
-        
     }
     
     /**
@@ -97,6 +119,9 @@ public class Board extends JPanel implements ActionListener {
             case "dead":
                 drawObjects(g);
                 break;
+            case "starting":
+                drawStart(g);
+                break;
             case "gametime":
                 drawObjects(g);
                 break;
@@ -107,8 +132,12 @@ public class Board extends JPanel implements ActionListener {
             case "gameover":
                 drawGameOver(g);
                 break;
+            case "boss":
+                drawObjects(g);
+                drawWarning(g);
+                break;
             default:
-                game_mode = "mainmenu";
+                game_mode = "menu";
                 break;
         }
         Toolkit.getDefaultToolkit().sync();
@@ -118,13 +147,13 @@ public class Board extends JPanel implements ActionListener {
      * Draw all the active objects on our board
      */
     private void drawObjects(Graphics g) {
-        
-        g.drawImage(background1.getImage(), background1.getX(), background1.getY(), this);
-        g.drawImage(background2.getImage(), background2.getX(), background2.getY(), this);
+        for (Background bg : background)
+        {
+            g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+        }
         
         if (spaceship.isVisible() && spaceship.invincibilityFlash() && !spaceship.isRespawning()) { // draw our spaceship first
-            g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),
-                    this);
+            g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),this);
         }
         
         List<Missile> ms = spaceship.getMissiles(); // then our spaceship's shots
@@ -151,11 +180,47 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         
-        // game GUI. right now it just has game score, but we can
-        // change this to display level and lives later
+        drawGUI(g);
+    }
+    
+    private void drawWarning(Graphics g)
+    {
+        stage_count++;
+        if (!(stage_count/20%4 == 0))
+        {
+            g.drawImage(warning.getImage(), warning.getX(), warning.getY(),this);
+        }
+        if (stage_count >= 390)
+        {
+            stage_count = 0;
+            spaceship.gametimeMode();
+        }
+        if ((stage_count+80) % 81 == 0)
+        {
+            SoundEffect.ALERT.play();
+        }
+    }
+    
+    private void drawGUI(Graphics g)
+    {
+        g.drawImage(GUI_bar.getImage(), GUI_bar.getX(), GUI_bar.getY(),this);
+        g.drawImage(GUI_bar_player.getImage(), GUI_bar_player.getX(), GUI_bar_player.getY(),this);
         
-        Font small = new Font("Impact", Font.BOLD, 30);
+        Font small = new Font("Impact", Font.BOLD, 20);
         FontMetrics fm = getFontMetrics(small);
+        g.setFont(small);
+        g.setColor(Color.black);
+        g.drawString("Player 1: " + spaceship.getScore(), 14, 22);
+        g.drawString("Lives: " + spaceship.getLives(), 299, 22);
+        g.drawString("High Score: " + spaceship.getScore(), 410, 22);
+        g.drawString("Level: " + stage.getLevel(), 710, 22);
+
+        if (num_players == 2) //just a place holder for now, but we may add 2 player mode later
+        {
+            g.drawImage(GUI_bar_player.getImage(), 880, GUI_bar_player.getY(),this);
+            g.drawString("Player 2: " + spaceship.getScore(), 894, 22);
+            g.drawString("Lives: " + spaceship.getLives(), 1179, 22);
+        }
         if (difficulty == "normal")
             g.setColor(Color.white);
         else if (difficulty == "hard")
@@ -163,8 +228,55 @@ public class Board extends JPanel implements ActionListener {
         else if (difficulty == "unforgiving")
             g.setColor(Color.red);
         
-        g.setFont(small);g.drawString("Score: " + spaceship.getScore(), 5, 35);
-        g.setFont(small);g.drawString("Lives: " + spaceship.getLives(), 300, 35);
+        g.drawString("Player 1: " + spaceship.getScore(), 15, 23);
+        g.drawString("Lives: " + spaceship.getLives(), 300, 23);
+        g.drawString("High Score: " + spaceship.getScore(), 411, 23);
+        g.drawString("Level: " + stage.getLevel(), 711, 23);
+        if (num_players == 2) //just a place holder for now, but we may add 2 player mode later
+        {
+            g.drawString("Player 2: " + spaceship.getScore(), 895, 23);
+            g.drawString("Lives: " + spaceship.getLives(), 1180, 23);
+        }
+    }
+    
+    /**
+     * Draws the ready sequence at the beginning of the level
+     */
+    private void drawStart(Graphics g) {
+        stage_count++;
+        String msg;
+        for (Background bg : background)
+        {
+            g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+        }
+        if (stage_count < 180)
+        {
+            msg = "Ready...";
+            if (stage_count/20%3 == 0)
+            {
+                msg = "";
+            }
+        }
+        else
+        {
+            msg = "GO!";
+        }
+        if (stage_count > 300)
+        {
+            spaceship.gametimeMode();
+            stage_count = 0;
+        }
+        Font small = new Font("Impact", Font.BOLD, 40);
+        FontMetrics fm = getFontMetrics(small);
+        
+        g.setColor(Color.white);
+        g.setFont(small);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2,
+                B_HEIGHT / 2);
+        
+        g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),this);
+        
+        drawGUI(g);
     }
     
     /**
@@ -214,6 +326,11 @@ public class Board extends JPanel implements ActionListener {
             
             checkCollisions();
         }
+        else if (game_mode == "starting" || game_mode == "boss")
+        {
+            updateBackground();
+            updateShip();
+        }
         repaint();
     }
     
@@ -229,8 +346,11 @@ public class Board extends JPanel implements ActionListener {
     }
     
     private void updateBackground() {
-        background1.move();
-        background2.move();
+        for (Background bg : background)
+        {
+            bg.move();
+        }
+        
     }
     /**
      * Move our ship, if necessary
@@ -298,7 +418,7 @@ public class Board extends JPanel implements ActionListener {
             Sprite a = aliens.get(i);
             if (reinforce == null)
             {
-               reinforce = a.checkReinforcements();
+                reinforce = a.checkReinforcements();
             }
             if (a.isVisible()) {
                 a.move();

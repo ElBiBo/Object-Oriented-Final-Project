@@ -36,7 +36,7 @@ public class Alien6 extends Sprite {
     private double angle;
     private double direction;
     private SpaceShip ship;
-    
+    private String sprite_type;
     
     /**
      * Constructor
@@ -46,6 +46,7 @@ public class Alien6 extends Sprite {
      */
     public Alien6(int x, int y, String D, SpaceShip s) {
         super(x, y);
+        this.sprite_type = "enemy";
         ship = s;
         DIFFICULTY = D;
         ORIGIN_X = 640;

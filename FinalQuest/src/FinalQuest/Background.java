@@ -1,47 +1,80 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package FinalQuest;
 
 /**
- * This class makes a continuous scrolling background of stars
+ * This class makes a continuous scrolling background of stars or whatever else
+ * we need
  * @author Marco Tacca
  */
 public class Background extends Sprite {
 
+    private String img;
+    private int start_x;
+    private String sprite_type;
     
     /**
-     * Constructor
+     * Constructor, default background
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
      */
     public Background(int x, int y) {
         super(x, y);
-
+        this.sprite_type = "background";
+        this.start_x = 0;
+        this.img = "src/resources/space_background.png";
+        initBackground();
+    }
+    
+    /**
+     * Constructor, choose a background
+     * @param x starting x coordinate for the alien
+     * @param y starting y coordinate for the alien
+     * @param img   the image you want to use for the background
+     */
+    public Background(int x, int y, String img) {
+        super(x, y);
+        this.sprite_type = "background";
+        this.start_x = 0;
+        this.img = img;
+        initBackground();
+    }
+    
+    /**
+     * Constructor, choose a background, adjust placement for details
+     * @param x starting x coordinate for the alien
+     * @param y starting y coordinate for the alien
+     * @param img   the image you want to use for the background
+     * @param start_x   how far back you want a detail to show up after it's been passed
+     */
+    public Background(int x, int y, String img, int start_x) {
+        super(x, y);
+        this.sprite_type = "background";
+        this.start_x = 0;
+        this.img = img;
+        this.start_x = start_x;
         initBackground();
     }
 
     /**
-     * Init our alien by assigning it an image and getting it's dimensions
+     * Init our background by assigning it an image and getting it's dimensions
     */
     private void initBackground() {
 
-        loadImage("src/resources/space_background.png");
+        loadImage(img);
         getImageDimensions();
     }
 
     /**
-     *  Alien's AI
-     * currently moves it to the left until it reaches the end of the screen
-     * then pops it back to the right side of the screen
-     * We will program some more interesting AI here
+     *  Slowly scroll the background images to the left
      */
     public void move() {
 
         if (x < 0  - width) {
-            x = width;
+            if (start_x == 0)
+            {
+                x = width;
+            }
+            else
+                x = start_x;
         }
 
         x -= 1;
