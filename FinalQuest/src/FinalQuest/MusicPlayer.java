@@ -17,7 +17,6 @@ public enum MusicPlayer{
     MAIN1("src/resources/MainBackgroundMusic.wav"),         // main theme
     MAIN2("src/resources/MainBackgroundMusic.wav"),         // main theme
     VICTORY("src/resources/victory.wav");                   // victory theme
-            
     // Nested class for specifying volume
     public static enum Volume {
       MUTE, LOW, MEDIUM, HIGH
