@@ -196,4 +196,13 @@ public class Alien4 extends Sprite {
         if (x < 0-width) //alien gets destroyed if it goes off the screen
             visible = false;
     }
+    
+    /**
+     * see what type the sprite is
+     * @return  a string containing the sprite's type
+     */
+    public String getType()
+    {
+        return sprite_type;
+    }
 }

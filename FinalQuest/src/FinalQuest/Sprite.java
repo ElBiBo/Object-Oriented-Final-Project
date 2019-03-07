@@ -25,6 +25,7 @@ public class Sprite{
     private int health;
     private int missile_speed;
     private String sprite_type;
+    private String status;
     
     
     /**
@@ -33,7 +34,8 @@ public class Sprite{
      * @param y starting y coordinate for the sprite
      */
     public Sprite(int x, int y) {
-        sprite_type = "sprite";
+        this.status = "good";
+        this.sprite_type = "sprite";
         this.x = x;
         this.y = y;
         visible = true;
@@ -169,5 +171,35 @@ public class Sprite{
     {
         Sprite temp = null;
         return temp;
+    }
+    
+    /**
+     * mostly used to make things explode 
+     * @return  the current status of the sprite
+     */
+    public String getStatus()
+    {
+        return status;
+    }
+    
+    /**
+     * sets status to exploding 
+     */
+    public void explode()
+    {
+        status = "gone";
+    }
+    
+    /**
+     * see what type the sprite is
+     * @return  a string containing the sprite's type
+     */
+    public String getType()
+    {
+        return sprite_type;
+    }
+    public Explosion getBoom()
+    {
+        return null;
     }
 }

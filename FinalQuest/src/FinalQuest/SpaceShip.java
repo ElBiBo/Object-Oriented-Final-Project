@@ -77,7 +77,7 @@ public class SpaceShip extends Sprite {
         score = 0;
         life_score = LIFE_POINTS;
         startingMode();
-        loadImage("src/resources/Assaultboat.png");
+        loadImage("src/resources/Player1.png");
         getImageDimensions();
     }
 
@@ -121,7 +121,7 @@ public class SpaceShip extends Sprite {
             switch (count){
                 case 0:
                     x = -200;
-                    y = y+110;
+                    y = START_Y+110;
                     dummy = 25;
                     count++;
                     break;
@@ -161,8 +161,9 @@ public class SpaceShip extends Sprite {
             }
             
         }
-        else if (game_mode == "boss")
+        else if (game_mode == "boss" || game_mode == "complete")
         {
+            count++;
             if (x > START_X+5)
             {
                 x -= 4;
@@ -178,7 +179,50 @@ public class SpaceShip extends Sprite {
             else if (y < START_Y-5)
             {
                 y += 4;
-            }   
+            }
+            if (count > 310 && game_mode == "complete")
+            {
+                count = 0;
+                game_mode = "flyoff";
+                MusicPlayer.BOSS1.stop();
+                MusicPlayer.VICTORY.play();
+            }
+        }
+        else if (game_mode == "flyoff")
+        {
+            switch (count){
+                case 0:
+                    dummy = -25;
+                    count++;
+                    break;
+                case 1:
+                    if (dummy <=25)
+                    {
+                        dummy++;
+                        y+= 3;
+                        x+= dummy/4;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                    break;
+                case 2:
+                    if (x < 1700)
+                    {
+                        dummy++;
+                        x+=dummy/4;
+                    }
+                    else
+                    {
+                        count++;
+                    }
+                    break;
+                case 3:
+                    game_mode = "level";
+                    count = 0;
+                    break;
+            }
         }
     }
     
@@ -190,6 +234,16 @@ public class SpaceShip extends Sprite {
         count = 0;
             
         game_mode = "boss";
+    }
+    
+    /**
+     * level complete!
+     */
+    public void completeMode()
+    {
+        count = 0;
+            
+        game_mode = "complete";
     }
     
     /**
@@ -244,6 +298,7 @@ public class SpaceShip extends Sprite {
     {
         count = 0;
         game_mode = "starting";
+        
     }
     
     /**
@@ -354,7 +409,7 @@ public class SpaceShip extends Sprite {
      * @return  true if player is invincible, otherwise false
      */
     public boolean isInvincibile(){
-        return invincibility_count > 0;
+        return ((invincibility_count > 0) || game_mode == "complete");
     }
     
     /**
@@ -448,7 +503,13 @@ public class SpaceShip extends Sprite {
     public void keyPressed(KeyEvent e) {
 
         int key = e.getKeyCode();
-
+        if (game_mode == "level")
+        {
+            MusicPlayer.VICTORY.stop();
+            startingMode();
+            
+        }
+            
         if (key == KeyEvent.VK_SPACE && game_mode == "gametime") { // fire missile on space
             fire();            
         }

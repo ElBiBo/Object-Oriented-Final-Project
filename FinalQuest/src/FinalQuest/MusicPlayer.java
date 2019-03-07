@@ -5,22 +5,19 @@
  */
 package FinalQuest;
 
-import java.applet.AudioClip;
 import javax.sound.sampled.*;
-import sun.audio.*;
-import java.applet.Applet;
-import java.io.*;
 import java.io.File;
-import java.net.URL;
 /**
  *
  * @author Gach5
  */
 public enum MusicPlayer{
     
-   MUSIC("src/resources/MainBackgroundMusic.wav");        // laser blast
-            // Powerup
-   
+    BOSS1("src/resources/boss1.wav"),                       // boss theme
+    MAIN1("src/resources/MainBackgroundMusic.wav"),         // main theme
+    MAIN2("src/resources/MainBackgroundMusic.wav"),         // main theme
+    VICTORY("src/resources/victory.wav");                   // victory theme
+            
     // Nested class for specifying volume
     public static enum Volume {
       MUTE, LOW, MEDIUM, HIGH
@@ -28,11 +25,6 @@ public enum MusicPlayer{
     
    public static Volume volume = Volume.LOW;
    
-   
-        
-   
-   
-  
    
    // Each sound effect has its own clip, loaded with its own sound file.
   Clip clip;

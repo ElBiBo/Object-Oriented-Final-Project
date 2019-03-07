@@ -6,14 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Alien child of our sprite class. Controls the AI of our alien.
- * Behavior should be:
- * - fly in a straight line
- * - occasionally fire a laser
- * - be destroyed with 1 hit
- * - be destroyed if it flies off the screen (player gets no points though)
- * - 100 points if destroyed by the player
- * - If player collides with it, player is destroyed
+ * Level 1's boss. he flies up and down, speeding up as he takes damage
+ * At first he fires a single laser, then eventually begins firing a triple shot
+ * attempts to crash into the player after some damage
+ * a trio of Alien1's come through to help from time to time
  * @author Marco Tacca
  */
 public class Boss1 extends Sprite {
@@ -38,6 +34,8 @@ public class Boss1 extends Sprite {
     private List<Sprite> reinforcement_list = new ArrayList<>();
     private int count = 0;
     private String sprite_type;
+    private String status;
+    private Explosion boom;
     
     /**
      * Constructor
@@ -47,7 +45,9 @@ public class Boss1 extends Sprite {
      */
     public Boss1(int x, int y, String D) {
         super(x, y);
-        this.sprite_type = "enemy";
+        this.boom = null;
+        this.status = "good";
+        this.sprite_type = "boss";
         DIFFICULTY = D;
         move_speed = 4;
         initAlien();
@@ -58,11 +58,13 @@ public class Boss1 extends Sprite {
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
      * @param D is the difficulty of the alien: normal, hard, unforgiving
-     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 2
+     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 4
      */
     public Boss1(int x, int y, String D, int s) {
         super(x, y);
-        this.sprite_type = "enemy";
+        this.boom = null;
+        this.status = "good";
+        this.sprite_type = "boss";
         DIFFICULTY = D;
         move_speed = s;
         initAlien();
@@ -124,7 +126,8 @@ public class Boss1 extends Sprite {
         }
         else
         {
-            SoundEffect.ALIEN_EXPLODE.play();
+            status = "exploding";
+            
         }
         return health;
     }
@@ -220,6 +223,9 @@ public class Boss1 extends Sprite {
                 break;
             case "crash":
                 crash();
+                break;
+            case "blowup":
+                blowup();
                 break;
         }
         // this is used to send out enemy ships as backup
@@ -371,6 +377,50 @@ public class Boss1 extends Sprite {
         }
     }
     
+    private void blowup()
+    {
+        step++;
+        if (step <= 300)
+        {
+            if (step%3 == 0)
+            {
+                y+= 5*direction;
+                direction = direction * -1;
+            }
+            if (step%5 == 0)
+            {
+                
+                makeBoom();
+            }
+        }
+        else
+        {
+            visible = false;
+        }
+    }
+    
+    private void makeBoom()
+    {
+        SoundEffect.ALIEN_EXPLODE.play();
+        int y_pos = ThreadLocalRandom.current().nextInt(y, y+height-32);
+        int x_pos = ThreadLocalRandom.current().nextInt(x, x+width-32);
+        boom = new Explosion(x_pos,y_pos);
+    }
+    
+    public Explosion getBoom()
+    {
+        if (boom == null)
+        {
+            return null;
+        }
+        else 
+        {
+            Explosion tmp = boom;
+            boom = null;
+            return tmp;
+        }
+    }
+    
     public void update_reinforcements()
     {
         if (DIFFICULTY == "normal")
@@ -418,5 +468,33 @@ public class Boss1 extends Sprite {
         {
             return reinforcement_list.remove(0);
         }
+    }
+    
+    /**
+     * sets status to exploding 
+     */
+    public void explode()
+    {
+        status = "gone";
+        attack_mode = "blowup";
+        step = 0;
+    }
+    
+    /**
+     * mostly used to make things explode 
+     * @return  the current status of the sprite
+     */
+    public String getStatus()
+    {
+        return status;
+    }
+    
+    /**
+     * see what type the sprite is
+     * @return  a string containing the sprite's type
+     */
+    public String getType()
+    {
+        return sprite_type;
     }
 }

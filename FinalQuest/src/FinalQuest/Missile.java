@@ -11,6 +11,7 @@ public class Missile extends Sprite {
     private int missile_speed;
     private int dy;
     private String sprite_type;
+    private String m_img;
     
     /**
      * Constructor
@@ -25,6 +26,32 @@ public class Missile extends Sprite {
         this.sprite_type = "missile";
         missile_speed = speed;
         dy = direction;
+        
+        if (missile_speed > 0)// sprite image
+        {
+            m_img = "src/resources/missile.png";
+        }
+        else
+        {
+            m_img ="src/resources/enemy_missile.png";
+        }
+        initMissile();
+    }
+    
+    /**
+     * Constructor
+     *
+     * @param x starting x coordinate for our missile
+     * @param y starting y coordinate for our missile
+     * @param speed the speed of our missile. Should normally be 4
+     * @param direction the direction of our missile. 0 is straight positive is down diagonal and negative is up diagonal
+     */
+    public Missile(int x, int y, int speed, int direction, String img) {
+        super(x, y);
+        this.sprite_type = "missile";
+        this.m_img = img;
+        missile_speed = speed;
+        dy = direction;
         initMissile();
     }
     
@@ -33,15 +60,7 @@ public class Missile extends Sprite {
      *
      */
     private void initMissile() {
-        
-        if (missile_speed > 0)// sprite image
-        {
-            loadImage("src/resources/missile.png");
-        }
-        else
-        {
-            loadImage("src/resources/enemy_missile.png");
-        }
+        loadImage(m_img);
         getImageDimensions(); // find the size of our image to use for collisions
     }
     

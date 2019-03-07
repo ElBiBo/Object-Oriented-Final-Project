@@ -24,8 +24,8 @@ public class Stage {
     
     public Stage(String d, SpaceShip spaceship)
     {
-        level = 1;
-        wave_count = 1;
+        level = 2;
+        wave_count = 0;
         difficulty = d;
         this.spaceship = spaceship;    
     }
@@ -55,8 +55,10 @@ public class Stage {
             case 1: // level 1's enemies
                 switch (wave_count){
                     case 0: // level 1, ready!
+                        wave_count++;
                         break;
                     case 1: // level 1, wave 1
+                        MusicPlayer.MAIN1.play();//Start background Music
                         for (int i = 0;i<3;i++)
                         {
                             aliens.add(new Alien1(B_WIDTH+70*i, 50, difficulty));
@@ -159,17 +161,28 @@ public class Stage {
                         wave_count++;
                         break;
                     case 11: //warning!
+                        MusicPlayer.MAIN1.stop();
                         wave_count++;
                         break;
                     case 12:// level 1, boss
+                        MusicPlayer.BOSS1.play();
                         aliens.add(new Boss1(B_WIDTH, B_HEIGHT/2-60, difficulty));
+                        wave_count++;
+                        break;
+                    case 13: // move on to the next level
+                        level++;
                         wave_count = 0;
+                        MusicPlayer.MAIN2.play();
                         break;
                 }
                 break;
             case 2: // level 2's enemies
                 switch (wave_count){
+                    case 0:
+                        wave_count++;
+                        break;
                     case 1: // level 2, wave 1
+                        
                         for (int i = 0;i<6;i++)
                         {
                             aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
@@ -343,9 +356,19 @@ public class Stage {
                         
                         wave_count++;
                         break;
-                    case 11:
-                        aliens.add(new Boss1(B_WIDTH, B_HEIGHT/2-60, difficulty));
+                    case 11: //warning!
+                        MusicPlayer.MAIN2.stop();
+                        wave_count++;
+                        break;
+                    case 12:// level 1, boss
+                        MusicPlayer.BOSS1.play();
+                        aliens.add(new Boss2(B_WIDTH, B_HEIGHT/2-60, difficulty));
+                        wave_count++;
+                        break;
+                    case 13: // move on to the next level
+                        level++;
                         wave_count = 0;
+                        
                         break;
                 }
                 break;
@@ -363,8 +386,7 @@ public class Stage {
             return null;
         }
         else
-        {
-            
+        {           
             return draw_sprite;
         }
     }

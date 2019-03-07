@@ -48,7 +48,6 @@ public class Background extends Sprite {
     public Background(int x, int y, String img, int start_x) {
         super(x, y);
         this.sprite_type = "background";
-        this.start_x = 0;
         this.img = img;
         this.start_x = start_x;
         initBackground();
@@ -67,7 +66,7 @@ public class Background extends Sprite {
      *  Slowly scroll the background images to the left
      */
     public void move() {
-
+        x -= 1;
         if (x < 0  - width) {
             if (start_x == 0)
             {
@@ -77,6 +76,6 @@ public class Background extends Sprite {
                 x = start_x;
         }
 
-        x -= 1;
+        
     }
 }

@@ -29,6 +29,7 @@ public class Board extends JPanel implements ActionListener {
     private Timer timer;
     private SpaceShip spaceship;
     private List<Sprite> aliens;
+    private List<Explosion> explosions;
     private List<Background> background;
     private Background GUI_bar, GUI_bar_player, warning;
     private final int B_WIDTH = 1280;
@@ -66,11 +67,11 @@ public class Board extends JPanel implements ActionListener {
         
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         
+        explosions = new ArrayList<>();
         spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
         GUI_bar = new Background(400,0,"src/resources/GUIbar.png");
         GUI_bar_player = new Background(0,0,"src/resources/GUIbarplayer.png");
         warning = new Background(0,0,"src/resources/warning.png");
-        MusicPlayer.MUSIC.play();//Start background Music
         initBG();
         initAliens();
         
@@ -113,7 +114,11 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        
+        if (game_mode != "starting" && spaceship.checkMode() == "starting")
+        {
+            initAliens();
+            initBG();
+        }
         game_mode = spaceship.checkMode();
         switch (game_mode) {
             case "dead":
@@ -125,6 +130,9 @@ public class Board extends JPanel implements ActionListener {
             case "gametime":
                 drawObjects(g);
                 break;
+            case "level":
+                drawLevelComplete(g);
+                break;
             case "pause":
                 drawObjects(g);
                 drawPause(g);
@@ -135,6 +143,9 @@ public class Board extends JPanel implements ActionListener {
             case "boss":
                 drawObjects(g);
                 drawWarning(g);
+                break;
+            case "complete": case "flyoff":
+                drawObjects(g);                
                 break;
             default:
                 game_mode = "menu";
@@ -179,8 +190,18 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
         }
-        
+        drawExplosions(g);
         drawGUI(g);
+    }
+    
+    private void drawExplosions(Graphics g)
+    {
+       for (Explosion e : explosions){
+            if (e.isVisible()) 
+            {
+                g.drawImage(e.getImage(), e.getX(), e.getY(), this);
+            }
+        }
     }
     
     private void drawWarning(Graphics g)
@@ -199,6 +220,20 @@ public class Board extends JPanel implements ActionListener {
         {
             SoundEffect.ALERT.play();
         }
+    }
+    
+     private void drawLevelComplete(Graphics g)
+    {
+        String msg = "Level complete!";
+        MusicPlayer.MAIN1.stop();//Start background Music
+        Font small = new Font("Impact", Font.BOLD, 40);
+        FontMetrics fm = getFontMetrics(small);
+        
+        g.setColor(Color.white);
+        g.setFont(small);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2);
+        
+        drawGUI(g);
     }
     
     private void drawGUI(Graphics g)
@@ -285,7 +320,7 @@ public class Board extends JPanel implements ActionListener {
     private void drawGameOver(Graphics g) {
         
         String msg = "Game Over";
-        MusicPlayer.MUSIC.stop();//Start background Music
+        MusicPlayer.MAIN1.stop();//Start background Music
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
         
@@ -317,7 +352,7 @@ public class Board extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         
         inGame();
-        if (game_mode == "gametime" || game_mode == "dead")
+        if (game_mode == "gametime" || game_mode == "dead" || game_mode == "complete")
         {
             updateBackground();
             updateShip();
@@ -326,7 +361,7 @@ public class Board extends JPanel implements ActionListener {
             
             checkCollisions();
         }
-        else if (game_mode == "starting" || game_mode == "boss")
+        else if (game_mode == "starting" || game_mode == "boss" || game_mode == "flyoff")
         {
             updateBackground();
             updateShip();
@@ -341,8 +376,7 @@ public class Board extends JPanel implements ActionListener {
         
         if (game_mode != "gametime") {
             //timer.stop();
-        }
-        
+        }       
     }
     
     private void updateBackground() {
@@ -350,18 +384,15 @@ public class Board extends JPanel implements ActionListener {
         {
             bg.move();
         }
-        
     }
+    
     /**
      * Move our ship, if necessary
      */
-    private void updateShip() {
-        
+    private void updateShip() {    
         if (spaceship.isVisible()) {
-            
             spaceship.move();
-        }
-        
+        }      
     }
     
     /**
@@ -379,6 +410,17 @@ public class Board extends JPanel implements ActionListener {
                 m.move();
             } else {
                 ms.remove(i);
+            }
+        }
+        
+        for (int i = 0; i < explosions.size(); i++) {
+            
+            Explosion m = explosions.get(i);
+            
+            if (m.isVisible()) {
+                m.move();
+            } else {
+                explosions.remove(i);
             }
         }
         
@@ -406,16 +448,22 @@ public class Board extends JPanel implements ActionListener {
      */
     private void updateAliens() {
         
-        if (aliens.size() <= 0) {
+        if (aliens.size() <= 0 && (game_mode == "gametime" || game_mode == "starting")) {
             initAliens();
             
             return;
         }
         
         Sprite reinforce = null;
+        Explosion boom = null;
         for (int i = 0; i < aliens.size(); i++) {
             
             Sprite a = aliens.get(i);
+            boom = a.getBoom();
+            if (boom != null)
+            {
+                explosions.add(boom);
+            }
             if (reinforce == null)
             {
                 reinforce = a.checkReinforcements();
@@ -462,7 +510,7 @@ public class Board extends JPanel implements ActionListener {
                     Missile m = ms.get(i);
                     r2 = m.getBounds();
                     r3 = spaceship.getBounds();
-                    if (r2.intersects(r3) && !spaceship.isInvincibile())
+                    if ((r2.intersects(r3) && !spaceship.isInvincibile()))
                     {
                         ms.remove(i);
                         if (spaceship.die() <= 0)
@@ -487,9 +535,34 @@ public class Board extends JPanel implements ActionListener {
                     m.setVisible(false);
                     if (alien.damage() <=0)
                     {
-                        spaceship.addPoints(alien.getPoints());
-                        alien.setVisible(false);
+                        
+                        if (alien.getType() == "boss" )
+                        {
+                            alien.explode();
+                            if (game_mode !="complete")
+                            {
+                                spaceship.addPoints(alien.getPoints());
+                            }
+                            spaceship.completeMode();
+                        }
+                        else if (alien.getType() == "enemy")
+                        {
+                            alien.setVisible(false);
+                            spaceship.addPoints(alien.getPoints());
+                            explosions.add(new Explosion(alien.getX(),alien.getY()));
+                            
+                        }
                     }
+                }
+            }
+        }
+        if (game_mode == "complete")
+        {
+            for (Sprite alien : aliens) {
+                if (alien.getType() != "boss" )
+                {
+                    alien.setVisible(false);
+                    explosions.add(new Explosion(alien.getX(),alien.getY()));
                 }
             }
         }

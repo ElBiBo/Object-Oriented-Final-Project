@@ -26,7 +26,6 @@ public class Asteroid extends Sprite {
     private int move_speed;
     private List<Missile> missiles;
     private final String DIFFICULTY;
-    private BufferedImage big_image;
     private BufferedImage image;
     private int frame;
     private int delay;
@@ -160,9 +159,8 @@ public class Asteroid extends Sprite {
     
     
     /**
-     *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     *  Asteroid's AI
+     * Just moves in a straight line and is destroyed if it goes off the screen
      */
     public void move() {
         x -= move_speed;
@@ -219,4 +217,12 @@ public class Asteroid extends Sprite {
         return image.getSubimage(frame*64, 0, width,height);
     }
     
+    /**
+     * see what type the sprite is
+     * @return  a string containing the sprite's type
+     */
+    public String getType()
+    {
+        return sprite_type;
+    }
 }
