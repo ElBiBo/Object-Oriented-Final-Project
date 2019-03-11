@@ -18,6 +18,7 @@ public class Stage {
     private static String difficulty;
     private static SpaceShip spaceship;
     private static List<Sprite> aliens;
+    private static List<Sprite> power_ups;
     private static int draw_list = 2;
     private static int current_draw = 2;
     private static Background draw_sprite;
@@ -51,6 +52,7 @@ public class Stage {
     
     public static List<Sprite> sendWave(){
         aliens = new ArrayList<>();
+        power_ups = new ArrayList<>();
         switch (level){
             case 1: // level 1's enemies
                 switch (wave_count){
@@ -66,6 +68,7 @@ public class Stage {
                             aliens.add(new Alien1(B_WIDTH+300+70*i, 150, difficulty));
                             aliens.add(new Alien1(B_WIDTH+300+70*i, B_HEIGHT-170, difficulty));
                             aliens.add(new Alien1(B_WIDTH+600+70*i, 250, difficulty));
+                            power_ups.add(new Power_up(B_WIDTH+600*i, B_HEIGHT));
                             aliens.add(new Alien1(B_WIDTH+600+70*i, B_HEIGHT-270, difficulty));
                             aliens.add(new Alien1(B_WIDTH+900+70*i, 350, difficulty));
                             aliens.add(new Alien1(B_WIDTH+900+70*i, B_HEIGHT-370, difficulty));
@@ -188,6 +191,7 @@ public class Stage {
                             aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
                             aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
                             aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
+                            power_ups.add(new Power_up(B_WIDTH+100*i, B_HEIGHT));
                             aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
                             aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
                             aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
@@ -209,6 +213,7 @@ public class Stage {
                             aliens.add(new Alien1(B_WIDTH+100*i, B_HEIGHT-70-i*70, difficulty));
                         }
                         aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2-100, difficulty));
+                        power_ups.add(new Power_up(B_WIDTH+100, B_HEIGHT-960));
                         aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2+100, difficulty));
                         wave_count++;
                         break;
@@ -233,6 +238,7 @@ public class Stage {
                             aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
                             aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
                             aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
+                            power_ups.add(new Power_up(B_WIDTH+100*i, B_HEIGHT-70));
                             aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
                             aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
                             aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
