@@ -58,7 +58,7 @@ public class Stage {
                         wave_count++;
                         break;
                     case 1: // level 1, wave 1
-                        MusicPlayer.MAIN1.play();//Start background Music
+                        MusicPlayer.MAIN2.play();//Start background Music
                         for (int i = 0;i<3;i++)
                         {
                             aliens.add(new Alien1(B_WIDTH+70*i, 50, difficulty));
@@ -161,7 +161,7 @@ public class Stage {
                         wave_count++;
                         break;
                     case 11: //warning!
-                        MusicPlayer.MAIN1.stop();
+                        MusicPlayer.MAIN2.stop();
                         wave_count++;
                         break;
                     case 12:// level 1, boss
@@ -182,7 +182,7 @@ public class Stage {
                         wave_count++;
                         break;
                     case 1: // level 2, wave 1
-                        
+                        MusicPlayer.MAIN1.play();
                         for (int i = 0;i<6;i++)
                         {
                             aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
@@ -357,7 +357,7 @@ public class Stage {
                         wave_count++;
                         break;
                     case 11: //warning!
-                        MusicPlayer.MAIN2.stop();
+                        MusicPlayer.MAIN1.stop();
                         wave_count++;
                         break;
                     case 12:// level 1, boss
