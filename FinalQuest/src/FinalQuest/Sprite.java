@@ -22,7 +22,7 @@ public class Sprite{
     protected Image image;
     private final int POINTS = 100;
     private List<Missile> missiles = new ArrayList<>();
-    private int health;
+    public int health;
     private int missile_speed;
     private String sprite_type;
     private String status;
