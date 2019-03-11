@@ -10,14 +10,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Alien child of our sprite class. Controls the AI of our alien.
+ * Power_up child of our sprite class. Controls the AI of power-ups.
  * Behavior should be:
  * - fly in a straight line
  * - occasionally fire a laser
- * - be destroyed with 1 hit
+ * - be destroyed with 1 hit and turns into an orb
  * - be destroyed if it flies off the screen (player gets no points though)
- * - 100 points if destroyed by the player
- * @author Marco Tacca
+ * @author Gach5
  */
 public class Power_up extends Sprite {
 
@@ -27,8 +26,8 @@ public class Power_up extends Sprite {
     private int remaining_lives;
     /**
      * Constructor
-     * @param x starting x coordinate for the alien
-     * @param y starting y coordinate for the alien
+     * @param x starting x coordinate for the power-up
+     * @param y starting y coordinate for the power-up
      */
     public Power_up(int x, int y) {
         super(x, y);
@@ -37,7 +36,7 @@ public class Power_up extends Sprite {
     }
 
     /**
-     * Init our alien by assigning it an image and getting it's dimensions
+     * Init our power-up by assigning it an image and getting it's dimensions
     */
     public void initPower_up() {
        
@@ -46,9 +45,9 @@ public class Power_up extends Sprite {
     }
     
     /**
-     * This damages the alien and then returns its current health
-     * if health <= 0 it should be destroyed
-     * @return  the alien's current health
+     * This damages the barrel and then returns its current health
+     * if health == 1 it should turn to an orb
+     * @return  the power-up current health
      */
     public int damage(){
         health -= 1;
@@ -61,16 +60,15 @@ public class Power_up extends Sprite {
     }
 
      /**
-     * Invoked whenever the player dies. The lose a life, if they have any
-     * otherwise it's game over!
+     * Invoked whenever the player touches orb. They gain invincibility.
      */
     private void powerup_pickup(){
         
     }
     
     /**
-     * When the player dies, they receive a brief moment of invincibility
-     * in case they respawn in an area where they would collide with an enemy.
+     * They receive a brief moment of invincibility
+     * and respawn in an area where they would collide with an enemy.
      * This function counts down the time the player should be invincible
      * and returns a boolean to provide a visual flashing cue.
      * True means the ship is currently visible
@@ -97,7 +95,7 @@ public class Power_up extends Sprite {
     }
     
     /**
-     *  Alien's AI
+     *  Power-up AI
      * currently moves it to the left until it reaches the end of the screen
      * then pops it back to the right side of the screen
      * We will program some more interesting AI here
@@ -105,7 +103,7 @@ public class Power_up extends Sprite {
     public void move() {
         x -= 3;
 
-        if (x < 0-width) //alien gets destroyed if it goes off the screen
+        if (x < 0-width) //power-up gets destroyed if it goes off the screen
             visible = false;
     }
     
