@@ -123,7 +123,7 @@ public class Boss2 extends Sprite {
     
     /**
      * This damages the alien and then returns its current health
-     * if health <= 0 it should be destroyed
+     * if health is less than or equal to 0 it should be destroyed
      * otherwise it makes a sound and takes some damage
      * @return  the alien's current health
      */
@@ -571,3 +571,4 @@ public class Boss2 extends Sprite {
     
     
 }
+

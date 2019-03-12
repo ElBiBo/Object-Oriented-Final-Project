@@ -8,6 +8,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+        
+        
 /**
  * Our general sprite parent class
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
@@ -145,7 +147,7 @@ public class Sprite{
     
     /**
      * This damages the alien and then returns its current health
-     * if health <= 0 it should be destroyed
+     * if health less than or equal to it should be destroyed
      * otherwise it makes a sound and takes some damage
      * @return  the alien's current health
      */

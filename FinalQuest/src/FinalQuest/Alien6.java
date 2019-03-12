@@ -42,7 +42,8 @@ public class Alien6 extends Sprite {
      * Constructor
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
-     * @param d is the difficulty of the alien: normal, hard, unforgiving
+     * @param D is the difficulty of the alien: normal, hard, unforgiving
+     * @param s the spaceship must be referenced so the alien knows to chase it
      */
     public Alien6(int x, int y, String D, SpaceShip s) {
         super(x, y);
@@ -103,7 +104,7 @@ public class Alien6 extends Sprite {
     
     /**
      * This damages the alien and then returns its current health
-     * if health <= 0 it should be destroyed
+     * if health less than or equal to 0 it should be destroyed
      * otherwise it makes a sound and takes some damage
      * @return  the alien's current health
      */

@@ -16,6 +16,7 @@ public class Alien extends Sprite {
      * Constructor
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
+     * @param D Difficulty. either "normal", "hard". or "unforgiving"
      */
     public Alien(int x, int y, String D) {
         super(x, y);

@@ -36,6 +36,7 @@ public class SpaceShip extends Sprite {
      * Constructor
      * @param x starting x coordinate for the player
      * @param y starting y coordinate for the player
+     * @param d Game difficulty. "normal", "hard" or "unforgiving"
      */
     public SpaceShip(int x, int y, String d) {
         super(x, y);
@@ -329,6 +330,7 @@ public class SpaceShip extends Sprite {
     /**
      * Invoked whenever the player dies. The lose a life, if they have any
      * otherwise it's game over!
+     * @return Returns the number of lives remaining after this loss 
      */
     public int die(){
         SoundEffect.PLAYER_EXPLODE.play();

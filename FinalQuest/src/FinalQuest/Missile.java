@@ -45,6 +45,7 @@ public class Missile extends Sprite {
      * @param y starting y coordinate for our missile
      * @param speed the speed of our missile. Should normally be 4
      * @param direction the direction of our missile. 0 is straight positive is down diagonal and negative is up diagonal
+     * @param img   image desired for the missile, if not default
      */
     public Missile(int x, int y, int speed, int direction, String img) {
         super(x, y);

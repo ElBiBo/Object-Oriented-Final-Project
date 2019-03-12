@@ -24,8 +24,8 @@ public class Stage {
     
     public Stage(String d, SpaceShip spaceship)
     {
-        level = 2;
-        wave_count = 0;
+        level = 1;
+        wave_count = 9;
         difficulty = d;
         this.spaceship = spaceship;    
     }
@@ -145,6 +145,7 @@ public class Stage {
                         wave_count++;
                         break;
                     case 10:// level 1, wave 10 
+                        MusicPlayer.MAIN1.play();
                         for (int i = 0;i<13;i++)
                         {
                             aliens.add(new Alien1(B_WIDTH+200*i, 50, difficulty));
@@ -172,7 +173,7 @@ public class Stage {
                     case 13: // move on to the next level
                         level++;
                         wave_count = 0;
-                        MusicPlayer.MAIN2.play();
+                        MusicPlayer.MAIN1.play();
                         break;
                 }
                 break;
