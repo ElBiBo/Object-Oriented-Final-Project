@@ -29,6 +29,7 @@ public class Board extends JPanel implements ActionListener {
     private Timer timer;
     private SpaceShip spaceship;
     private List<Sprite> aliens;
+    private List<Sprite> power_ups;
     private List<Explosion> explosions;
     private List<Background> background;
     private Background GUI_bar, GUI_bar_player, warning;
@@ -72,8 +73,10 @@ public class Board extends JPanel implements ActionListener {
         GUI_bar = new Background(400,0,"src/resources/GUIbar.png");
         GUI_bar_player = new Background(0,0,"src/resources/GUIbarplayer.png");
         warning = new Background(0,0,"src/resources/warning.png");
+      
         initBG();
         initAliens();
+        initPower_ups();
         
         timer = new Timer(DELAY, this);
         timer.start();
@@ -106,6 +109,10 @@ public class Board extends JPanel implements ActionListener {
         aliens =  stage.sendWave();
     }
     
+    public void initPower_ups(){
+        power_ups = new ArrayList<>();
+        power_ups = stage.sendWave();
+    }
     /**
      * Ignore the default swing paintComponent function. This is where
      * we decide what screen we are on. It will also be what we have to edit
@@ -117,6 +124,7 @@ public class Board extends JPanel implements ActionListener {
         if (game_mode != "starting" && spaceship.checkMode() == "starting")
         {
             initAliens();
+            initPower_ups();
             initBG();
         }
         game_mode = spaceship.checkMode();
@@ -190,6 +198,13 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
         }
+        
+        for(Sprite power_up : power_ups) {
+            if(power_up.isVisible()) {
+                g.drawImage(power_up.getImage(), power_up.getX(), power_up.getY(), this);
+            }
+        }
+        
         drawExplosions(g);
         drawGUI(g);
     }
@@ -320,7 +335,6 @@ public class Board extends JPanel implements ActionListener {
     private void drawGameOver(Graphics g) {
         
         String msg = "Game Over";
-        MusicPlayer.MAIN1.stop();//Start background Music
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
         
@@ -358,6 +372,7 @@ public class Board extends JPanel implements ActionListener {
             updateShip();
             updateMissiles();
             updateAliens();
+            updatePower_ups();
             
             checkCollisions();
         }
@@ -480,6 +495,31 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
+      
+    /**
+     * move our power_ups
+     */
+    private void updatePower_ups() {
+        
+        if (power_ups.size() <= 0 && (game_mode == "gametime" || game_mode == "starting")) {
+            initPower_ups();
+            
+            return;
+        }
+       
+        for (int i = 0; i < power_ups.size(); i++) {
+            
+            Sprite p = power_ups.get(i);
+       
+            if (p.isVisible()) {
+                p.move();
+            } else {
+                power_ups.remove(i);
+            }
+        }
+        
+    }
+   
     /**
      * check to see if anything has hit anything
      */
@@ -498,6 +538,20 @@ public class Board extends JPanel implements ActionListener {
                     spaceship.setVisible(false);
                     alien.setVisible(false);
                     game_mode = "gameover";
+                }
+            }
+        }
+        
+         for (Sprite power_up : power_ups) {//check if player touches orb
+            
+            Rectangle r2 = power_up.getBounds();
+            
+            if (r3.intersects(r2) && !spaceship.isInvincibile()) {
+                
+                if (power_up.health <= 1)
+                {
+                    power_up.setVisible(false);
+                    
                 }
             }
         }
@@ -553,6 +607,13 @@ public class Board extends JPanel implements ActionListener {
                             
                         }
                     }
+                }
+            }
+            for (Sprite power_up : power_ups) {//check if player picksup power-up
+                r2 = power_up.getBounds();
+                if (r1.intersects(r2)) {
+                    m.setVisible(false);
+                    power_up.damage();
                 }
             }
         }
