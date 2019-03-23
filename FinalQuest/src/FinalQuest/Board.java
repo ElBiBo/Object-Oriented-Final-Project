@@ -6,11 +6,12 @@ import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.geom.Rectangle2D;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
@@ -27,12 +28,12 @@ import javax.swing.Timer;
 public class Board extends JPanel implements ActionListener {
     
     private Timer timer;
-    private SpaceShip spaceship;
+    private static SpaceShip spaceship;
     private List<Sprite> aliens;
     private List<Sprite> power_ups;
     private List<Explosion> explosions;
     private List<Background> background;
-    private Background GUI_bar, GUI_bar_player, warning;
+    private Background GUI_bar, GUI_bar_player, warning, menu;
     private final int B_WIDTH = 1280;
     private final int B_HEIGHT = 960;
     private final int ICRAFT_X = 200;
@@ -45,6 +46,10 @@ public class Board extends JPanel implements ActionListener {
     private int wave_count = 0;
     private Stage stage;
     private int num_players;
+    private String name = "";
+    private boolean enter_score = false;
+    private boolean ship_input;
+    private HighscoreManager hm = new HighscoreManager();
     
     /**
      * Constructor
@@ -64,19 +69,30 @@ public class Board extends JPanel implements ActionListener {
         addKeyListener(new TAdapter()); //check for key input
         setFocusable(true); // pay attention to this window
         setBackground(Color.BLACK);
-        Stage stage = new Stage(difficulty, spaceship);
+        
         
         setPreferredSize(new Dimension(B_WIDTH, B_HEIGHT));
         
         explosions = new ArrayList<>();
         spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
+        ship_input = true;
         GUI_bar = new Background(400,0,"src/resources/GUIbar.png");
         GUI_bar_player = new Background(0,0,"src/resources/GUIbarplayer.png");
+        menu = new Background(0,0,"src/resources/menu_image.png");
         warning = new Background(0,0,"src/resources/warning.png");
-      
+        Stage stage = new Stage(difficulty, spaceship);
+        /*hm.addScore("Bart",1000);
+        hm.addScore("Marge",2000);
+        hm.addScore("Maggie",3000);
+        hm.addScore("Homer",10000);
+        hm.addScore("Lisa",4000);
+        hm.addScore("Sampson",9000);
+        hm.addScore("Charles",8000);
+        hm.addScore("Willie",5000);
+        hm.addScore("Flanders",7000);
+        hm.addScore("Nelson",6000);*/
         initBG();
         initAliens();
-        initPower_ups();
         
         timer = new Timer(DELAY, this);
         timer.start();
@@ -124,42 +140,58 @@ public class Board extends JPanel implements ActionListener {
         if (game_mode != "starting" && spaceship.checkMode() == "starting")
         {
             initAliens();
-            initPower_ups();
             initBG();
         }
-        game_mode = spaceship.checkMode();
+        if (ship_input)
+        {   
+            game_mode = spaceship.checkMode();
+        }
+        //game_mode = "highscore";
         switch (game_mode) {
             case "dead":
                 drawObjects(g);
+                ship_input = true;
                 break;
             case "starting":
                 drawStart(g);
+                ship_input = true;
                 break;
             case "gametime":
                 drawObjects(g);
+                ship_input = true;
                 break;
             case "level":
                 drawLevelComplete(g);
+                ship_input = true;
                 break;
             case "pause":
                 drawObjects(g);
                 drawPause(g);
+                ship_input = true;
                 break;
             case "gameover":
                 drawGameOver(g);
+                ship_input = false;
+                break;
+            case "highscore":
+                drawHighscore(g);
+                ship_input = false;
                 break;
             case "boss":
                 drawObjects(g);
                 drawWarning(g);
+                ship_input = true;
                 break;
             case "complete": case "flyoff":
-                drawObjects(g);                
+                drawObjects(g);
+                ship_input = true;
                 break;
             default:
                 game_mode = "menu";
+                ship_input = false;
                 break;
         }
-        Toolkit.getDefaultToolkit().sync();
+        
     }
     
     /**
@@ -198,13 +230,6 @@ public class Board extends JPanel implements ActionListener {
                 }
             }
         }
-        
-        for(Sprite power_up : power_ups) {
-            if(power_up.isVisible()) {
-                g.drawImage(power_up.getImage(), power_up.getX(), power_up.getY(), this);
-            }
-        }
-        
         drawExplosions(g);
         drawGUI(g);
     }
@@ -253,6 +278,11 @@ public class Board extends JPanel implements ActionListener {
     
     private void drawGUI(Graphics g)
     {
+        int high_score = hm.getScores().get(0).getScore();
+        if (spaceship.getScore() > high_score)
+        {
+            high_score = spaceship.getScore();
+        }
         g.drawImage(GUI_bar.getImage(), GUI_bar.getX(), GUI_bar.getY(),this);
         g.drawImage(GUI_bar_player.getImage(), GUI_bar_player.getX(), GUI_bar_player.getY(),this);
         
@@ -262,7 +292,8 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(Color.black);
         g.drawString("Player 1: " + spaceship.getScore(), 14, 22);
         g.drawString("Lives: " + spaceship.getLives(), 299, 22);
-        g.drawString("High Score: " + spaceship.getScore(), 410, 22);
+        
+        g.drawString("High Score: " + high_score, 410, 22);
         g.drawString("Level: " + stage.getLevel(), 710, 22);
 
         if (num_players == 2) //just a place holder for now, but we may add 2 player mode later
@@ -280,7 +311,7 @@ public class Board extends JPanel implements ActionListener {
         
         g.drawString("Player 1: " + spaceship.getScore(), 15, 23);
         g.drawString("Lives: " + spaceship.getLives(), 300, 23);
-        g.drawString("High Score: " + spaceship.getScore(), 411, 23);
+        g.drawString("High Score: " + high_score, 411, 23);
         g.drawString("Level: " + stage.getLevel(), 711, 23);
         if (num_players == 2) //just a place holder for now, but we may add 2 player mode later
         {
@@ -337,12 +368,64 @@ public class Board extends JPanel implements ActionListener {
         String msg = "Game Over";
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
-        
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2,
-                B_HEIGHT / 2);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2);
+        int low =  hm.getScores().get(9).getScore();
+        if (spaceship.getScore() > low)// hm.getScores().get(10).getScore())
+        {
+            enter_score = true;
+            msg = "Congratulations! You are in the top 10! Enter your name:";
+            small = new Font("Impact", Font.BOLD, 20);
+            fm = getFontMetrics(small);
+            g.setColor(Color.white);
+            g.setFont(small);
+            g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2+40);
+            msg = name+"_";
+            g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2+60);
+            
+        }
+        
     }
+    
+    /**
+     * This draws a list of the top 10 scores to the screen
+     */
+    private void drawHighscore(Graphics g) {
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        String msg = "Top 10";
+        Font small = new Font("Impact", Font.BOLD, 40);
+        FontMetrics fm = getFontMetrics(small);
+        g.setColor(Color.white);
+        g.setFont(small);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 7);
+        
+        small = new Font("Impact", Font.BOLD, 30);
+        fm = getFontMetrics(small);
+        g.setFont(small);
+        ArrayList<Score> scores;
+        scores = hm.getScores();
+        Rectangle2D bounds;
+        int adjust;
+        Color color;
+        NumberFormat myFormat = NumberFormat.getInstance();
+        myFormat.setGroupingUsed(true);
+        
+        for (int i = 0; i<10;i++)
+        {
+            color = new Color(255-i*20,255-i/2*20,255-i/2*20);
+            g.setColor(color);
+            msg = scores.get(i).getName();
+            bounds = fm.getStringBounds(msg, g);
+            adjust = (int) bounds.getWidth();
+            g.drawString(msg, B_WIDTH/ 2-adjust-20, B_HEIGHT / 7+90+40*i);
+            msg = myFormat.format(scores.get(i).getScore());
+            g.drawString(msg, B_WIDTH/ 2+20, B_HEIGHT / 7+90+40*i);
+            
+        }
+        
+    }
+    
     
     /**
      * The game is paused, draw a big pause in the middle of the screen
@@ -355,8 +438,7 @@ public class Board extends JPanel implements ActionListener {
         
         g.setColor(Color.white);
         g.setFont(small);
-        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2,
-                B_HEIGHT / 2);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2);
     }
     
     /*
@@ -372,7 +454,6 @@ public class Board extends JPanel implements ActionListener {
             updateShip();
             updateMissiles();
             updateAliens();
-            updatePower_ups();
             
             checkCollisions();
         }
@@ -439,7 +520,7 @@ public class Board extends JPanel implements ActionListener {
             }
         }
         
-        for (Sprite alien : aliens) { // then the aliens
+        for (Sprite alien : aliens) { // then the aliens' missiles
             if (alien.isVisible()) {
                 ms = alien.getMissiles();
                 for (int i = 0; i < ms.size(); i++) {
@@ -450,6 +531,7 @@ public class Board extends JPanel implements ActionListener {
                             m.move();
                         } else {
                             ms.remove(i);
+                            
                         }
                     }
                 }
@@ -487,6 +569,7 @@ public class Board extends JPanel implements ActionListener {
                 a.move();
             } else {
                 aliens.remove(i);
+                
             }
         }
         if (reinforce != null)
@@ -495,31 +578,6 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
-      
-    /**
-     * move our power_ups
-     */
-    private void updatePower_ups() {
-        
-        if (power_ups.size() <= 0 && (game_mode == "gametime" || game_mode == "starting")) {
-            initPower_ups();
-            
-            return;
-        }
-       
-        for (int i = 0; i < power_ups.size(); i++) {
-            
-            Sprite p = power_ups.get(i);
-       
-            if (p.isVisible()) {
-                p.move();
-            } else {
-                power_ups.remove(i);
-            }
-        }
-        
-    }
-   
     /**
      * check to see if anything has hit anything
      */
@@ -531,7 +589,7 @@ public class Board extends JPanel implements ActionListener {
             
             Rectangle r2 = alien.getBounds();
             
-            if (r3.intersects(r2) && !spaceship.isInvincibile()) {
+            if (r3.intersects(r2) && !spaceship.isInvincibile() && alien.getType() != "powerup") {
                 
                 if (spaceship.die() <= 0)
                 {
@@ -540,21 +598,15 @@ public class Board extends JPanel implements ActionListener {
                     game_mode = "gameover";
                 }
             }
-        }
-        
-         for (Sprite power_up : power_ups) {//check if player touches orb
-            
-            Rectangle r2 = power_up.getBounds();
-            
-            if (r3.intersects(r2) && !spaceship.isInvincibile()) {
-                
-                if (power_up.health <= 1)
-                {
-                    power_up.setVisible(false);
-                    
-                }
+            else if (r3.intersects(r2) && alien.getType() == "powerup")
+            {
+                alien.fire();
+                spaceship.powerup(alien.getType());
+                alien.setVisible(false);
             }
         }
+        
+        
         Rectangle r2;
         List<Missile> ms;
         for (Sprite alien : aliens) { // check alien missile collisions
@@ -576,6 +628,10 @@ public class Board extends JPanel implements ActionListener {
                             
                         }
                     }
+                    else if (m.destroy())
+                    {
+                        ms.remove(i);
+                    }
                 }
             }
         }
@@ -596,6 +652,7 @@ public class Board extends JPanel implements ActionListener {
                             if (game_mode !="complete")
                             {
                                 spaceship.addPoints(alien.getPoints());
+                                spaceship.killCount();
                             }
                             spaceship.completeMode();
                         }
@@ -603,19 +660,14 @@ public class Board extends JPanel implements ActionListener {
                         {
                             alien.setVisible(false);
                             spaceship.addPoints(alien.getPoints());
+                            spaceship.killCount();
                             explosions.add(new Explosion(alien.getX(),alien.getY()));
                             
                         }
                     }
                 }
             }
-            for (Sprite power_up : power_ups) {//check if player picksup power-up
-                r2 = power_up.getBounds();
-                if (r1.intersects(r2)) {
-                    m.setVisible(false);
-                    power_up.damage();
-                }
-            }
+           
         }
         if (game_mode == "complete")
         {
@@ -637,12 +689,63 @@ public class Board extends JPanel implements ActionListener {
         
         @Override
         public void keyReleased(KeyEvent e) {
-            spaceship.keyReleased(e);
+            if (ship_input)
+            {
+                spaceship.keyReleased(e);
+            }
+            
         }
         
         @Override
         public void keyPressed(KeyEvent e) {
-            spaceship.keyPressed(e);
+            if (ship_input)
+            {
+                spaceship.keyPressed(e);
+            }
+            else
+            {
+                non_game_input(e);
+            }
+            
+        }
+        
+        /*@Override
+        public void keyTyped(KeyEvent e){
+            type(e);
+            
+        }*/
+    }
+    
+    private void non_game_input(KeyEvent e)
+    {
+        
+        switch(game_mode){
+            case "gameover":
+                if (enter_score)
+                {
+                    if (e.getKeyChar() >= 32 && e.getKeyChar() <= 126 && name.length() <= 10) //letters, numbers and punctuation
+                    {
+                        name = name.substring(0, name.length()) + String.valueOf(e.getKeyChar());
+                    }
+                    else if ((e.getKeyChar() == 127 || e.getKeyChar() == 8) && name.length() > 0) // delete
+                    {
+                        name = name.substring(0, name.length()-1);
+                    }
+                    else if (e.getKeyCode() == KeyEvent.VK_ENTER) //enter
+                    {
+                        enter_score = false;
+                        game_mode = "highscore";
+                        hm.addScore(name, spaceship.getScore());
+                    }
+                    
+                }
+                else
+                {
+                    game_mode = "highscore";
+                }
+                break;
         }
     }
+    
+    
 }

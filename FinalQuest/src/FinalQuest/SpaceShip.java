@@ -3,6 +3,7 @@ package FinalQuest;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Spaceship child of our sprite class. Controls the player's spaceship.
@@ -30,7 +31,9 @@ public class SpaceShip extends Sprite {
     private int life_score;
     private String sprite_type;
     private int count;
+    private int kills;
     private int dummy;
+    private int powerup_count;
     
     /**
      * Constructor
@@ -77,6 +80,8 @@ public class SpaceShip extends Sprite {
         missile_speed = move_speed + (move_speed/3);
         score = 0;
         life_score = LIFE_POINTS;
+        kills = 0;
+        powerup_count = 30;
         startingMode();
         loadImage("src/resources/Player1.png");
         getImageDimensions();
@@ -429,7 +434,85 @@ public class SpaceShip extends Sprite {
     }
     
     
+    
+    public void powerup(String power)
+    {
+        SoundEffect.POWERUP.play();
+        
+        switch (power){
+            case "invincibility": //player can't be hurt
+                invincibility_count = 800;
+                break;
+            case "bullet": // number of bullets the player can fire goes up
+                num_missiles++;
+                if (num_missiles > 10)
+                {
+                    num_missiles = 10;
+                }
+                break;
+            case "fast": // ship speed goes up
+                move_speed++;
+                if (move_speed > 10)
+                {
+                    move_speed = 10;
+                }
+                break;
+            case "spread": // spread mode
+                spreadFire();
+                break;
+            case "rapid": // bullets move faster
+                missile_speed++;
+                if (missile_speed > 20)
+                {
+                    missile_speed = 20;
+                }
+                break;
+            case "life": // an extra life!
+                remaining_lives++;
+                break;
+             case "points": // 5,000 points
+                score += 5000;
+                break;
+            default:
+                break;
+        }          
+    }
 
+    /**
+     * counts the number of ships you've destroyed
+     */
+    public void killCount()
+    {
+        kills++;
+    }
+    
+    /**
+     * Accessor for the player's kills
+     * @return int containing the number of aliens you've killed
+     */
+    public int getKills()
+    {
+        return kills;
+    }
+    
+    /**
+     * Decides when to release a powerup based on the number of aliens killed
+     * @return  True if it is time to release a powerup. False if it is not
+     */
+    public boolean powerupCheck()
+    {
+        return kills >= powerup_count;
+    }
+    
+    /**
+     * Whenever a powerup has been released (in the stage class), this class 
+     * should be invoked to reset the count to 0
+     */
+    public void deployPowerup()
+    {
+        powerup_count = kills + 30;
+    }
+    
     /**
      * Create a missile when activated. No more than num_missiles
      * missiles can be fired without one of the previous missiles being 

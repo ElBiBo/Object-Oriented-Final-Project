@@ -17,19 +17,9 @@ import javax.imageio.ImageIO;
  * occasionally releases alien2's (rate increases with damage)
  * @author Marco Tacca
  */
-public class Boss2 extends Sprite {
+public class Boss2 extends Alien {
     
-    private final int INITIAL_X = 1280;
-    private final int POINTS = 4000;
-    private int laser_rate;
-    private int fire_count;
-    private int fire_rate;
-    private int health;
     private int max_health;
-    private int move_speed;
-    private List<Missile> missiles;
-    private int missile_speed;
-    private final String DIFFICULTY;
     private String attack_mode = "entry";
     private String fire_mode = "regular";
     private int direction = 1;
@@ -38,7 +28,6 @@ public class Boss2 extends Sprite {
     private int reinforce;
     private List<Sprite> reinforcement_list = new ArrayList<>();
     private int count = 0;
-    private String sprite_type;
     private String status;
     private Explosion boom;
     private int frame;
@@ -52,7 +41,8 @@ public class Boss2 extends Sprite {
      * @param D is the difficulty of the alien: normal, hard, unforgiving
      */
     public Boss2(int x, int y, String D) {
-        super(x, y);
+        super(x, y, D);
+        POINTS = 4000;
         this.threat = 0;
         this.frame = 0;
         this.boom = null;
@@ -71,7 +61,8 @@ public class Boss2 extends Sprite {
      * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 2
      */
     public Boss2(int x, int y, String D, int s) {
-        super(x, y);
+        super(x, y, D);
+        POINTS = 4000;
         this.threat = 0;
         this.frame = 0;
         this.boom = null;
@@ -87,32 +78,31 @@ public class Boss2 extends Sprite {
      * Init our alien by assigning it an image and getting it's dimensions
      */
     private void initAlien() {
-        if (DIFFICULTY == "normal")
-        {
-            fire_rate = 10;  //how often lasers are fired
-            health = 90; // how many times they can be hit before dying
-            move_speed += 0; // how fast the alien moves
-            missile_speed = (move_speed+3)*-1; // how fast their lasers move
-            delay = 180; // how long it takes for the boss to charge
-            reinforce = 200;
-        }
-        else if (DIFFICULTY == "hard")
-        {
-            fire_rate = 5;  //how often lasers are fired
-            health = 120; // how many times they can be hit before dying
-            move_speed += 2; // how fast the alien moves
-            missile_speed = (move_speed+3)*-1; // how fast their lasers move
-            delay = 120;
-            reinforce = 100;
-        }
-        else if (DIFFICULTY == "unforgiving")
-        {
-            fire_rate = 1;  //how often lasers are fired
-            health = 180; // how many times they can be hit before dying
-            move_speed += 4; // how fast the alien moves
-            missile_speed = (move_speed+6)*-1; // how fast their lasers move
-            delay = 60;
-            reinforce = 50;
+        switch (DIFFICULTY) {
+            case "normal":
+                fire_rate = 10;  //how often lasers are fired
+                health = 90; // how many times they can be hit before dying
+                move_speed += 0; // how fast the alien moves
+                missile_speed = (move_speed+3)*-1; // how fast their lasers move
+                delay = 180; // how long it takes for the boss to charge
+                reinforce = 200;
+                break;
+            case "hard":
+                fire_rate = 5;  //how often lasers are fired
+                health = 120; // how many times they can be hit before dying
+                move_speed += 2; // how fast the alien moves
+                missile_speed = (move_speed+3)*-1; // how fast their lasers move
+                delay = 120;
+                reinforce = 100;
+                break;
+            case "unforgiving":
+                fire_rate = 1;  //how often lasers are fired
+                health = 180; // how many times they can be hit before dying
+                move_speed += 4; // how fast the alien moves
+                missile_speed = (move_speed+6)*-1; // how fast their lasers move
+                delay = 60;
+                reinforce = 50;
+                break;
         }
         max_health = health;
         fire_count = ThreadLocalRandom.current().nextInt(fire_rate-100, fire_rate + 1);
@@ -123,7 +113,7 @@ public class Boss2 extends Sprite {
     
     /**
      * This damages the alien and then returns its current health
-     * if health is less than or equal to 0 it should be destroyed
+     * if health <= 0 it should be destroyed
      * otherwise it makes a sound and takes some damage
      * @return  the alien's current health
      */
@@ -140,23 +130,6 @@ public class Boss2 extends Sprite {
             
         }
         return health;
-    }
-    
-    /**
-     * This is just an accessor for the ship's score
-     * @return  the number of points destroying the alien is worth
-     */
-    public int getPoints(){
-        return POINTS;
-    }
-    
-    /**
-     * Returns a list of missiles that have been fired.
-     * Used to find their coordinates for drawing them
-     * @return  list of missiles
-     */
-    public List<Missile> getMissiles() {
-        return missiles;
     }
     
     /**
@@ -297,17 +270,16 @@ public class Boss2 extends Sprite {
         if (count % 30 == 0)
         {
             int diff;
-            if (DIFFICULTY == "normal")
-            {
-                diff = 1;
-            }
-            else if (DIFFICULTY == "hard")
-            {
-                diff = 2;
-            }
-            else
-            {
-                diff = 3;
+            switch (DIFFICULTY) {
+                case "normal":
+                    diff = 1;
+                    break;
+                case "hard":
+                    diff = 2;
+                    break;
+                default:
+                    diff = 3;
+                    break;
             }
             for (int i = 0; i<diff; i++)
             {
@@ -406,6 +378,7 @@ public class Boss2 extends Sprite {
         boom = new Explosion(x_pos,y_pos);
     }
     
+    @Override
     public Explosion getBoom()
     {
         if (boom == null)
@@ -420,71 +393,73 @@ public class Boss2 extends Sprite {
         }
     }
     
+    /**
+     *
+     */
     public void update_reinforcements()
     {
         int xpos = x+width/2+ThreadLocalRandom.current().nextInt(-100, 100);
         int ypos = y+height/2+ThreadLocalRandom.current().nextInt(-100, 100);
         if (count % (reinforce) == 0){
-            if (DIFFICULTY == "normal")
-            {
-                reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
-            }
-            else if (DIFFICULTY == "hard")
-            {
-                reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
-                xpos = x+width/2+ThreadLocalRandom.current().nextInt(-100, 100);
-                ypos = y+height/2+ThreadLocalRandom.current().nextInt(-100, 100);
-                reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
-            }
-            else if (DIFFICULTY == "unforgiving")
-            {
-                reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
-                xpos = x+width/2+ThreadLocalRandom.current().nextInt(-100, 100);
-                ypos = y+height/2+ThreadLocalRandom.current().nextInt(-100, 100);
-                reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
-                xpos = x+width/2+ThreadLocalRandom.current().nextInt(-100, 100);
-                ypos = y+height/2+ThreadLocalRandom.current().nextInt(-100, 100);
-                reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
+            switch (DIFFICULTY) {
+                case "normal":
+                    reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
+                    break;
+                case "hard":
+                    reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
+                    xpos = x+width/2+ThreadLocalRandom.current().nextInt(-100, 100);
+                    ypos = y+height/2+ThreadLocalRandom.current().nextInt(-100, 100);
+                    reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
+                    break;
+                case "unforgiving":
+                    reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
+                    xpos = x+width/2+ThreadLocalRandom.current().nextInt(-100, 100);
+                    ypos = y+height/2+ThreadLocalRandom.current().nextInt(-100, 100);
+                    reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
+                    xpos = x+width/2+ThreadLocalRandom.current().nextInt(-100, 100);
+                    ypos = y+height/2+ThreadLocalRandom.current().nextInt(-100, 100);
+                    reinforcement_list.add(new Alien2(xpos, ypos, DIFFICULTY,move_speed+2+threat-1));
+                    break;
             }
         }
         if (count % (reinforce/2) == 0)
         {
-            if (DIFFICULTY == "normal")
-            {
-                ypos = ThreadLocalRandom.current().nextInt(50, 890);
-                reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
-            }
-            else if (DIFFICULTY == "hard")
-            {
-                ypos = ThreadLocalRandom.current().nextInt(50, 420);
-                reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
-                ypos = ThreadLocalRandom.current().nextInt(470, 890);
-                reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
-            }
-            else if (DIFFICULTY == "unforgiving")
-            {
-                ypos = ThreadLocalRandom.current().nextInt(50, 280);
-                reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
-                ypos = ThreadLocalRandom.current().nextInt(330, 600);
-                reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
-                ypos = ThreadLocalRandom.current().nextInt(650, 890);
-                reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
-                reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
+            switch (DIFFICULTY) {
+                case "normal":
+                    ypos = ThreadLocalRandom.current().nextInt(50, 890);
+                    reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
+                    break;
+                case "hard":
+                    ypos = ThreadLocalRandom.current().nextInt(50, 420);
+                    reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
+                    ypos = ThreadLocalRandom.current().nextInt(470, 890);
+                    reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
+                    break;
+                case "unforgiving":
+                    ypos = ThreadLocalRandom.current().nextInt(50, 280);
+                    reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
+                    ypos = ThreadLocalRandom.current().nextInt(330, 600);
+                    reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
+                    ypos = ThreadLocalRandom.current().nextInt(650, 890);
+                    reinforcement_list.add(new Alien1(1300, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1400, ypos, DIFFICULTY,10+threat-1));
+                    reinforcement_list.add(new Alien1(1500, ypos, DIFFICULTY,10+threat-1));
+                    break;
             }
         }
     }
     
+    @Override
     public Sprite checkReinforcements()
     {
         if (reinforcement_list.size() <= 0)
@@ -500,6 +475,7 @@ public class Boss2 extends Sprite {
     /**
      * sets status to exploding
      */
+    @Override
     public void explode()
     {
         status = "gone";
@@ -511,18 +487,10 @@ public class Boss2 extends Sprite {
      * mostly used to make things explode
      * @return  the current status of the sprite
      */
+    @Override
     public String getStatus()
     {
         return status;
-    }
-    
-    /**
-     * see what type the sprite is
-     * @return  a string containing the sprite's type
-     */
-    public String getType()
-    {
-        return sprite_type;
     }
     
     /**
@@ -530,6 +498,7 @@ public class Boss2 extends Sprite {
      * This is used to check for collision with other sprites.
      * @return  returns the bounding box for our sprite
      */
+    @Override
     public Rectangle getBounds() {
         return new Rectangle(x+80, y+80, width-160, height-160);
     }
@@ -537,6 +506,7 @@ public class Boss2 extends Sprite {
     /**
      * Get the height and width of an image (used for collision)
      */
+    @Override
     protected void getImageDimensions() {
         
         width = 512;
@@ -547,6 +517,7 @@ public class Boss2 extends Sprite {
      * Assigns an image to our sprite
      * @param imageName name and path of the image to be used
      */
+    @Override
     protected void loadImage(String imageName) {
         
         try
@@ -564,6 +535,7 @@ public class Boss2 extends Sprite {
      * sprite sheet of images to allow for the asteroid's rotation.
      * @return returns the image currently assigned to our sprite
      */
+    @Override
     public BufferedImage getImage() {
         
         return image.getSubimage(frame*512, 0, width,height);
@@ -571,4 +543,3 @@ public class Boss2 extends Sprite {
     
     
 }
-

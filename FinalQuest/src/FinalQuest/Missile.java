@@ -13,6 +13,10 @@ public class Missile extends Sprite {
     private String sprite_type;
     private String m_img;
     
+    
+    public Missile(int x, int y) {
+        super(x, y);
+    }
     /**
      * Constructor
      *
@@ -65,6 +69,10 @@ public class Missile extends Sprite {
         getImageDimensions(); // find the size of our image to use for collisions
     }
     
+    /**
+     * Move that missile!
+     */
+    @Override
     public void move() {
         
         x += missile_speed; //move missile straight to the right
@@ -72,5 +80,14 @@ public class Missile extends Sprite {
         
         if (x > BOARD_WIDTH) //missile gets destroyed if it goes off the screen
             visible = false;
+    }
+    
+    /**
+     * Certain missiles have special conditions for destruction
+     * @return  regular missiles don't. always return False
+     */
+    public boolean destroy()
+    {
+        return false;
     }
 }

@@ -2,6 +2,7 @@ package FinalQuest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * This class organizes the game into levels. Each level has 10 waves
@@ -16,19 +17,19 @@ public class Stage {
     private static final int B_WIDTH = 1280;
     private static final int B_HEIGHT = 960;
     private static String difficulty;
-    private static SpaceShip spaceship;
+    public static SpaceShip spaceship;
     private static List<Sprite> aliens;
     private static List<Sprite> power_ups;
     private static int draw_list = 2;
     private static int current_draw = 2;
     private static Background draw_sprite;
     
-    public Stage(String d, SpaceShip spaceship)
+    public Stage(String d, SpaceShip s)
     {
         level = 1;
-        wave_count = 9;
+        wave_count = 0;
         difficulty = d;
-        this.spaceship = spaceship;    
+        this.spaceship = s;    
     }
     
     /**
@@ -53,6 +54,16 @@ public class Stage {
     public static List<Sprite> sendWave(){
         aliens = new ArrayList<>();
         power_ups = new ArrayList<>();
+        if (wave_count > 0 && wave_count < 11)
+        {
+            System.out.println(spaceship.powerupCheck()+" "+spaceship.getKills());
+            if (spaceship.powerupCheck())
+            {
+                int ypos = ThreadLocalRandom.current().nextInt(50, 890);
+                spaceship.deployPowerup();
+                aliens.add(new PowerUp(B_WIDTH+1000,ypos));
+            }
+        }
         switch (level){
             case 1: // level 1's enemies
                 switch (wave_count){
@@ -60,7 +71,7 @@ public class Stage {
                         wave_count++;
                         break;
                     case 1: // level 1, wave 1
-                        MusicPlayer.MAIN2.play();//Start background Music
+                        MusicPlayer.MAIN1.play();//Start background Music
                         for (int i = 0;i<3;i++)
                         {
                             aliens.add(new Alien1(B_WIDTH+70*i, 50, difficulty));
@@ -68,7 +79,6 @@ public class Stage {
                             aliens.add(new Alien1(B_WIDTH+300+70*i, 150, difficulty));
                             aliens.add(new Alien1(B_WIDTH+300+70*i, B_HEIGHT-170, difficulty));
                             aliens.add(new Alien1(B_WIDTH+600+70*i, 250, difficulty));
-                            power_ups.add(new Power_up(B_WIDTH+600*i, B_HEIGHT));
                             aliens.add(new Alien1(B_WIDTH+600+70*i, B_HEIGHT-270, difficulty));
                             aliens.add(new Alien1(B_WIDTH+900+70*i, 350, difficulty));
                             aliens.add(new Alien1(B_WIDTH+900+70*i, B_HEIGHT-370, difficulty));
@@ -148,7 +158,6 @@ public class Stage {
                         wave_count++;
                         break;
                     case 10:// level 1, wave 10 
-                        MusicPlayer.MAIN1.play();
                         for (int i = 0;i<13;i++)
                         {
                             aliens.add(new Alien1(B_WIDTH+200*i, 50, difficulty));
@@ -160,12 +169,11 @@ public class Stage {
                             aliens.add(new Alien1(B_WIDTH+200*i, 650, difficulty));
                             aliens.add(new Alien1(B_WIDTH+100+200*i, 750, difficulty));
                             aliens.add(new Alien1(B_WIDTH+200*i, 850, difficulty));
-                            aliens.add(new Alien1(B_WIDTH+100+200*i, B_HEIGHT-50, difficulty));
                         }
                         wave_count++;
                         break;
                     case 11: //warning!
-                        MusicPlayer.MAIN2.stop();
+                        MusicPlayer.MAIN1.stop();
                         wave_count++;
                         break;
                     case 12:// level 1, boss
@@ -176,7 +184,6 @@ public class Stage {
                     case 13: // move on to the next level
                         level++;
                         wave_count = 0;
-                        MusicPlayer.MAIN1.play();
                         break;
                 }
                 break;
@@ -184,15 +191,14 @@ public class Stage {
                 switch (wave_count){
                     case 0:
                         wave_count++;
+                        MusicPlayer.MAIN1.play();
                         break;
                     case 1: // level 2, wave 1
-                        MusicPlayer.MAIN1.play();
                         for (int i = 0;i<6;i++)
                         {
                             aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
                             aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
                             aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
-                            power_ups.add(new Power_up(B_WIDTH+100*i, B_HEIGHT));
                             aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
                             aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
                             aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
@@ -214,7 +220,6 @@ public class Stage {
                             aliens.add(new Alien1(B_WIDTH+100*i, B_HEIGHT-70-i*70, difficulty));
                         }
                         aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2-100, difficulty));
-                        power_ups.add(new Power_up(B_WIDTH+100, B_HEIGHT-960));
                         aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2+100, difficulty));
                         wave_count++;
                         break;
@@ -239,7 +244,6 @@ public class Stage {
                             aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
                             aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
                             aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
-                            power_ups.add(new Power_up(B_WIDTH+100*i, B_HEIGHT-70));
                             aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
                             aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
                             aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
@@ -367,7 +371,7 @@ public class Stage {
                         MusicPlayer.MAIN1.stop();
                         wave_count++;
                         break;
-                    case 12:// level 1, boss
+                    case 12:// level 2, boss
                         MusicPlayer.BOSS1.play();
                         aliens.add(new Boss2(B_WIDTH, B_HEIGHT/2-60, difficulty));
                         wave_count++;
@@ -375,7 +379,1059 @@ public class Stage {
                     case 13: // move on to the next level
                         level++;
                         wave_count = 0;
+                        break;
+                }
+                break;
+            case 3: // level 3's enemies
+                switch (wave_count){
+                    case 0:
+                        wave_count++;
+                        MusicPlayer.MAIN1.play();
+                        break;
+                    case 1: // level 3, wave 1
                         
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+100*i, 500, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+1600+100*i, 600, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 2:// level 3, wave 2
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+50+100*i, 660, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 3:// level 3, wave 3
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien5(B_WIDTH+100*i, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien5(B_WIDTH+100*i, 50, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 4:// level 3, wave 4
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, 50, difficulty,6,3-i));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, 200, difficulty,6+2-i,2-i));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, 350, difficulty,6+2-i,2-i));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, 500, difficulty,6+2-i,2-i));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, 650, difficulty,6+2-i,2-i));
+                            
+                        }
+                        wave_count++;
+                        break;
+                    case 5:// level 3, wave 5
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien5(B_WIDTH+100*i, B_HEIGHT-70, difficulty,400));
+                            
+                        }
+                        wave_count++;
+                        break;
+                    case 6:// level 3, wave 6
+                        for (int i = 0;i<7;i++)
+                        {
+                            aliens.add(new Alien6(B_WIDTH+100*i, B_HEIGHT-170, difficulty, spaceship));
+                            aliens.add(new Alien6(B_WIDTH+50+100*i, 150, difficulty, spaceship));
+                        }
+                        
+                        wave_count++;
+                        break;
+                    case 7:// level 3, wave 7
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+50*i, B_HEIGHT-50-250, difficulty));
+                            //aliens.add(new Alien4(B_WIDTH+200+50*i, B_HEIGHT-250, difficulty,480));
+                        }
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien6(B_WIDTH+600+100*i, B_HEIGHT, difficulty, spaceship));
+                            aliens.add(new Alien6(B_WIDTH+600+50+100*i, 0, difficulty, spaceship));
+                        }
+                        wave_count++;
+                        break;
+                    case 8:// level 3, wave 8
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, B_HEIGHT+64+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, B_HEIGHT+164-i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, B_HEIGHT+764+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, B_HEIGHT+164+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                        }
+                        aliens.add(new Alien6(B_WIDTH+600, B_HEIGHT, difficulty, spaceship));
+                        aliens.add(new Alien6(B_WIDTH+600+50, 0, difficulty, spaceship));
+                        aliens.add(new Alien6(B_WIDTH+2600, B_HEIGHT+250, difficulty, spaceship));
+                        aliens.add(new Alien6(B_WIDTH+2600+50, -250, difficulty, spaceship));
+                        aliens.add(new Alien6(B_WIDTH+3600, B_HEIGHT+500, difficulty, spaceship));
+                        aliens.add(new Alien6(B_WIDTH+3600+50, -500, difficulty, spaceship));
+                        aliens.add(new Alien6(B_WIDTH+4600, B_HEIGHT+750, difficulty, spaceship));
+                        aliens.add(new Alien6(B_WIDTH+4600+50, -750, difficulty, spaceship));
+                        wave_count++;
+                        break;
+                    case 9://level 3, wave 9
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien5(B_WIDTH+100*i, B_HEIGHT/2+200, difficulty));
+                            
+                        }
+                        aliens.add(new Alien6(B_WIDTH+1500, -250, difficulty, spaceship));
+                        aliens.add(new Alien6(B_WIDTH+1550, B_HEIGHT+270, difficulty, spaceship));
+                        wave_count++;
+                        break;
+                    case 10://level 3, wave 10
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien5(B_WIDTH+100*i, 50, difficulty,100));
+                            aliens.add(new Alien5(B_WIDTH+100*i, 300, difficulty,80));
+                            aliens.add(new Alien5(B_WIDTH+100*i, B_HEIGHT-300, difficulty,80));
+                            aliens.add(new Alien5(B_WIDTH+100*i, B_HEIGHT-50, difficulty,100));
+                            
+                        }
+                        wave_count++;
+                        break;
+                    case 11: //warning!
+                        MusicPlayer.MAIN1.stop();
+                        wave_count++;
+                        break;
+                    case 12:// level 3, boss
+                        MusicPlayer.BOSS1.play();
+                        aliens.add(new Boss3(B_WIDTH, 300, difficulty));
+                        wave_count++;
+                        break;
+                    case 13: // move on to the next level
+                        level++;
+                        wave_count = 0;
+                        break;
+                }
+                break;
+            case 4: // level 4's enemies
+                switch (wave_count){
+                    case 0:
+                        wave_count++;
+                        MusicPlayer.MAIN1.play();
+                        break;
+                    case 1: // level 4, wave 1
+                        
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+100*i, 500, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+1600+100*i, 600, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 2:// level 3, wave 2
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+50+100*i, 660, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 3:// level 2, wave 3
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-170, difficulty, 700));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2-150, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2+150, difficulty));
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, B_HEIGHT-170, difficulty, 10));
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, 170, difficulty, 10));
+                        }
+                        wave_count++;
+                        break;
+                    case 4:// level 2, wave 4
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, -664-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, -764-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, -664-i*1000, difficulty,3, 4));
+                        }
+                        wave_count++;
+                        break;
+                    case 5:// level 2, wave 5
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, 50+i*70, difficulty));
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, B_HEIGHT-50-i*70, difficulty));
+                        }
+                        aliens.add(new Asteroid(B_WIDTH+100, 50, difficulty,3, 1));
+                        aliens.add(new Asteroid(B_WIDTH+400, 50, difficulty,5, 2));
+                        aliens.add(new Asteroid(B_WIDTH+200, B_HEIGHT-50, difficulty,4, -1));
+                        aliens.add(new Asteroid(B_WIDTH+500, B_HEIGHT-150, difficulty,6, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2+300, difficulty,8, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2-300, difficulty,8, 1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2, difficulty,6, 0));
+                        wave_count++;
+                        break;
+                    case 6:// level 2, wave 6
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+100*i, 50, difficulty));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2-10, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, 170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, B_HEIGHT-170, difficulty));
+                        wave_count++;
+                        break;
+                    case 7:// level 2, wave 7
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+50*i, B_HEIGHT-50-250, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+200+50*i, B_HEIGHT-250, difficulty,480));
+                        }
+                        aliens.add(new Alien2(B_WIDTH, B_HEIGHT-170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH, 150, difficulty));
+                        wave_count++;
+                        break;
+                    case 8:// level 2, wave 8
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, B_HEIGHT+64+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, B_HEIGHT+164-i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, B_HEIGHT+764+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, B_HEIGHT+164+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                        }
+                        wave_count++;
+                        break;
+                    case 9://level 2, wave 9
+                        aliens.add(new Asteroid(B_WIDTH, B_HEIGHT-170, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, B_HEIGHT-150, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH, 150, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, 170, difficulty));
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, 230, difficulty,4,100));
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, B_HEIGHT-230, difficulty,4,100));
+                        }
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+3200, 50, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT/2-20, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT-70, difficulty,8));
+                            
+                        }
+                        wave_count++;
+                        break;
+                    case 10://level 2, wave 10
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, 50, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT/2-20, difficulty));
+                        }
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+i*100, B_HEIGHT-130, difficulty,4,50));
+                            aliens.add(new Alien3(B_WIDTH+i*100, 100, difficulty,4,50));
+                            aliens.add(new Alien4(B_WIDTH+i*100, B_HEIGHT-270, difficulty,150));
+                            aliens.add(new Alien4(B_WIDTH+i*100, 240, difficulty,150));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT-130, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, 100, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT/2-20, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH+3000, 120, difficulty,6,1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT-140, difficulty,6,-1));
+                        aliens.add(new Asteroid(B_WIDTH+1000, -2000, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1200, B_HEIGHT+2000, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+800, -2100, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1100, B_HEIGHT+2100, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,5,6));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,5,-6));
+                        aliens.add(new Asteroid(B_WIDTH+3100, -850, difficulty,6,2));
+                        aliens.add(new Asteroid(B_WIDTH+3300, B_HEIGHT+800, difficulty,6,-2));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3000, difficulty,4,-6));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3500, difficulty,5,-5));
+                        
+                        wave_count++;
+                        break;
+                    case 11: //warning!
+                        MusicPlayer.MAIN1.stop();
+                        wave_count++;
+                        break;
+                    case 12:// level 1, boss
+                        MusicPlayer.BOSS1.play();
+                        aliens.add(new Boss4(B_WIDTH, 300, difficulty));
+                        wave_count++;
+                        break;
+                    case 13: // move on to the next level
+                        level++;
+                        wave_count = 0;
+                        break;
+                }
+                break;
+            case 5: // level 5's enemies
+                switch (wave_count){
+                    case 0:
+                        wave_count++;
+                        MusicPlayer.MAIN1.play();
+                        break;
+                    case 1: // level 3, wave 1
+                        
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+100*i, 500, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+1600+100*i, 600, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 2:// level 3, wave 2
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+50+100*i, 660, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 3:// level 2, wave 3
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-170, difficulty, 700));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2-150, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2+150, difficulty));
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, B_HEIGHT-170, difficulty, 10));
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, 170, difficulty, 10));
+                        }
+                        wave_count++;
+                        break;
+                    case 4:// level 2, wave 4
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, -664-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, -764-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, -664-i*1000, difficulty,3, 4));
+                        }
+                        wave_count++;
+                        break;
+                    case 5:// level 2, wave 5
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, 50+i*70, difficulty));
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, B_HEIGHT-50-i*70, difficulty));
+                        }
+                        aliens.add(new Asteroid(B_WIDTH+100, 50, difficulty,3, 1));
+                        aliens.add(new Asteroid(B_WIDTH+400, 50, difficulty,5, 2));
+                        aliens.add(new Asteroid(B_WIDTH+200, B_HEIGHT-50, difficulty,4, -1));
+                        aliens.add(new Asteroid(B_WIDTH+500, B_HEIGHT-150, difficulty,6, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2+300, difficulty,8, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2-300, difficulty,8, 1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2, difficulty,6, 0));
+                        wave_count++;
+                        break;
+                    case 6:// level 2, wave 6
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+100*i, 50, difficulty));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2-10, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, 170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, B_HEIGHT-170, difficulty));
+                        wave_count++;
+                        break;
+                    case 7:// level 2, wave 7
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+50*i, B_HEIGHT-50-250, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+200+50*i, B_HEIGHT-250, difficulty,480));
+                        }
+                        aliens.add(new Alien2(B_WIDTH, B_HEIGHT-170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH, 150, difficulty));
+                        wave_count++;
+                        break;
+                    case 8:// level 2, wave 8
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, B_HEIGHT+64+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, B_HEIGHT+164-i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, B_HEIGHT+764+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, B_HEIGHT+164+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                        }
+                        wave_count++;
+                        break;
+                    case 9://level 2, wave 9
+                        aliens.add(new Asteroid(B_WIDTH, B_HEIGHT-170, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, B_HEIGHT-150, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH, 150, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, 170, difficulty));
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, 230, difficulty,4,100));
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, B_HEIGHT-230, difficulty,4,100));
+                        }
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+3200, 50, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT/2-20, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT-70, difficulty,8));
+                            
+                        }
+                        wave_count++;
+                        break;
+                    case 10://level 2, wave 10
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, 50, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT/2-20, difficulty));
+                        }
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+i*100, B_HEIGHT-130, difficulty,4,50));
+                            aliens.add(new Alien3(B_WIDTH+i*100, 100, difficulty,4,50));
+                            aliens.add(new Alien4(B_WIDTH+i*100, B_HEIGHT-270, difficulty,150));
+                            aliens.add(new Alien4(B_WIDTH+i*100, 240, difficulty,150));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT-130, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, 100, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT/2-20, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH+3000, 120, difficulty,6,1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT-140, difficulty,6,-1));
+                        aliens.add(new Asteroid(B_WIDTH+1000, -2000, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1200, B_HEIGHT+2000, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+800, -2100, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1100, B_HEIGHT+2100, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,5,6));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,5,-6));
+                        aliens.add(new Asteroid(B_WIDTH+3100, -850, difficulty,6,2));
+                        aliens.add(new Asteroid(B_WIDTH+3300, B_HEIGHT+800, difficulty,6,-2));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3000, difficulty,4,-6));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3500, difficulty,5,-5));
+                        
+                        wave_count++;
+                        break;
+                    case 11: //warning!
+                        MusicPlayer.MAIN1.stop();
+                        wave_count++;
+                        break;
+                    case 12:// level 1, boss
+                        MusicPlayer.BOSS1.play();
+                        aliens.add(new Boss5(B_WIDTH, 300, difficulty));
+                        wave_count++;
+                        break;
+                    case 13: // move on to the next level
+                        level++;
+                        wave_count = 0;
+                        break;
+                }
+                break;
+            case 6: // level 3's enemies
+                switch (wave_count){
+                    case 0:
+                        wave_count++;
+                        MusicPlayer.MAIN1.play();
+                        break;
+                    case 1: // level 3, wave 1
+                        
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+100*i, 500, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+1600+100*i, 600, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 2:// level 3, wave 2
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+50+100*i, 660, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 3:// level 2, wave 3
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-170, difficulty, 700));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2-150, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2+150, difficulty));
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, B_HEIGHT-170, difficulty, 10));
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, 170, difficulty, 10));
+                        }
+                        wave_count++;
+                        break;
+                    case 4:// level 2, wave 4
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, -664-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, -764-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, -664-i*1000, difficulty,3, 4));
+                        }
+                        wave_count++;
+                        break;
+                    case 5:// level 2, wave 5
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, 50+i*70, difficulty));
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, B_HEIGHT-50-i*70, difficulty));
+                        }
+                        aliens.add(new Asteroid(B_WIDTH+100, 50, difficulty,3, 1));
+                        aliens.add(new Asteroid(B_WIDTH+400, 50, difficulty,5, 2));
+                        aliens.add(new Asteroid(B_WIDTH+200, B_HEIGHT-50, difficulty,4, -1));
+                        aliens.add(new Asteroid(B_WIDTH+500, B_HEIGHT-150, difficulty,6, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2+300, difficulty,8, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2-300, difficulty,8, 1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2, difficulty,6, 0));
+                        wave_count++;
+                        break;
+                    case 6:// level 2, wave 6
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+100*i, 50, difficulty));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2-10, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, 170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, B_HEIGHT-170, difficulty));
+                        wave_count++;
+                        break;
+                    case 7:// level 2, wave 7
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+50*i, B_HEIGHT-50-250, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+200+50*i, B_HEIGHT-250, difficulty,480));
+                        }
+                        aliens.add(new Alien2(B_WIDTH, B_HEIGHT-170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH, 150, difficulty));
+                        wave_count++;
+                        break;
+                    case 8:// level 2, wave 8
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, B_HEIGHT+64+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, B_HEIGHT+164-i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, B_HEIGHT+764+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, B_HEIGHT+164+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                        }
+                        wave_count++;
+                        break;
+                    case 9://level 2, wave 9
+                        aliens.add(new Asteroid(B_WIDTH, B_HEIGHT-170, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, B_HEIGHT-150, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH, 150, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, 170, difficulty));
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, 230, difficulty,4,100));
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, B_HEIGHT-230, difficulty,4,100));
+                        }
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+3200, 50, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT/2-20, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT-70, difficulty,8));
+                            
+                        }
+                        wave_count++;
+                        break;
+                    case 10://level 2, wave 10
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, 50, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT/2-20, difficulty));
+                        }
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+i*100, B_HEIGHT-130, difficulty,4,50));
+                            aliens.add(new Alien3(B_WIDTH+i*100, 100, difficulty,4,50));
+                            aliens.add(new Alien4(B_WIDTH+i*100, B_HEIGHT-270, difficulty,150));
+                            aliens.add(new Alien4(B_WIDTH+i*100, 240, difficulty,150));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT-130, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, 100, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT/2-20, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH+3000, 120, difficulty,6,1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT-140, difficulty,6,-1));
+                        aliens.add(new Asteroid(B_WIDTH+1000, -2000, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1200, B_HEIGHT+2000, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+800, -2100, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1100, B_HEIGHT+2100, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,5,6));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,5,-6));
+                        aliens.add(new Asteroid(B_WIDTH+3100, -850, difficulty,6,2));
+                        aliens.add(new Asteroid(B_WIDTH+3300, B_HEIGHT+800, difficulty,6,-2));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3000, difficulty,4,-6));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3500, difficulty,5,-5));
+                        
+                        wave_count++;
+                        break;
+                    case 11: //warning!
+                        MusicPlayer.MAIN1.stop();
+                        wave_count++;
+                        break;
+                    case 12:// level 1, boss
+                        MusicPlayer.BOSS1.play();
+                        aliens.add(new Boss6(B_WIDTH, 300, difficulty));
+                        wave_count++;
+                        break;
+                    case 13: // move on to the next level
+                        level++;
+                        wave_count = 0;
+                        break;
+                }
+                break;
+            case 7: // level 7's enemies
+                switch (wave_count){
+                    case 0:
+                        wave_count++;
+                        MusicPlayer.MAIN1.play();
+                        break;
+                    case 1: // level 3, wave 1
+                        
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+100*i, 500, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+1600+100*i, 600, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 2:// level 3, wave 2
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+50+100*i, 660, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 3:// level 2, wave 3
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-170, difficulty, 700));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2-150, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2+150, difficulty));
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, B_HEIGHT-170, difficulty, 10));
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, 170, difficulty, 10));
+                        }
+                        wave_count++;
+                        break;
+                    case 4:// level 2, wave 4
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, -664-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, -764-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, -664-i*1000, difficulty,3, 4));
+                        }
+                        wave_count++;
+                        break;
+                    case 5:// level 2, wave 5
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, 50+i*70, difficulty));
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, B_HEIGHT-50-i*70, difficulty));
+                        }
+                        aliens.add(new Asteroid(B_WIDTH+100, 50, difficulty,3, 1));
+                        aliens.add(new Asteroid(B_WIDTH+400, 50, difficulty,5, 2));
+                        aliens.add(new Asteroid(B_WIDTH+200, B_HEIGHT-50, difficulty,4, -1));
+                        aliens.add(new Asteroid(B_WIDTH+500, B_HEIGHT-150, difficulty,6, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2+300, difficulty,8, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2-300, difficulty,8, 1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2, difficulty,6, 0));
+                        wave_count++;
+                        break;
+                    case 6:// level 2, wave 6
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+100*i, 50, difficulty));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2-10, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, 170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, B_HEIGHT-170, difficulty));
+                        wave_count++;
+                        break;
+                    case 7:// level 2, wave 7
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+50*i, B_HEIGHT-50-250, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+200+50*i, B_HEIGHT-250, difficulty,480));
+                        }
+                        aliens.add(new Alien2(B_WIDTH, B_HEIGHT-170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH, 150, difficulty));
+                        wave_count++;
+                        break;
+                    case 8:// level 2, wave 8
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, B_HEIGHT+64+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, B_HEIGHT+164-i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, B_HEIGHT+764+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, B_HEIGHT+164+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                        }
+                        wave_count++;
+                        break;
+                    case 9://level 2, wave 9
+                        aliens.add(new Asteroid(B_WIDTH, B_HEIGHT-170, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, B_HEIGHT-150, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH, 150, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, 170, difficulty));
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, 230, difficulty,4,100));
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, B_HEIGHT-230, difficulty,4,100));
+                        }
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+3200, 50, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT/2-20, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT-70, difficulty,8));
+                            
+                        }
+                        wave_count++;
+                        break;
+                    case 10://level 2, wave 10
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, 50, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT/2-20, difficulty));
+                        }
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+i*100, B_HEIGHT-130, difficulty,4,50));
+                            aliens.add(new Alien3(B_WIDTH+i*100, 100, difficulty,4,50));
+                            aliens.add(new Alien4(B_WIDTH+i*100, B_HEIGHT-270, difficulty,150));
+                            aliens.add(new Alien4(B_WIDTH+i*100, 240, difficulty,150));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT-130, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, 100, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT/2-20, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH+3000, 120, difficulty,6,1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT-140, difficulty,6,-1));
+                        aliens.add(new Asteroid(B_WIDTH+1000, -2000, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1200, B_HEIGHT+2000, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+800, -2100, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1100, B_HEIGHT+2100, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,5,6));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,5,-6));
+                        aliens.add(new Asteroid(B_WIDTH+3100, -850, difficulty,6,2));
+                        aliens.add(new Asteroid(B_WIDTH+3300, B_HEIGHT+800, difficulty,6,-2));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3000, difficulty,4,-6));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3500, difficulty,5,-5));
+                        
+                        wave_count++;
+                        break;
+                    case 11: //warning!
+                        MusicPlayer.MAIN1.stop();
+                        wave_count++;
+                        break;
+                    case 12:// level 1, boss
+                        MusicPlayer.BOSS1.play();
+                        aliens.add(new Boss7(B_WIDTH, 300, difficulty));
+                        wave_count++;
+                        break;
+                    case 13: // move on to the next level
+                        level++;
+                        wave_count = 0;
+                        break;
+                }
+                break;
+            case 8: // level 8's enemies
+                switch (wave_count){
+                    case 0:
+                        wave_count++;
+                        MusicPlayer.MAIN1.play();
+                        break;
+                    case 1: // level 3, wave 1
+                        
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+100*i, 500, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+1600+100*i, 600, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 2:// level 3, wave 2
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, 300, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+50+100*i, 660, difficulty));
+                        }
+                        wave_count++;
+                        break;
+                    case 3:// level 2, wave 3
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-170, difficulty, 700));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2-150, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+700, B_HEIGHT/2+150, difficulty));
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, B_HEIGHT-170, difficulty, 10));
+                            aliens.add(new Alien1(B_WIDTH+4000+100*i, 170, difficulty, 10));
+                        }
+                        wave_count++;
+                        break;
+                    case 4:// level 2, wave 4
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, -64-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, -664-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, -764-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, -164-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, -264-i*1000, difficulty,0, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, -364-i*1000, difficulty,3, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, -464-i*1000, difficulty,1, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, -564-i*1000, difficulty,2, 4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, -664-i*1000, difficulty,3, 4));
+                        }
+                        wave_count++;
+                        break;
+                    case 5:// level 2, wave 5
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, 50+i*70, difficulty));
+                            aliens.add(new Alien2(B_WIDTH+200+100*i, B_HEIGHT-50-i*70, difficulty));
+                        }
+                        aliens.add(new Asteroid(B_WIDTH+100, 50, difficulty,3, 1));
+                        aliens.add(new Asteroid(B_WIDTH+400, 50, difficulty,5, 2));
+                        aliens.add(new Asteroid(B_WIDTH+200, B_HEIGHT-50, difficulty,4, -1));
+                        aliens.add(new Asteroid(B_WIDTH+500, B_HEIGHT-150, difficulty,6, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2+300, difficulty,8, -1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2-300, difficulty,8, 1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT/2, difficulty,6, 0));
+                        wave_count++;
+                        break;
+                    case 6:// level 2, wave 6
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+100*i, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+100*i, 50, difficulty));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+300, B_HEIGHT/2-10, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, 170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+600, B_HEIGHT-170, difficulty));
+                        wave_count++;
+                        break;
+                    case 7:// level 2, wave 7
+                        for (int i = 0;i<12;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+50*i, B_HEIGHT-50-250, difficulty));
+                            aliens.add(new Alien4(B_WIDTH+200+50*i, B_HEIGHT-250, difficulty,480));
+                        }
+                        aliens.add(new Alien2(B_WIDTH, B_HEIGHT-170, difficulty));
+                        aliens.add(new Alien2(B_WIDTH, 150, difficulty));
+                        wave_count++;
+                        break;
+                    case 8:// level 2, wave 8
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Asteroid(B_WIDTH+400*i, B_HEIGHT+64+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-100+400*i, B_HEIGHT+164-i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-200+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-300+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-400+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-500+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-600+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-700+400*i, B_HEIGHT+764+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-800+400*i, B_HEIGHT+164+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-900+400*i, B_HEIGHT+264+i*1000, difficulty,0, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1000+400*i, B_HEIGHT+364+i*1000, difficulty,3, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1100+400*i, B_HEIGHT+464+i*1000, difficulty,1, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1200+400*i, B_HEIGHT+564+i*1000, difficulty,2, -4));
+                            aliens.add(new Asteroid(B_WIDTH-1300+400*i, B_HEIGHT+664+i*1000, difficulty,3, -4));
+                        }
+                        wave_count++;
+                        break;
+                    case 9://level 2, wave 9
+                        aliens.add(new Asteroid(B_WIDTH, B_HEIGHT-170, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, B_HEIGHT-150, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH, 150, difficulty,2));
+                        aliens.add(new Alien2(B_WIDTH+100, 170, difficulty));
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, 230, difficulty,4,100));
+                            aliens.add(new Alien3(B_WIDTH+1000+i*50, B_HEIGHT-230, difficulty,4,100));
+                        }
+                        for (int i = 0;i<13;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+3200, 50, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT/2-20, difficulty,8));
+                            aliens.add(new Alien1(B_WIDTH+3200, B_HEIGHT-70, difficulty,8));
+                            
+                        }
+                        wave_count++;
+                        break;
+                    case 10://level 2, wave 10
+                        for (int i = 0;i<3;i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT-70, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, 50, difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*100, B_HEIGHT/2-20, difficulty));
+                        }
+                        for (int i = 0;i<6;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+i*100, B_HEIGHT-130, difficulty,4,50));
+                            aliens.add(new Alien3(B_WIDTH+i*100, 100, difficulty,4,50));
+                            aliens.add(new Alien4(B_WIDTH+i*100, B_HEIGHT-270, difficulty,150));
+                            aliens.add(new Alien4(B_WIDTH+i*100, 240, difficulty,150));
+                        }
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT-130, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, 100, difficulty));
+                        aliens.add(new Alien2(B_WIDTH+800, B_HEIGHT/2-20, difficulty));
+                        aliens.add(new Asteroid(B_WIDTH+3000, 120, difficulty,6,1));
+                        aliens.add(new Asteroid(B_WIDTH+3000, B_HEIGHT-140, difficulty,6,-1));
+                        aliens.add(new Asteroid(B_WIDTH+1000, -2000, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1200, B_HEIGHT+2000, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+800, -2100, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1100, B_HEIGHT+2100, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,4,7));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,4,-7));
+                        aliens.add(new Asteroid(B_WIDTH+1500, -2500, difficulty,5,6));
+                        aliens.add(new Asteroid(B_WIDTH+1700, B_HEIGHT+2500, difficulty,5,-6));
+                        aliens.add(new Asteroid(B_WIDTH+3100, -850, difficulty,6,2));
+                        aliens.add(new Asteroid(B_WIDTH+3300, B_HEIGHT+800, difficulty,6,-2));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3000, difficulty,4,-6));
+                        aliens.add(new Asteroid(B_WIDTH+2500, B_HEIGHT+3500, difficulty,5,-5));
+                        
+                        wave_count++;
+                        break;
+                    case 11: //warning!
+                        MusicPlayer.MAIN1.stop();
+                        wave_count++;
+                        break;
+                    case 12:// level 1, boss
+                        MusicPlayer.BOSS1.play();
+                        //aliens.add(new Boss8(B_WIDTH, 300, difficulty));
+                        wave_count++;
+                        break;
+                    case 13: // move on to the next level
+                        level++;
+                        wave_count = 0;
                         break;
                 }
                 break;
@@ -473,10 +1529,10 @@ public class Stage {
         switch (current_draw){
             case 2:
                 current_draw--;
-                return new Background(0,0,"src/resources/bg_lvl2.png");
+                return new Background(0,0,"src/resources/bg_lvl3.png");
             case 1:
                 current_draw--;
-                return new Background(2880,0,"src/resources/bg_lvl2.png");
+                return new Background(2880,0,"src/resources/bg_lvl3.png");
             default:
                 current_draw--;
                 break;
@@ -491,10 +1547,10 @@ public class Stage {
         switch (current_draw){
             case 2:
                 current_draw--;
-                return new Background(0,0,"src/resources/bg_lvl2.png");
+                return new Background(0,0,"src/resources/bg_lvl4.jpg");
             case 1:
                 current_draw--;
-                return new Background(2880,0,"src/resources/bg_lvl2.png");
+                return new Background(1280,0,"src/resources/bg_lvl4.jpg");
             default:
                 current_draw--;
                 break;
@@ -509,10 +1565,10 @@ public class Stage {
         switch (current_draw){
             case 2:
                 current_draw--;
-                return new Background(0,0,"src/resources/bg_lvl2.png");
+                return new Background(0,0,"src/resources/bg_lvl5.png");
             case 1:
                 current_draw--;
-                return new Background(2880,0,"src/resources/bg_lvl2.png");
+                return new Background(2880,0,"src/resources/bg_lvl5.png");
             default:
                 current_draw--;
                 break;
@@ -527,10 +1583,10 @@ public class Stage {
         switch (current_draw){
             case 2:
                 current_draw--;
-                return new Background(0,0,"src/resources/bg_lvl2.png");
+                return new Background(0,0,"src/resources/bg_lvl6.png");
             case 1:
                 current_draw--;
-                return new Background(2880,0,"src/resources/bg_lvl2.png");
+                return new Background(2851,0,"src/resources/bg_lvl6.png");
             default:
                 current_draw--;
                 break;
@@ -545,10 +1601,10 @@ public class Stage {
         switch (current_draw){
             case 2:
                 current_draw--;
-                return new Background(0,0,"src/resources/bg_lvl2.png");
+                return new Background(0,0,"src/resources/bg_lvl7.png");
             case 1:
                 current_draw--;
-                return new Background(2880,0,"src/resources/bg_lvl2.png");
+                return new Background(1914,0,"src/resources/bg_lvl7.png");
             default:
                 current_draw--;
                 break;
@@ -563,10 +1619,10 @@ public class Stage {
         switch (current_draw){
             case 2:
                 current_draw--;
-                return new Background(0,0,"src/resources/bg_lvl2.png");
+                return new Background(0,0,"src/resources/bg_lvl8.png");
             case 1:
                 current_draw--;
-                return new Background(2880,0,"src/resources/bg_lvl2.png");
+                return new Background(2000,0,"src/resources/bg_lvl8.png");
             default:
                 current_draw--;
                 break;
