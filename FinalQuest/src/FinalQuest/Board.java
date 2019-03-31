@@ -677,6 +677,7 @@ public class Board extends JPanel implements ActionListener {
                         {
                             spaceship.setVisible(false);
                             alien.setVisible(false);
+                            MusicPlayer.stop();
                             game_mode = "gameover";
                             
                             
