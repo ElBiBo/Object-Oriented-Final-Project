@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Level 7's boss. 
- * This large destroyer moves up and down alternating between plasma sprays,
- * laser blasts and seeker shots
+ * Level 8's boss. 
+ * This serves as the main cannon of the boss. It fires pretty constantly and
+ * can be destroyed on its own.
  * @author Marco Tacca
  */
-public class Boss7 extends Boss {
+public class Boss8a extends Boss {
     
-    private final int POINTS = 9000;
+    private final int POINTS = 3000;
     private int laser_rate;
     private int fire_count;
     private int curve;
@@ -26,55 +26,34 @@ public class Boss7 extends Boss {
     private List<Missile> missiles;
     private int missile_speed;
     private final String DIFFICULTY;
-    private String attack_mode = "entry";
+    private String attack_mode = "moving";
     private String fire_mode = "regular";
     private int direction = 1;
     private int step = 0;
     private int delay;
-    private int reinforce;
-    private List<Sprite> reinforcement_list = new ArrayList<>();
     private int count = 0;
     private String sprite_type;
     private String status;
     private Explosion boom;
-    boolean center = false;
+    private Boss main_ship;
     
     /**
      * Constructor
-     * @param x starting x coordinate for the alien
-     * @param y starting y coordinate for the alien
+     * @param ship Used to get info about the boss ship and coordinate movement
      * @param D is the difficulty of the alien: normal, hard, unforgiving
      */
-    public Boss7(int x, int y, String D) {
-        super(x, y, D);
+    public Boss8a(Boss ship, String D) {
+        super(ship.getX(), ship.getY()+20, D);
         this.p_direction = 1;
         this.boom = null;
         this.status = "good";
-        this.sprite_type = "boss";
+        this.sprite_type = "miniboss";
+        main_ship = ship;
         DIFFICULTY = D;
-        this.y = 480-height/2;
         move_speed = 3;
         initAlien();
     }
     
-    /**
-     * Constructor, to adjust the speed, if needed
-     * @param x starting x coordinate for the alien
-     * @param y starting y coordinate for the alien
-     * @param D is the difficulty of the alien: normal, hard, unforgiving
-     * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 4
-     */
-    public Boss7(int x, int y, String D, int s) {
-        super(x, y, D);
-        this.p_direction = 1;
-        this.boom = null;
-        this.status = "good";
-        this.sprite_type = "boss";
-        DIFFICULTY = D;
-        this.y = 480-height/2;
-        move_speed = s;        
-        initAlien();
-    }
     
     
     /**
@@ -88,7 +67,7 @@ public class Boss7 extends Boss {
                 move_speed += 0; // how fast the alien moves
                 missile_speed = (move_speed+3)*-1; // how fast their lasers move
                 delay = 90; // how long it takes for the boss to charge
-                reinforce = 2000;
+                
                 break;
             case "hard":
                 fire_rate = 60;  //how often lasers are fired
@@ -96,7 +75,6 @@ public class Boss7 extends Boss {
                 move_speed += 2; // how fast the alien moves
                 missile_speed = (move_speed+3)*-1; // how fast their lasers move
                 delay = 60;
-                reinforce = 1000;
                 break;
             case "unforgiving":
                 fire_rate = 40;  //how often lasers are fired
@@ -104,7 +82,6 @@ public class Boss7 extends Boss {
                 move_speed += 4; // how fast the alien moves
                 missile_speed = (move_speed+6)*-1; // how fast their lasers move
                 delay = 30;
-                reinforce = 800;
                 break;
         }
         curve = 0;
@@ -112,7 +89,7 @@ public class Boss7 extends Boss {
         crash_health = max_health/3*2;
         fire_count = 0;
         missiles = new ArrayList<>();
-        loadImage("src/resources/Boss7.png");
+        loadImage("src/resources/Boss8a.png");
         getImageDimensions();
     }
     
@@ -160,6 +137,10 @@ public class Boss7 extends Boss {
      */
     public void fire() {
         fire_count +=1;
+        /*if (fire_count % (fire_rate*5) == 0)
+        {
+            reinforcement_list.add(new Alien1(x+width/2, y+height/2, DIFFICULTY,"launch"));
+        }*/
         
         switch (fire_mode)
         {
@@ -199,9 +180,6 @@ public class Boss7 extends Boss {
                 }
                 break;
         }
-        
-        
-        
     }
     
     
@@ -214,14 +192,11 @@ public class Boss7 extends Boss {
     {
         count++;
         switch (attack_mode){
-            case "entry":
-                entry();
-                break;
             case "moving":
                 moving();
                 break;
             case "fire":
-                fire();
+                //fire();
                 break;
             case "crash":
                 crash();
@@ -230,43 +205,29 @@ public class Boss7 extends Boss {
                 blowup();
                 break;
         }
-        // this is used to send out enemy ships as backup
-        if (count % reinforce == 0)
-        {
-            update_reinforcements();
-        }
         
-    }
-    
-    /**
-     * The boss enters the screen
-     */
-    @Override
-    public void entry(){
-        x -= move_speed;
-        if (x<=1200-width)
-        {
-            attack_mode = "moving";
-        }
     }
     
     /**
      * The boss moves up and down, firing it's missiles
      */
     public void moving(){
-        y += move_speed*direction;
+        x = main_ship.getX() - 40;
+        y = main_ship.getY() + 40;
+        
+        /*y += move_speed*direction;
         if (direction < 0)
         {
             if (y < 50 && !center) 
             {
-                attack_mode();
+                //attack_mode();
                 direction *= -1;
                 center = true;
             }
             else if (y < 480-height/2 && center)
             {
                 center = false;
-                attack_mode();
+                //attack_mode();
             }
         }
         else if (direction > 0)
@@ -274,13 +235,13 @@ public class Boss7 extends Boss {
             if (y > 720 && !center)
             {   
                 direction *= -1;
-                attack_mode();
+                //attack_mode();
                 center = true;
             }
             else if (y > 480-height/2 && center)
             {
                 center = false;
-                attack_mode();
+                //attack_mode();
             }
         }
         if (health <= max_health/3)
@@ -304,7 +265,7 @@ public class Boss7 extends Boss {
             {
                 direction = 2;
             }
-        }
+        }*/
     }
     
     public void attack_mode()
@@ -357,8 +318,10 @@ public class Boss7 extends Boss {
     
     public void blowup()
     {
+        x = main_ship.getX() - 40;
+        y = main_ship.getY() + 40;
         step++;
-        if (step <= 300)
+        if (step <= 75)
         {
             if (step%3 == 0)
             {
@@ -366,8 +329,7 @@ public class Boss7 extends Boss {
                 direction = direction * -1;
             }
             if (step%5 == 0)
-            {
-                
+            {   
                 makeBoom();
             }
         }
@@ -380,7 +342,7 @@ public class Boss7 extends Boss {
     private void makeBoom()
     {
         SoundEffect.ALIEN_EXPLODE.play();
-        int y_pos = ThreadLocalRandom.current().nextInt(y, y+height-32);
+        int y_pos = ThreadLocalRandom.current().nextInt(y, y+height-16);
         int x_pos = ThreadLocalRandom.current().nextInt(x, x+width-32);
         boom = new Explosion(x_pos,y_pos);
     }
@@ -399,54 +361,7 @@ public class Boss7 extends Boss {
         }
     }
     
-    public void update_reinforcements()
-    {
-        int ypos;
-        int alien_type;
-        int aliens = 0;
-        if (DIFFICULTY == "normal")
-        {
-            aliens = 3;
-        }
-        else if (DIFFICULTY == "hard")
-        {
-            aliens = 6;
-        }
-        else if (DIFFICULTY == "unforgiving")
-        {
-            aliens = 9;
-        }
-        for (int i = 0; i<aliens; i++)
-        {
-            ypos = ThreadLocalRandom.current().nextInt(50, 890);
-            alien_type = ThreadLocalRandom.current().nextInt(2);
-            if (alien_type == 0)
-            {
-                reinforcement_list.add(new Alien1(1300+i*100, ypos, DIFFICULTY,10));
-            }
-            else
-            {
-                reinforcement_list.add(new Alien2(1300+i*100, ypos, DIFFICULTY,10));
-            }
-        }
-        if (count % (reinforce*5) == 0)
-        {
-            ypos = ThreadLocalRandom.current().nextInt(50, 890);
-            reinforcement_list.add(new PowerUp(1200, ypos));
-        }
-    }
     
-    public Sprite checkReinforcements()
-    {
-        if (reinforcement_list.size() <= 0)
-        {
-            return null;
-        }
-        else
-        {
-            return reinforcement_list.remove(0);
-        }
-    }
     
     /**
      * sets status to exploding
@@ -455,6 +370,7 @@ public class Boss7 extends Boss {
     {
         status = "gone";
         attack_mode = "blowup";
+        sprite_type = "exploding"; 
         step = 0;
     }
     

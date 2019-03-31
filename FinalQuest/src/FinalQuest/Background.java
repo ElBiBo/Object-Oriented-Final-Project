@@ -70,7 +70,7 @@ public class Background extends Sprite {
         if (x < 0  - width) {
             if (start_x == 0)
             {
-                x = width;
+                x = width-1;
             }
             else
                 x = start_x;

@@ -26,8 +26,8 @@ public class Stage {
     
     public Stage(String d, SpaceShip s)
     {
-        level = 1;
-        wave_count = 0;
+        level = 8;
+        wave_count = 10;
         difficulty = d;
         this.spaceship = s;    
     }
@@ -56,7 +56,6 @@ public class Stage {
         power_ups = new ArrayList<>();
         if (wave_count > 0 && wave_count < 11)
         {
-            System.out.println(spaceship.powerupCheck()+" "+spaceship.getKills());
             if (spaceship.powerupCheck())
             {
                 int ypos = ThreadLocalRandom.current().nextInt(50, 890);
@@ -1426,7 +1425,8 @@ public class Stage {
                         break;
                     case 12:// level 1, boss
                         MusicPlayer.BOSS1.play();
-                        //aliens.add(new Boss8(B_WIDTH, 300, difficulty));
+                        //aliens.add(new Boss8a(B_WIDTH, 300, difficulty));
+                        aliens.add(new Boss8(B_WIDTH, 300, difficulty));
                         wave_count++;
                         break;
                     case 13: // move on to the next level

@@ -41,7 +41,7 @@ public class Board extends JPanel implements ActionListener {
     private final int DELAY = 15;
     private int stage_count = 0;
     private int level = 1;
-    private String game_mode;
+    private String game_mode = "mainmenu";
     private String difficulty;  
     private int wave_count = 0;
     private Stage stage;
@@ -50,6 +50,7 @@ public class Board extends JPanel implements ActionListener {
     private boolean enter_score = false;
     private boolean ship_input;
     private HighscoreManager hm = new HighscoreManager();
+    private int menu_option = 0;
     
     /**
      * Constructor
@@ -75,22 +76,13 @@ public class Board extends JPanel implements ActionListener {
         
         explosions = new ArrayList<>();
         spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
-        ship_input = true;
+        ship_input = false;
         GUI_bar = new Background(400,0,"src/resources/GUIbar.png");
         GUI_bar_player = new Background(0,0,"src/resources/GUIbarplayer.png");
         menu = new Background(0,0,"src/resources/menu_image.png");
         warning = new Background(0,0,"src/resources/warning.png");
         Stage stage = new Stage(difficulty, spaceship);
-        /*hm.addScore("Bart",1000);
-        hm.addScore("Marge",2000);
-        hm.addScore("Maggie",3000);
-        hm.addScore("Homer",10000);
-        hm.addScore("Lisa",4000);
-        hm.addScore("Sampson",9000);
-        hm.addScore("Charles",8000);
-        hm.addScore("Willie",5000);
-        hm.addScore("Flanders",7000);
-        hm.addScore("Nelson",6000);*/
+        
         initBG();
         initAliens();
         
@@ -146,7 +138,7 @@ public class Board extends JPanel implements ActionListener {
         {   
             game_mode = spaceship.checkMode();
         }
-        //game_mode = "highscore";
+        //game_mode = "mainmenu";
         switch (game_mode) {
             case "dead":
                 drawObjects(g);
@@ -175,6 +167,10 @@ public class Board extends JPanel implements ActionListener {
                 break;
             case "highscore":
                 drawHighscore(g);
+                ship_input = false;
+                break;
+            case "mainmenu":
+                drawMainMenu(g);
                 ship_input = false;
                 break;
             case "boss":
@@ -385,6 +381,64 @@ public class Board extends JPanel implements ActionListener {
             g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2+60);
             
         }
+        
+    }
+    
+    /**
+     * This draws a list of the top 10 scores to the screen
+     */
+    private void drawMainMenu(Graphics g) {
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        String msg = "Main Menu";
+        Font small = new Font("Impact", Font.BOLD, 40);
+        FontMetrics fm = getFontMetrics(small);
+        g.setColor(Color.gray);
+        g.setFont(small);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2+2, B_HEIGHT / 7+2);
+        g.setColor(Color.white);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 7);
+        int x = 540;
+        int y = 200;
+        msg = "Play";
+        g.setColor(Color.gray);
+        g.drawString(msg, x+2, y+2);
+        if (menu_option == 0)
+        {
+            g.setColor(Color.blue);
+        }
+        else
+        {
+            g.setColor(Color.white);
+        }
+        
+        g.drawString(msg, x, y);
+        msg = "Instructions";
+        g.setColor(Color.gray);
+        g.drawString(msg, x+2, y+52);
+        if (menu_option == 1)
+        {
+            g.setColor(Color.blue);
+        }
+        else
+        {
+            g.setColor(Color.white);
+        }
+        g.drawString(msg, x, y+50);
+        msg = "Options";
+        g.setColor(Color.gray);
+        g.drawString(msg, x+2, y+102);
+        if (menu_option == 2)
+        {
+            g.setColor(Color.blue);
+        }
+        else
+        {
+            g.setColor(Color.white);
+        }
+        g.drawString(msg, x, y+100);
+        g.setColor(Color.white);
+        msg = ">";
+        g.drawString(msg, x-40, y+menu_option*50);
         
     }
     
@@ -662,7 +716,12 @@ public class Board extends JPanel implements ActionListener {
                             spaceship.addPoints(alien.getPoints());
                             spaceship.killCount();
                             explosions.add(new Explosion(alien.getX(),alien.getY()));
-                            
+                        }
+                        else if (alien.getType() == "miniboss")
+                        {
+                            alien.explode();
+                            spaceship.addPoints(alien.getPoints());
+                            spaceship.killCount();
                         }
                     }
                 }
@@ -718,7 +777,6 @@ public class Board extends JPanel implements ActionListener {
     
     private void non_game_input(KeyEvent e)
     {
-        
         switch(game_mode){
             case "gameover":
                 if (enter_score)
@@ -742,6 +800,35 @@ public class Board extends JPanel implements ActionListener {
                 else
                 {
                     game_mode = "highscore";
+                }
+                break;
+            case "mainmenu":
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    switch (menu_option)
+                    {
+                        case 0:
+                            game_mode = "highscore";
+                            break;
+                        case 1:
+                            break;
+                    }
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_UP)
+                {
+                    menu_option--;
+                    if (menu_option < 0)
+                    {
+                        menu_option = 5;
+                    }
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_DOWN)
+                {
+                    menu_option++;
+                    if (menu_option > 5)
+                    {
+                        menu_option = 0;
+                    }
                 }
                 break;
         }

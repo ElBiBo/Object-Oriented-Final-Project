@@ -19,7 +19,7 @@ import java.util.List;
 public class Boss5 extends Boss {
     
     private final int INITIAL_X = 1280;
-    private final int POINTS = 6000;
+    private final int POINTS = 7000;
     private int laser_rate;
     private int fire_count;
     private int curve;

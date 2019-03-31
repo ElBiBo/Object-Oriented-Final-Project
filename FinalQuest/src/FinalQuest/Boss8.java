@@ -6,16 +6,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Level 3's boss. he flies up and down, speeding up as he takes damage
- * At first he fires a double laser, tries to crash into the player, after which
- * comes a massive plasma spread
- * a trio of Alien2's come through to help from time to time
+ * Level 8's boss. 
+ * The final boss is actually a combination of 4 ships. Two protect 
+ * the main central ship by circling it while one serves as the ship's
+ * main weapon with occasional plasma sprays. The main ship fires regular laser
+ * blasts unless it no longer has any defenses remaining. Then it resorts to
+ * a heavy barrage of seeker shots.
  * @author Marco Tacca
  */
-public class Boss3 extends Boss {
+public class Boss8 extends Boss {
     
-    private final int INITIAL_X = 1280;
-    private final int POINTS = 5000;
+    private final int POINTS = 10000;
     private int laser_rate;
     private int fire_count;
     private int curve;
@@ -39,6 +40,8 @@ public class Boss3 extends Boss {
     private String sprite_type;
     private String status;
     private Explosion boom;
+    boolean center = false;
+    private double num_ships;
     
     /**
      * Constructor
@@ -46,14 +49,15 @@ public class Boss3 extends Boss {
      * @param y starting y coordinate for the alien
      * @param D is the difficulty of the alien: normal, hard, unforgiving
      */
-    public Boss3(int x, int y, String D) {
+    public Boss8(int x, int y, String D) {
         super(x, y, D);
         this.p_direction = 1;
         this.boom = null;
         this.status = "good";
         this.sprite_type = "boss";
         DIFFICULTY = D;
-        move_speed = 4;
+        this.y = 480-height/2;
+        move_speed = 3;
         initAlien();
     }
     
@@ -64,14 +68,15 @@ public class Boss3 extends Boss {
      * @param D is the difficulty of the alien: normal, hard, unforgiving
      * @param s an integer value for how quickly the alien moves, adjusted for difficulty. default is 4
      */
-    public Boss3(int x, int y, String D, int s) {
+    public Boss8(int x, int y, String D, int s) {
         super(x, y, D);
         this.p_direction = 1;
         this.boom = null;
         this.status = "good";
         this.sprite_type = "boss";
         DIFFICULTY = D;
-        move_speed = s;
+        this.y = 480-height/2;
+        move_speed = s;        
         initAlien();
     }
     
@@ -80,39 +85,44 @@ public class Boss3 extends Boss {
      * Init our alien by assigning it an image and getting it's dimensions
      */
     private void initAlien() {
+        
         switch (DIFFICULTY) {
             case "normal":
-                fire_rate = 20;  //how often lasers are fired
+                fire_rate = 80;  //how often lasers are fired
                 health = 60; // how many times they can be hit before dying
                 move_speed += 0; // how fast the alien moves
                 missile_speed = (move_speed+3)*-1; // how fast their lasers move
-                delay = 180; // how long it takes for the boss to charge
-                reinforce = 400;
+                delay = 90; // how long it takes for the boss to charge
+                reinforce = 2000;
+                num_ships = 2.0;
                 break;
             case "hard":
-                fire_rate = 10;  //how often lasers are fired
+                fire_rate = 60;  //how often lasers are fired
                 health = 90; // how many times they can be hit before dying
                 move_speed += 2; // how fast the alien moves
                 missile_speed = (move_speed+3)*-1; // how fast their lasers move
-                delay = 120;
-                reinforce = 200;
+                delay = 60;
+                reinforce = 1000;
+                num_ships = 4.0;
                 break;
             case "unforgiving":
-                fire_rate = 5;  //how often lasers are fired
+                fire_rate = 40;  //how often lasers are fired
                 health = 120; // how many times they can be hit before dying
                 move_speed += 4; // how fast the alien moves
                 missile_speed = (move_speed+6)*-1; // how fast their lasers move
-                delay = 60;
-                reinforce = 100;
+                delay = 30;
+                reinforce = 800;
+                num_ships = 8.0;
                 break;
         }
         curve = 0;
         max_health = health;
         crash_health = max_health/3*2;
-        fire_count = ThreadLocalRandom.current().nextInt(fire_rate-100, fire_rate + 1);
+        fire_count = 0;
         missiles = new ArrayList<>();
-        loadImage("src/resources/Boss3.png");
+        loadImage("src/resources/Boss8.png");
         getImageDimensions();
+        update_reinforcements();
     }
     
     /**
@@ -121,12 +131,8 @@ public class Boss3 extends Boss {
      * otherwise it makes a sound and takes some damage
      * @return  the alien's current health
      */
-    @Override
     public int damage(){
-        if (attack_mode != "crash" && attack_mode != "entry")
-        {
-            health -= 1;
-        }
+        health -= 1;
         if (health > 0)
         {
             SoundEffect.ALIEN_HIT.play();
@@ -143,7 +149,6 @@ public class Boss3 extends Boss {
      * This is just an accessor for the ship's score
      * @return  the number of points destroying the alien is worth
      */
-    @Override
     public int getPoints(){
         return POINTS;
     }
@@ -153,7 +158,6 @@ public class Boss3 extends Boss {
      * Used to find their coordinates for drawing them
      * @return  list of missiles
      */
-    @Override
     public List<Missile> getMissiles() {
         return missiles;
     }
@@ -163,25 +167,54 @@ public class Boss3 extends Boss {
      * missiles can be fired without one of the previous missiles being
      * destroyed first
      */
-    @Override
     public void fire() {
         fire_count +=1;
-        switch (fire_mode) {
+        /*if (fire_count % (fire_rate*5) == 0)
+        {
+            reinforcement_list.add(new Alien1(x+width/2, y+height/2, DIFFICULTY,"launch"));
+        }*/
+        
+        switch (fire_mode)
+        {
             case "regular":
-                if (fire_count % fire_rate == 0)
+                if (fire_count % (fire_rate/3) == 0)
                 {
-                    missiles.add(new Missile(x-width+90, y +16 , missile_speed,0));
-                    missiles.add(new Missile(x-width+90, y+height -20 , missile_speed,0));
-                }   break;
-            case "plasma":
-                missiles.add(new Missile(x-width+120, y+height/2-4 , -5,curve,"src/resources/plasma_bolt.png"));
+                    missiles.add(new Missile(x+15, y +70 , missile_speed,0));
+                    missiles.add(new Missile(x+15, y+height-74 , missile_speed,0));
+                    missiles.add(new Missile(x+20, y +30 , missile_speed,0));
+                    missiles.add(new Missile(x+20, y+height-34 , missile_speed,0));
+                }
+                if (fire_count % fire_rate*10 == 0)
+                {
+                    attack_mode = "moving";
+                }
+                break;
+            case "spread":
+                missiles.add(new Missile(x+15, y+height/2-4 , -5,curve,"src/resources/plasma_bolt.png"));
                 curve+=p_direction;
                 if ((curve>5 && p_direction >0)|| (curve<-5 && p_direction <0))
                 {
                     p_direction*=-1;
-                }   
+                }
+                if (fire_count % fire_rate*10 == 0)
+                {
+                    attack_mode = "moving";
+                }
+                break;
+            case "seek":
+                if (fire_count % fire_rate == 0)
+                {
+                    missiles.add(new Seeker(x+15,y+height/2-4,Stage.spaceship));
+                }
+                if (fire_count % fire_rate*2 == 0)
+                {
+                    attack_mode = "moving";
+                }
                 break;
         }
+        
+        
+        
     }
     
     
@@ -190,7 +223,6 @@ public class Boss3 extends Boss {
      * moves to the left until it reaches the end of the screen
      * then is destroyed. It also has a laser it fires.
      */
-    @Override
     public void move()
     {
         count++;
@@ -198,8 +230,11 @@ public class Boss3 extends Boss {
             case "entry":
                 entry();
                 break;
-            case "gunning":
-                gunning();
+            case "moving":
+                moving();
+                break;
+            case "fire":
+                //fire();
                 break;
             case "crash":
                 crash();
@@ -208,12 +243,6 @@ public class Boss3 extends Boss {
                 blowup();
                 break;
         }
-        // this is used to send out enemy ships as backup
-        if (count % reinforce == 0)
-        {
-            update_reinforcements();
-        }
-        
     }
     
     /**
@@ -222,83 +251,94 @@ public class Boss3 extends Boss {
     @Override
     public void entry(){
         x -= move_speed;
-        fire_mode = "plasma";
-        if (x<=1150)
+        if (x<=1200-width)
         {
-            attack_mode = "gunning";
-            if (health <= max_health/3)
-            {
-                if (direction <0)
-                {
-                    direction = -3;
-                }
-                else
-                {
-                    direction = 3;
-                }
-            }
-            else if (health <= max_health*2/3)
-            {
-                if (direction <0)
-                {
-                    direction = -2;
-                }
-                else
-                {
-                    direction = 2;
-                }
-            }
+            attack_mode = "moving";
         }
     }
     
     /**
      * The boss moves up and down, firing it's missiles
      */
-    public void gunning(){
-        fire();
-        switch (fire_mode) {
-            case "regular":
-                y += move_speed*direction;
-                if (y < 50)
-                {
-                    direction *= -1;
-                }   if (y > 750)
-                {
-                    direction *= -1;
-                }   break;
-            case "plasma":
-                if (fire_count == 100)
-                {
-                    fire_mode = "regular";
-                }   break;
-        }
-        if (crash_health> health)
+    public void moving(){
+        y += move_speed*direction;
+        if (direction < 0)
         {
-            attack_mode = "crash";
-            crash_health -= 15;
-        }
-        if (health < max_health/3 && fire_mode == "regular")
-        {
-            if (1 == ThreadLocalRandom.current().nextInt(1, 400))
+            if (y < 130 && !center) 
             {
-                int choice = ThreadLocalRandom.current().nextInt(1, 4);
-                if (choice == 1)
-                    attack_mode = "crash";
-                else
-                {
-                    fire_mode = "plasma";
-                    fire_count = 0;
-                }
+                //attack_mode();
+                direction *= -1;
+                center = true;
             }
+            else if (y < 480-height/2 && center)
+            {
+                center = false;
+                //attack_mode();
+            }
+        }
+        else if (direction > 0)
+        {
+            if (y > 750 && !center)
+            {   
+                direction *= -1;
+                //attack_mode();
+                center = true;
+            }
+            else if (y > 480-height/2 && center)
+            {
+                center = false;
+                //attack_mode();
+            }
+        }
+        if (health <= max_health/3)
+        {
+            if (direction <0)
+            {
+                direction = -3;
+            }
+            else
+            {
+                direction = 3;
+            }
+        }
+        else if (health <= max_health*2/3)
+        {
+            if (direction <0)
+            {
+                direction = -2;
+            }
+            else
+            {
+                direction = 2;
+            }
+        }
+    }
+    
+    public void attack_mode()
+    {
+        attack_mode = "fire";
+        int attack  = ThreadLocalRandom.current().nextInt(5);
+        switch (attack)
+        {
+            case 0: case 3:
+                fire_mode = "regular";
+                break;
+            case 1: case 4:
+                fire_mode = "spread";
+                break;
+            case 2:
+                fire_mode = "seek";
+                break;
+                        
         }
     }
     
     /**
      *  boss zooms across the screen, attempting to crash into the player
      */
-    @Override
     public void crash()
     {
+        fire();
         step++;
         if (step <= delay)
         {
@@ -315,14 +355,13 @@ public class Boss3 extends Boss {
         else
         {
             x = 1300;
-            y = 450;
+            y = 480-height/2;
             attack_mode = "entry";
             step = 0;
             fire_count = 0;
         }
     }
     
-    @Override
     public void blowup()
     {
         step++;
@@ -345,9 +384,6 @@ public class Boss3 extends Boss {
         }
     }
     
-    /**
-     * generates explosions for the boss
-     */
     private void makeBoom()
     {
         SoundEffect.ALIEN_EXPLODE.play();
@@ -356,12 +392,6 @@ public class Boss3 extends Boss {
         boom = new Explosion(x_pos,y_pos);
     }
     
-    /**
-     * When the ship explodes, a series of explosions are made. This returns
-     * them.
-     * @return  null if there are no explosions. An explosion otherwise
-     */
-    @Override
     public Explosion getBoom()
     {
         if (boom == null)
@@ -376,57 +406,50 @@ public class Boss3 extends Boss {
         }
     }
     
-    /**
-     * whenever new reinforcements for the boss are needed, this creates them
-     */
-    @Override
     public void update_reinforcements()
     {
-        switch (DIFFICULTY) {
-            case "normal":
+        reinforcement_list.add(new Boss8a(this, DIFFICULTY));
+        for (double i = 0;i < num_ships;i++)
+        {
+            reinforcement_list.add(new Boss8b(this, DIFFICULTY, i*(360/num_ships)));
+        }
+        
+        /*
+        int ypos;
+        int alien_type;
+        int aliens = 0;
+        if (DIFFICULTY == "normal")
+        {
+            aliens = 3;
+        }
+        else if (DIFFICULTY == "hard")
+        {
+            aliens = 6;
+        }
+        else if (DIFFICULTY == "unforgiving")
+        {
+            aliens = 9;
+        }
+        for (int i = 0; i<aliens; i++)
+        {
+            ypos = ThreadLocalRandom.current().nextInt(50, 890);
+            alien_type = ThreadLocalRandom.current().nextInt(2);
+            if (alien_type == 0)
             {
-                int ypos = ThreadLocalRandom.current().nextInt(50, 890);
-                reinforcement_list.add(new Alien2(1300, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1400, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1500, ypos, DIFFICULTY,10));
-                break;
+                reinforcement_list.add(new Alien1(1300+i*100, ypos, DIFFICULTY,10));
             }
-            case "hard":
+            else
             {
-                int ypos = ThreadLocalRandom.current().nextInt(50, 420);
-                reinforcement_list.add(new Alien2(1300, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1400, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1500, ypos, DIFFICULTY,10));
-                ypos = ThreadLocalRandom.current().nextInt(470, 890);
-                reinforcement_list.add(new Alien2(1300, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1400, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1500, ypos, DIFFICULTY,10));
-                break;
-            }
-            case "unforgiving":
-            {
-                int ypos = ThreadLocalRandom.current().nextInt(50, 280);
-                reinforcement_list.add(new Alien2(1300, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1400, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1500, ypos, DIFFICULTY,10));
-                ypos = ThreadLocalRandom.current().nextInt(330, 600);
-                reinforcement_list.add(new Alien2(1300, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1400, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1500, ypos, DIFFICULTY,10));
-                ypos = ThreadLocalRandom.current().nextInt(650, 890);
-                reinforcement_list.add(new Alien2(1300, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1400, ypos, DIFFICULTY,10));
-                reinforcement_list.add(new Alien2(1500, ypos, DIFFICULTY,10));
-                break;
+                reinforcement_list.add(new Alien2(1300+i*100, ypos, DIFFICULTY,10));
             }
         }
+        if (count % (reinforce*5) == 0)
+        {
+            ypos = ThreadLocalRandom.current().nextInt(50, 890);
+            reinforcement_list.add(new PowerUp(1200, ypos));
+        }*/
     }
     
-    /**
-     * Used to add reach reinforcement individually to an array on board.
-     * Assuming there are any to return, of course
-     * @return  null if there are no reinforcements, otherwise the next alien
-     */
     @Override
     public Sprite checkReinforcements()
     {
@@ -443,7 +466,6 @@ public class Boss3 extends Boss {
     /**
      * sets status to exploding
      */
-    @Override
     public void explode()
     {
         status = "gone";
@@ -455,7 +477,6 @@ public class Boss3 extends Boss {
      * mostly used to make things explode
      * @return  the current status of the sprite
      */
-    @Override
     public String getStatus()
     {
         return status;
@@ -465,7 +486,6 @@ public class Boss3 extends Boss {
      * see what type the sprite is
      * @return  a string containing the sprite's type
      */
-    @Override
     public String getType()
     {
         return sprite_type;

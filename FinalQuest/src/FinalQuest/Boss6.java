@@ -7,13 +7,14 @@ import java.util.List;
 
 /**
  * Level 6's boss. 
- * This boss actually has no weapons at all and instead completely relies on 
+ * This boss actually has no weapons at all and instead completely relies on
+ * a constant stream of ships to defend itself with.
  * @author Marco Tacca
  */
 public class Boss6 extends Boss {
     
     private final int INITIAL_X = 1280;
-    private final int POINTS = 6000;
+    private final int POINTS = 8000;
     private int laser_rate;
     private int fire_count;
     private int curve;
