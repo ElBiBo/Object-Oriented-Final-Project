@@ -370,7 +370,7 @@ public class Boss5 extends Boss {
             }
             else
             {
-                reinforcement_list.add(new Alien6(1300+i*100, ypos, DIFFICULTY,ship));
+                reinforcement_list.add(new Alien6(1300+i*100, ypos, DIFFICULTY));
             }
         }
         if (count % (reinforce*5) == 0)

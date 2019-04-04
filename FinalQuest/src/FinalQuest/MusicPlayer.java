@@ -1,22 +1,29 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package FinalQuest;
 
 import javax.sound.sampled.*;
 import java.io.File;
 /**
- *
- * @author Gach5
+ * This class handles all the music in the game.
+ * Ideally we would like to have a song for each level and boss, but we don't
+ * have those kind of resources. Boss songs should be listed as BOSS# while
+ * stage songs are MAIN#. VICTORY is the song played at the end of each level.
+ * Menu is for the game menus.
+ * @author Nicholas Gacharich
  */
 public enum MusicPlayer{
     
-    BOSS1("src/resources/boss1.wav"),                       // boss theme
-    MAIN1("src/resources/MainBackgroundMusic.wav"),         // main theme
-    MAIN2("src/resources/MainBackgroundMusic.wav"),         // main theme
-    VICTORY("src/resources/victory.wav");                   // victory theme
+    BOSS1("src/resources/boss1.wav"),          // boss theme
+    BOSS8("src/resources/boss8.wav"),          // lAR boss theme
+    MAIN1("src/resources/level1.wav"),         // level 1 theme
+    MAIN2("src/resources/level2.wav"),         // level 2 theme
+    MAIN3("src/resources/level3.wav"),         // level 3 theme
+    MAIN4("src/resources/level4.wav"),         // level 4 theme
+    MAIN5("src/resources/level5.wav"),         // level 5 theme
+    MAIN6("src/resources/level6.wav"),         // level 6 theme
+    MAIN7("src/resources/level7.wav"),         // level 7 theme
+    MAIN8("src/resources/FinalTheme.wav"),     // level 8 theme
+    MENU("src/resources/menu.wav"),            // menu music
+    VICTORY("src/resources/victory.wav");      // victory theme
     // Nested class for specifying volume
     public static enum Volume {
       MUTE, LOW, MEDIUM, HIGH
@@ -47,15 +54,24 @@ public enum MusicPlayer{
       }
       
    }
+   
+    /**
+     *  Used to ensure a song clip is at the beginning before it starts
+     */
+    public void newSong()
+   {
+       clip.setFramePosition(0); // rewind to the beginning
+   }
   
+    /**
+     * This method is used to play any song in the game
+     */
     public void play() {
          if (volume != Volume.MUTE) {
 
          if (clip.isRunning())
 
             clip.stop();   // Stop the player if it is still running
-
-         clip.setFramePosition(0); // rewind to the beginning
          
          new Thread(){//multi-tasking stuff
              public void run(){

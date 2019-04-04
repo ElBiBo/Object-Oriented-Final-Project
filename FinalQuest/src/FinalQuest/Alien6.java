@@ -17,11 +17,6 @@ import java.util.ArrayList;
 public class Alien6 extends Alien {
     
     private int behavior;
-    private final double ORIGIN_X;
-    private final double ORIGIN_Y;
-    private final double RADIUS = 200;
-    private final double angle;
-    private final double direction;
     private final SpaceShip ship;
     
     /**
@@ -29,27 +24,32 @@ public class Alien6 extends Alien {
      * @param x starting x coordinate for the alien
      * @param y starting y coordinate for the alien
      * @param D is the difficulty of the alien: normal, hard, unforgiving
-     * @param s
      */
-    public Alien6(int x, int y, String D, SpaceShip s) {
+    public Alien6(int x, int y, String D) {
         super(x, y, D);
-        POINTS = 500;
+        this.POINTS = 500;
         this.sprite_type = "enemy";
-        this.ship = s;
-        DIFFICULTY = D;
-        ORIGIN_X = 640;
-        if (y<960/2)
-        {
-            ORIGIN_Y = y+RADIUS;
-            angle = Math.PI /-2;
-            direction = -1;
-        }
-        else
-        {
-            ORIGIN_Y = y-RADIUS;
-            angle = Math.PI /2;
-            direction = 1;
-        }
+        this.DIFFICULTY = D;
+        this.move_speed = 4;
+        this.ship = Stage.spaceship;
+        initAlien();
+        
+    }
+    
+    /**
+     * Constructor
+     * @param x starting x coordinate for the alien
+     * @param y starting y coordinate for the alien
+     * @param D is the difficulty of the alien: normal, hard, unforgiving
+     * @param s adjust the speed of the ship
+     */
+    public Alien6(int x, int y, String D, int s) {
+        super(x, y, D);
+        this.POINTS = 500;
+        this.sprite_type = "enemy";
+        this.DIFFICULTY = D;
+        this.move_speed = s;
+        this.ship = Stage.spaceship;
         initAlien();
         
     }
@@ -62,20 +62,20 @@ public class Alien6 extends Alien {
             case "normal":
                 fire_rate = 100;  //how often lasers are fired
                 health = 3; // how many times they can be hit before dying
-                missile_speed = -8; // how fast their lasers move
-                move_speed = 4; // how fast the alien moves
+                move_speed = move_speed+0; // how fast the alien moves
+                missile_speed = -4-move_speed; // how fast their lasers move
                 break;
             case "hard":
                 fire_rate = 50;  //how often lasers are fired
                 health = 4; // how many times they can be hit before dying
-                missile_speed = -10; // how fast their lasers move
-                move_speed = 6; // how fast the alien moves
+                move_speed = move_speed+2; // how fast the alien moves
+                missile_speed = -4-move_speed; // how fast their lasers move
                 break;
             case "unforgiving":
                 fire_rate = 25;  //how often lasers are fired
                 health = 5; // how many times they can be hit before dying
-                missile_speed = -14; // how fast their lasers move
-                move_speed = 8; // how fast the alien moves
+                move_speed = move_speed+4; // how fast the alien moves
+                missile_speed = -8-move_speed; // how fast their lasers move
                 break;
         }
         

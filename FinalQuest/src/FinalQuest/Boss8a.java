@@ -20,29 +20,24 @@ public class Boss8a extends Boss {
     private int p_direction;
     private int fire_rate;
     private int health;
-    private int max_health;
-    private int crash_health;
     private int move_speed;
+    private int direction = 1;
+    private int step = 0;
     private List<Missile> missiles;
     private int missile_speed;
     private final String DIFFICULTY;
     private String attack_mode = "moving";
-    private String fire_mode = "regular";
-    private int direction = 1;
-    private int step = 0;
-    private int delay;
-    private int count = 0;
     private String sprite_type;
     private String status;
     private Explosion boom;
-    private Boss main_ship;
+    private Boss8 main_ship;
     
     /**
      * Constructor
      * @param ship Used to get info about the boss ship and coordinate movement
      * @param D is the difficulty of the alien: normal, hard, unforgiving
      */
-    public Boss8a(Boss ship, String D) {
+    public Boss8a(Boss8 ship, String D) {
         super(ship.getX(), ship.getY()+20, D);
         this.p_direction = 1;
         this.boom = null;
@@ -62,31 +57,20 @@ public class Boss8a extends Boss {
     private void initAlien() {
         switch (DIFFICULTY) {
             case "normal":
-                fire_rate = 80;  //how often lasers are fired
-                health = 60; // how many times they can be hit before dying
-                move_speed += 0; // how fast the alien moves
+                health = 10; // how many times they can be hit before dying
                 missile_speed = (move_speed+3)*-1; // how fast their lasers move
-                delay = 90; // how long it takes for the boss to charge
-                
                 break;
             case "hard":
-                fire_rate = 60;  //how often lasers are fired
-                health = 90; // how many times they can be hit before dying
-                move_speed += 2; // how fast the alien moves
+                health = 20; // how many times they can be hit before dying
                 missile_speed = (move_speed+3)*-1; // how fast their lasers move
-                delay = 60;
                 break;
             case "unforgiving":
-                fire_rate = 40;  //how often lasers are fired
-                health = 120; // how many times they can be hit before dying
-                move_speed += 4; // how fast the alien moves
+                health = 30; // how many times they can be hit before dying
                 missile_speed = (move_speed+6)*-1; // how fast their lasers move
-                delay = 30;
                 break;
         }
+        fire_rate = 100;
         curve = 0;
-        max_health = health;
-        crash_health = max_health/3*2;
         fire_count = 0;
         missiles = new ArrayList<>();
         loadImage("src/resources/Boss8a.png");
@@ -131,75 +115,33 @@ public class Boss8a extends Boss {
     }
     
     /**
-     * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being
-     * destroyed first
+     * Fires a spray of plasma
      */
     public void fire() {
         fire_count +=1;
-        /*if (fire_count % (fire_rate*5) == 0)
+        missiles.add(new Missile(x, y+height/2-4 , -5,curve,"src/resources/plasma_bolt.png"));
+        curve+=p_direction;
+        if ((curve>5 && p_direction >0)|| (curve<-5 && p_direction <0))
         {
-            reinforcement_list.add(new Alien1(x+width/2, y+height/2, DIFFICULTY,"launch"));
-        }*/
-        
-        switch (fire_mode)
-        {
-            case "regular":
-                if (fire_count % (fire_rate/3) == 0)
-                {
-                    missiles.add(new Missile(x+15, y +70 , missile_speed,0));
-                    missiles.add(new Missile(x+15, y+height-74 , missile_speed,0));
-                    missiles.add(new Missile(x+20, y +30 , missile_speed,0));
-                    missiles.add(new Missile(x+20, y+height-34 , missile_speed,0));
-                }
-                if (fire_count % fire_rate*10 == 0)
-                {
-                    attack_mode = "moving";
-                }
-                break;
-            case "spread":
-                missiles.add(new Missile(x+15, y+height/2-4 , -5,curve,"src/resources/plasma_bolt.png"));
-                curve+=p_direction;
-                if ((curve>5 && p_direction >0)|| (curve<-5 && p_direction <0))
-                {
-                    p_direction*=-1;
-                }
-                if (fire_count % fire_rate*10 == 0)
-                {
-                    attack_mode = "moving";
-                }
-                break;
-            case "seek":
-                if (fire_count % fire_rate == 0)
-                {
-                    missiles.add(new Seeker(x+15,y+height/2-4,Stage.spaceship));
-                }
-                if (fire_count % fire_rate*2 == 0)
-                {
-                    attack_mode = "moving";
-                }
-                break;
+            p_direction*=-1;
         }
+        if (fire_count % fire_rate == 0)
+        {
+            main_ship.attackComplete();
+        }        
     }
     
     
     /**
      *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * Basically just sticks to the front of the ship, serves as a gun and 
+     * blows up when shot
      */
     public void move()
     {
-        count++;
         switch (attack_mode){
             case "moving":
                 moving();
-                break;
-            case "fire":
-                //fire();
-                break;
-            case "crash":
-                crash();
                 break;
             case "blowup":
                 blowup();
@@ -209,113 +151,21 @@ public class Boss8a extends Boss {
     }
     
     /**
-     * The boss moves up and down, firing it's missiles
+     * The miniboss stays right on the tip of the main boss, serving as a main
+     * gun until destroyed.
      */
     public void moving(){
         x = main_ship.getX() - 40;
         y = main_ship.getY() + 40;
-        
-        /*y += move_speed*direction;
-        if (direction < 0)
+        if ("fire".equals(main_ship.getAttackMode()))
         {
-            if (y < 50 && !center) 
-            {
-                //attack_mode();
-                direction *= -1;
-                center = true;
-            }
-            else if (y < 480-height/2 && center)
-            {
-                center = false;
-                //attack_mode();
-            }
-        }
-        else if (direction > 0)
-        {
-            if (y > 720 && !center)
-            {   
-                direction *= -1;
-                //attack_mode();
-                center = true;
-            }
-            else if (y > 480-height/2 && center)
-            {
-                center = false;
-                //attack_mode();
-            }
-        }
-        if (health <= max_health/3)
-        {
-            if (direction <0)
-            {
-                direction = -3;
-            }
-            else
-            {
-                direction = 3;
-            }
-        }
-        else if (health <= max_health*2/3)
-        {
-            if (direction <0)
-            {
-                direction = -2;
-            }
-            else
-            {
-                direction = 2;
-            }
-        }*/
-    }
-    
-    public void attack_mode()
-    {
-        attack_mode = "fire";
-        int attack  = ThreadLocalRandom.current().nextInt(5);
-        switch (attack)
-        {
-            case 0: case 3:
-                fire_mode = "regular";
-                break;
-            case 1: case 4:
-                fire_mode = "spread";
-                break;
-            case 2:
-                fire_mode = "seek";
-                break;
-                        
+            fire();
         }
     }
     
     /**
-     *  boss zooms across the screen, attempting to crash into the player
+     * Rapidly explode animation
      */
-    public void crash()
-    {
-        fire();
-        step++;
-        if (step <= delay)
-        {
-            if (step%3 == 0)
-            {
-                y+= 5*direction;
-                direction = direction * -1;
-            }
-        }
-        else if (x>0-width)
-        {
-            x -= move_speed*4;
-        }
-        else
-        {
-            x = 1300;
-            y = 480-height/2;
-            attack_mode = "entry";
-            step = 0;
-            fire_count = 0;
-        }
-    }
-    
     public void blowup()
     {
         x = main_ship.getX() - 40;
@@ -339,6 +189,9 @@ public class Boss8a extends Boss {
         }
     }
     
+    /**
+     * Makes random explosions 
+     */
     private void makeBoom()
     {
         SoundEffect.ALIEN_EXPLODE.play();
@@ -347,6 +200,12 @@ public class Boss8a extends Boss {
         boom = new Explosion(x_pos,y_pos);
     }
     
+    /**
+     * Once explosions are randomly made, they can be found here for use
+     * returns null if there are no explosions to be had
+     * @return null if there are no explosions, otherwise an explosion sprite
+     */
+    @Override
     public Explosion getBoom()
     {
         if (boom == null)
@@ -366,8 +225,10 @@ public class Boss8a extends Boss {
     /**
      * sets status to exploding
      */
+    @Override
     public void explode()
     {
+        main_ship.toggleGuns();
         status = "gone";
         attack_mode = "blowup";
         sprite_type = "exploding"; 
@@ -378,6 +239,7 @@ public class Boss8a extends Boss {
      * mostly used to make things explode
      * @return  the current status of the sprite
      */
+    @Override
     public String getStatus()
     {
         return status;
@@ -387,6 +249,7 @@ public class Boss8a extends Boss {
      * see what type the sprite is
      * @return  a string containing the sprite's type
      */
+    @Override
     public String getType()
     {
         return sprite_type;

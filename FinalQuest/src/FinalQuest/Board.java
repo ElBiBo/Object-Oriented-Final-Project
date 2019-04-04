@@ -76,7 +76,7 @@ public class Board extends JPanel implements ActionListener {
         
         explosions = new ArrayList<>();
         spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
-        ship_input = false;
+        ship_input = true;
         GUI_bar = new Background(400,0,"src/resources/GUIbar.png");
         GUI_bar_player = new Background(0,0,"src/resources/GUIbarplayer.png");
         menu = new Background(0,0,"src/resources/menu_image.png");
@@ -261,7 +261,6 @@ public class Board extends JPanel implements ActionListener {
      private void drawLevelComplete(Graphics g)
     {
         String msg = "Level complete!";
-        MusicPlayer.MAIN1.stop();//Start background Music
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
         
@@ -368,7 +367,7 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(small);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2);
         int low =  hm.getScores().get(9).getScore();
-        if (spaceship.getScore() > low)// hm.getScores().get(10).getScore())
+        if (spaceship.getScore() > low)
         {
             enter_score = true;
             msg = "Congratulations! You are in the top 10! Enter your name:";

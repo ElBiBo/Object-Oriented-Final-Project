@@ -190,8 +190,7 @@ public class SpaceShip extends Sprite {
             {
                 count = 0;
                 game_mode = "flyoff";
-                MusicPlayer.BOSS1.stop();
-                MusicPlayer.VICTORY.play();
+                Stage.setSong(MusicPlayer.VICTORY);
             }
         }
         else if (game_mode == "flyoff")
@@ -268,6 +267,7 @@ public class SpaceShip extends Sprite {
     {
         count = 0;
         game_mode = "gametime";
+        Stage.startSong();
     }
     
     /**
@@ -295,6 +295,7 @@ public class SpaceShip extends Sprite {
     {
         count = 0;
         game_mode = "pause";
+        Stage.stopSong();
     }
     
      /**
@@ -590,7 +591,7 @@ public class SpaceShip extends Sprite {
         int key = e.getKeyCode();
         if (game_mode == "level")
         {
-            MusicPlayer.VICTORY.stop();
+            Stage.setLevelSong();
             startingMode();
             
         }
