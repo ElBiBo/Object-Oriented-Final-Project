@@ -16,7 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 /**
  *
  * This class primarily handles drawing various objects to the screen
@@ -170,9 +175,16 @@ public class Board extends JPanel implements ActionListener {
                 ship_input = false;
                 break;
             case "mainmenu":
-                drawMainMenu(g);
+                {
+                try {
+                    drawMainMenu(g);
+                } catch (IOException ex) {
+                    Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
                 ship_input = false;
                 break;
+
             case "boss":
                 drawObjects(g);
                 drawWarning(g);
@@ -387,8 +399,8 @@ public class Board extends JPanel implements ActionListener {
      * This draws a list of the top 10 scores to the screen
      */
     private void drawMainMenu(Graphics g) {
-        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
-        String msg = "Main Menu";
+       g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        String msg = "Final Quest";
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
         g.setColor(Color.gray);
@@ -396,6 +408,7 @@ public class Board extends JPanel implements ActionListener {
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2+2, B_HEIGHT / 7+2);
         g.setColor(Color.white);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 7);
+        final BufferedImage image = ImageIO.read(new File("src/resources/blueArrow.png"));
         int x = 540;
         int y = 200;
         msg = "Play";
@@ -411,6 +424,7 @@ public class Board extends JPanel implements ActionListener {
         }
         
         g.drawString(msg, x, y);
+        
         msg = "Instructions";
         g.setColor(Color.gray);
         g.drawString(msg, x+2, y+52);
@@ -423,6 +437,7 @@ public class Board extends JPanel implements ActionListener {
             g.setColor(Color.white);
         }
         g.drawString(msg, x, y+50);
+        
         msg = "Options";
         g.setColor(Color.gray);
         g.drawString(msg, x+2, y+102);
@@ -435,10 +450,27 @@ public class Board extends JPanel implements ActionListener {
             g.setColor(Color.white);
         }
         g.drawString(msg, x, y+100);
+        msg = "Exit";
+        g.setColor(Color.gray);
+        g.drawString(msg, x+2, y+152);
+         
+        if (menu_option == 3)
+        {
+            g.setColor(Color.blue);
+        }
+        else
+        {
+            g.setColor(Color.white);
+        }
+        g.drawString(msg, x, y+150);
+      
         g.setColor(Color.white);
-        msg = ">";
-        g.drawString(msg, x-40, y+menu_option*50);
         
+        
+        g.drawImage(image, x-40, y+menu_option*50-25, null);
+        
+    
+    
     }
     
     /**
@@ -813,18 +845,20 @@ public class Board extends JPanel implements ActionListener {
                             break;
                     }
                 }
-                else if (e.getKeyCode() == KeyEvent.VK_UP)
+                  else if (e.getKeyCode() == KeyEvent.VK_UP)
                 {
                     menu_option--;
+                    SoundEffect.MENU_SELECTION.play();
                     if (menu_option < 0)
                     {
-                        menu_option = 5;
+                        menu_option = 3;
                     }
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_DOWN)
                 {
                     menu_option++;
-                    if (menu_option > 5)
+                    SoundEffect.MENU_SELECTION.play();
+                    if (menu_option > 3)
                     {
                         menu_option = 0;
                     }
