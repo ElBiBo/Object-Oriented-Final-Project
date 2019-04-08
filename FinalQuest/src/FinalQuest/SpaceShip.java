@@ -279,6 +279,15 @@ public class SpaceShip extends Sprite {
         game_mode = "gameover";
     }
     
+    /**
+     * displays the ending when the player has completed the game. Congrats!
+     */
+    public void endingMode()
+    {
+        count = 0;
+        game_mode = "ending";
+    }
+    
      /**
      * Adjusts mode to menu. We are back at our main menu!
      */

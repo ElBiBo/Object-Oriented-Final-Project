@@ -92,7 +92,7 @@ public class Alien5 extends Alien {
      * @param D is the difficulty of the alien: normal, hard, unforgiving
      * @param r is the radius you want the alien to circle. default is 200
      * @param spin  Default is to start spinning at about halfway across the screen, this can adjust that x point
-     * @param speed move speed of the ship
+     * @param speed move speed of the ship. default is 4
      */
     public Alien5(int x, int y, String D, double r, int spin, int speed) {
         super(x, y, D);

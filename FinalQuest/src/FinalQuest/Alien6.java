@@ -108,10 +108,14 @@ public class Alien6 extends Alien {
                 if (y< pos[1])
                 {
                     y += move_speed / 3;
+                    if (move_speed/3 == 0)
+                        y++;
                 }
                 else
                 {
                     y -= move_speed / 3;
+                    if (move_speed/3 == 0)
+                        y--;
                 }
                 if (x<pos[0])
                 {

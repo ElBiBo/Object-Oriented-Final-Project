@@ -16,12 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
 /**
  *
  * This class primarily handles drawing various objects to the screen
@@ -38,7 +32,7 @@ public class Board extends JPanel implements ActionListener {
     private List<Sprite> power_ups;
     private List<Explosion> explosions;
     private List<Background> background;
-    private Background GUI_bar, GUI_bar_player, warning, menu;
+    private Background GUI_bar, GUI_bar_player, warning, menu, arrow;
     private final int B_WIDTH = 1280;
     private final int B_HEIGHT = 960;
     private final int ICRAFT_X = 200;
@@ -47,7 +41,7 @@ public class Board extends JPanel implements ActionListener {
     private int stage_count = 0;
     private int level = 1;
     private String game_mode = "mainmenu";
-    private String difficulty;  
+    private String difficulty;
     private int wave_count = 0;
     private Stage stage;
     private int num_players;
@@ -81,15 +75,16 @@ public class Board extends JPanel implements ActionListener {
         
         explosions = new ArrayList<>();
         spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
-        ship_input = true;
+        ship_input = false;
         GUI_bar = new Background(400,0,"src/resources/GUIbar.png");
         GUI_bar_player = new Background(0,0,"src/resources/GUIbarplayer.png");
         menu = new Background(0,0,"src/resources/menu_image.png");
         warning = new Background(0,0,"src/resources/warning.png");
-        Stage stage = new Stage(difficulty, spaceship);
+        arrow = new Background(0,0,"src/resources/blueArrow.png");
+        //Stage stage = new Stage(difficulty, spaceship);
         
-        initBG();
-        initAliens();
+        //initBG();
+        //initAliens();
         
         timer = new Timer(DELAY, this);
         timer.start();
@@ -140,10 +135,9 @@ public class Board extends JPanel implements ActionListener {
             initBG();
         }
         if (ship_input)
-        {   
+        {
             game_mode = spaceship.checkMode();
         }
-        //game_mode = "mainmenu";
         switch (game_mode) {
             case "dead":
                 drawObjects(g);
@@ -175,16 +169,9 @@ public class Board extends JPanel implements ActionListener {
                 ship_input = false;
                 break;
             case "mainmenu":
-                {
-                try {
-                    drawMainMenu(g);
-                } catch (IOException ex) {
-                    Logger.getLogger(Board.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
+                drawMainMenu(g);
                 ship_input = false;
                 break;
-
             case "boss":
                 drawObjects(g);
                 drawWarning(g);
@@ -194,8 +181,12 @@ public class Board extends JPanel implements ActionListener {
                 drawObjects(g);
                 ship_input = true;
                 break;
+            case "credits":
+                drawCredits(g);
+                ship_input = false;
+                break;
             default:
-                game_mode = "menu";
+                game_mode = "mainmenu";
                 ship_input = false;
                 break;
         }
@@ -244,8 +235,8 @@ public class Board extends JPanel implements ActionListener {
     
     private void drawExplosions(Graphics g)
     {
-       for (Explosion e : explosions){
-            if (e.isVisible()) 
+        for (Explosion e : explosions){
+            if (e.isVisible())
             {
                 g.drawImage(e.getImage(), e.getX(), e.getY(), this);
             }
@@ -270,7 +261,7 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
-     private void drawLevelComplete(Graphics g)
+    private void drawLevelComplete(Graphics g)
     {
         String msg = "Level complete!";
         Font small = new Font("Impact", Font.BOLD, 40);
@@ -302,7 +293,7 @@ public class Board extends JPanel implements ActionListener {
         
         g.drawString("High Score: " + high_score, 410, 22);
         g.drawString("Level: " + stage.getLevel(), 710, 22);
-
+        
         if (num_players == 2) //just a place holder for now, but we may add 2 player mode later
         {
             g.drawImage(GUI_bar_player.getImage(), 880, GUI_bar_player.getY(),this);
@@ -396,81 +387,53 @@ public class Board extends JPanel implements ActionListener {
     }
     
     /**
-     * This draws a list of the top 10 scores to the screen
+     * This draws out our main menu
      */
     private void drawMainMenu(Graphics g) {
-       g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
-        String msg = "Final Quest";
-        Font small = new Font("Impact", Font.BOLD, 40);
+        Stage.setSong(MusicPlayer.MENU);
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        String title = "Final Quest";
+        Font small = new Font("Impact", Font.BOLD, 80);
         FontMetrics fm = getFontMetrics(small);
         g.setColor(Color.gray);
         g.setFont(small);
-        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2+2, B_HEIGHT / 7+2);
+        g.drawString(title, (B_WIDTH - fm.stringWidth(title)) / 2+2, B_HEIGHT / 7+2);
         g.setColor(Color.white);
-        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 7);
-        final BufferedImage image = ImageIO.read(new File("src/resources/blueArrow.png"));
+        g.drawString(title, (B_WIDTH - fm.stringWidth(title)) / 2, B_HEIGHT / 7);
+        title = "Journey for a Passing Grade";
+        small = new Font("Impact", Font.BOLD, 31);
+        fm = getFontMetrics(small);
+        g.setColor(Color.gray);
+        g.setFont(small);
+        g.drawString(title, (B_WIDTH - fm.stringWidth(title)) / 2+2, B_HEIGHT / 7+32);
+        g.setColor(Color.white);
+        g.drawString(title, (B_WIDTH - fm.stringWidth(title)) / 2, B_HEIGHT / 7+30);
+        
         int x = 540;
-        int y = 200;
-        msg = "Play";
-        g.setColor(Color.gray);
-        g.drawString(msg, x+2, y+2);
-        if (menu_option == 0)
+        int y = 300;
+        int spacing = 50;
+        String[] msg = {"Play", "Instructions", "High Scores", "Achievements", "Options", "Credits", "Exit"};
+        small = new Font("Impact", Font.BOLD, 40);
+        fm = getFontMetrics(small);
+        g.setFont(small);
+        for (int i = 0;i < msg.length;i++)
         {
-            g.setColor(Color.blue);
-        }
-        else
-        {
-            g.setColor(Color.white);
+            g.setColor(Color.gray);
+            g.drawString(msg[i], x+2, y+2+i*spacing);
+            if (menu_option == i)
+            {
+                g.setColor(Color.blue);
+            }
+            else
+            {
+                g.setColor(Color.white);
+            }
+            
+            g.drawString(msg[i], x, y+i*spacing);
         }
         
-        g.drawString(msg, x, y);
+        g.drawImage(arrow.getImage(), x-40, y+menu_option*spacing-25, null);
         
-        msg = "Instructions";
-        g.setColor(Color.gray);
-        g.drawString(msg, x+2, y+52);
-        if (menu_option == 1)
-        {
-            g.setColor(Color.blue);
-        }
-        else
-        {
-            g.setColor(Color.white);
-        }
-        g.drawString(msg, x, y+50);
-        
-        msg = "Options";
-        g.setColor(Color.gray);
-        g.drawString(msg, x+2, y+102);
-        if (menu_option == 2)
-        {
-            g.setColor(Color.blue);
-        }
-        else
-        {
-            g.setColor(Color.white);
-        }
-        g.drawString(msg, x, y+100);
-        msg = "Exit";
-        g.setColor(Color.gray);
-        g.drawString(msg, x+2, y+152);
-         
-        if (menu_option == 3)
-        {
-            g.setColor(Color.blue);
-        }
-        else
-        {
-            g.setColor(Color.white);
-        }
-        g.drawString(msg, x, y+150);
-      
-        g.setColor(Color.white);
-        
-        
-        g.drawImage(image, x-40, y+menu_option*50-25, null);
-        
-    
-    
     }
     
     /**
@@ -511,6 +474,48 @@ public class Board extends JPanel implements ActionListener {
         
     }
     
+    /**
+     * This draws a list of the top 10 scores to the screen
+     */
+    private void drawCredits(Graphics g) {
+        String[] msg = {"#", "Programmers", "!", "Marco Tacca", "Nicholas Gacharich", 
+            " ", "#", "Game Assets", "!", "OpenGameArt.org", 
+            " ", "#", "Special Thanks", "!", "Dr. David Jaramillo"};
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        int y = B_HEIGHT/7;
+        int adjust = 40;
+        Font size = new Font("Impact", Font.BOLD, adjust);
+        FontMetrics fm = getFontMetrics(size);
+        g.setFont(size);
+        for (int i = 0; i < msg.length; i++)
+        {
+            switch (msg[i]){
+                case "#":
+                    adjust = 40;
+                    size = new Font("Impact", Font.BOLD, adjust);
+                    fm = getFontMetrics(size);
+                    g.setFont(size);
+                    break;
+                case "!":
+                    adjust = 30;
+                    size = new Font("Impact", Font.BOLD, adjust);
+                    fm = getFontMetrics(size);
+                    g.setFont(size);
+                    break;
+                case " ":
+                    y += 100;
+                    break;
+                default:
+                    g.setColor(Color.gray);
+                    g.drawString(msg[i], (B_WIDTH - fm.stringWidth(msg[i])) / 2, y);
+                    g.setColor(Color.white);
+                    g.drawString(msg[i], (B_WIDTH - fm.stringWidth(msg[i])) / 2+2, y+2);
+                    y+=adjust;
+                    break;
+            }
+        }
+        
+    }
     
     /**
      * The game is paused, draw a big pause in the middle of the screen
@@ -557,7 +562,7 @@ public class Board extends JPanel implements ActionListener {
         
         if (game_mode != "gametime") {
             //timer.stop();
-        }       
+        }
     }
     
     private void updateBackground() {
@@ -570,10 +575,10 @@ public class Board extends JPanel implements ActionListener {
     /**
      * Move our ship, if necessary
      */
-    private void updateShip() {    
+    private void updateShip() {
         if (spaceship.isVisible()) {
             spaceship.move();
-        }      
+        }
     }
     
     /**
@@ -701,7 +706,15 @@ public class Board extends JPanel implements ActionListener {
                     Missile m = ms.get(i);
                     r2 = m.getBounds();
                     r3 = spaceship.getBounds();
-                    if ((r2.intersects(r3) && !spaceship.isInvincibile()))
+                    for (Sprite alien2 : aliens) { // alien missiles cant shoot through blocks
+                        
+                        if (r2.intersects(alien2.getBounds()) && alien2.getType() == "block")
+                        {
+                            ms.remove(i);
+                            break;
+                        }
+                    }
+                    if ((r2.intersects(r3) && !spaceship.isInvincibile() && m.isVisible()))
                     {
                         ms.remove(i);
                         if (spaceship.die() <= 0)
@@ -709,7 +722,6 @@ public class Board extends JPanel implements ActionListener {
                             spaceship.setVisible(false);
                             alien.setVisible(false);
                             game_mode = "gameover";
-                            
                             
                         }
                     }
@@ -757,7 +769,7 @@ public class Board extends JPanel implements ActionListener {
                     }
                 }
             }
-           
+            
         }
         if (game_mode == "complete")
         {
@@ -799,11 +811,6 @@ public class Board extends JPanel implements ActionListener {
             
         }
         
-        /*@Override
-        public void keyTyped(KeyEvent e){
-            type(e);
-            
-        }*/
     }
     
     private void non_game_input(KeyEvent e)
@@ -836,34 +843,56 @@ public class Board extends JPanel implements ActionListener {
             case "mainmenu":
                 if (e.getKeyCode() == KeyEvent.VK_ENTER)
                 {
-                    switch (menu_option)
-                    {
-                        case 0:
+                    switch (menu_option){
+                        case 0: //play
+                            ship_input = true;
+                            spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
+                            Stage stage = new Stage(difficulty, spaceship);
+                            break;
+                        case 1: // instructions
+                            game_mode = "instructions";
+                            break;
+                        case 2: // high scores
                             game_mode = "highscore";
                             break;
-                        case 1:
+                        case 3: // achievements
+                            game_mode = "achievements";
                             break;
+                        case 4: // options
+                            game_mode = "options";
+                            break;
+                        case 5: // credits
+                            game_mode = "credits";
+                            break;
+                        case 6: // exit
+                            System.exit(0);
+                            break;
+                             
                     }
                 }
-                  else if (e.getKeyCode() == KeyEvent.VK_UP)
+                else if (e.getKeyCode() == KeyEvent.VK_UP)
                 {
                     menu_option--;
                     SoundEffect.MENU_SELECTION.play();
                     if (menu_option < 0)
                     {
-                        menu_option = 3;
+                        menu_option = 6;
                     }
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_DOWN)
                 {
                     menu_option++;
                     SoundEffect.MENU_SELECTION.play();
-                    if (menu_option > 3)
+                    if (menu_option > 6)
                     {
                         menu_option = 0;
                     }
                 }
                 break;
+            default:
+                game_mode = "mainmenu";
+                break;
+            
         }
     }
     

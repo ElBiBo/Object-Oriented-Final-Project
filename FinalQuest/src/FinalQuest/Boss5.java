@@ -8,12 +8,9 @@ import java.util.List;
 
 /**
  * Level 5's boss. 
- * This boss relies less on shooting and more on maneuvering.
- * It will fly up and down, firing off a plasma spread whenever it is in 
- * the middle of the screen. When it gets to the top or bottom edges it will
- * fly forward. It's delay before flying forward is much lower than previous
- * bosses. It will also have far more enemy ships coming through, which are a
- * mixture of alien1's and alien2's. It will also occasionally deploy a random powerup
+ * This boss relies makes use of seeker missiles to hit the player as well as 
+ * volleys of blaster fire. It pauses for a brief moment each time it fires
+ * a seeker missile.
  * @author Marco Tacca
  */
 public class Boss5 extends Boss {

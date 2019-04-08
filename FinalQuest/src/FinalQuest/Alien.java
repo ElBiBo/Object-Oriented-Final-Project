@@ -74,9 +74,7 @@ public abstract class Alien extends Sprite {
     }
     
     /**
-     * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being
-     * destroyed first
+     * Create a missile when activated. 
      */
     @Override
     public void fire() {
