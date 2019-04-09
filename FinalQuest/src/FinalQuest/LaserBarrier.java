@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.ThreadLocalRandom;
 import javax.imageio.ImageIO;
 
 /**
@@ -18,7 +17,7 @@ import javax.imageio.ImageIO;
  */
 public class LaserBarrier extends Alien {
     private String type;
-    private int image_x, image_y, frame, rate, direction;
+    private int image_x, image_y, frame, rate, direction, deployment, d_speed;
     private BufferedImage image;
     /**
      * Constructor
@@ -32,6 +31,8 @@ public class LaserBarrier extends Alien {
         sprite_type = "enemy";
         move_speed = 2;
         type = t;
+        d_speed = 48;
+        deployment = GetPos.justY(height);
         POINTS = 1000;
         frame = 0;
         direction = 1;
@@ -68,6 +69,25 @@ public class LaserBarrier extends Alien {
                     frame = 0;
                 }
                 laser();
+                break;
+            case "deploy":
+                rate = 10;
+                image_x = 29;
+                image_y = 63;
+                if (frame/rate>4)
+                {
+                    frame = 0;
+                }
+                x += move_speed;
+                y -= d_speed/4;
+                if (y<=deployment || y <= 250)
+                {
+                    d_speed-= 2;
+                }
+                if (d_speed <=0)
+                {
+                    type = "sentry";
+                }
                 break;
             case "sentry":
                 rate = 10;

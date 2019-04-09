@@ -27,8 +27,8 @@ public class Stage {
     
     public Stage(String d, SpaceShip s)
     {
-        level = 6;
-        wave_count = 10;
+        level = 7;
+        wave_count = 9;
         difficulty = d;
         Stage.spaceship = s;
         
@@ -53,6 +53,29 @@ public class Stage {
             {
                 song.newSong();
                 song.play();
+            }
+        }
+    }
+    
+    /**
+     * Used to set the current music to whatever you want the player to play.
+     * If music is currently playing, it stops that 
+     * @param a should be one of the songs listed in the MusicPlayer class
+     */
+    public static void playOnce(MusicPlayer a)
+    {
+        if (song != a)
+        {
+            if (song != null)
+            {
+                song.stop();
+            }
+            song = a;
+            
+            if (song != null)
+            {
+                song.newSong();
+                song.playOnce();
             }
         }
     }
@@ -1233,43 +1256,124 @@ public class Stage {
                         wave_count++;
                         break;
                     case 1: // level 7, wave 1
-                        
+                        for (int i = 0; i < 10; i++)
+                        {
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 1), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 2), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 3), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 4), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 5), B_HEIGHT+200*i, difficulty));
+                        }
                         wave_count++;
                         break;
                     case 2:// level 7, wave 2
+                        for (int i = 0; i < 10; i++)
+                        {
+                            aliens.add(new Alien10(B_WIDTH+1400*i, GetPos.splitY(29, 5, (i%3)+2), difficulty));
+                        }
+                        for (int i = 0; i < 15; i++)
+                        {
+                            aliens.add(new Alien2(B_WIDTH+250*i, GetPos.splitY(29, 5, 1), difficulty));
+                            aliens.add(new Alien2(B_WIDTH+250*i, GetPos.splitY(29, 5, 5), difficulty));
+                        }
                         
                         wave_count++;
                         break;
                     case 3:// level 7, wave 3
-                        
+                        for (int i = 0; i < 5; i++)
+                        {
+                            for (int j = 0;j<5;j++)
+                            {
+                                aliens.add(new LaserBarrier(GetPos.splitX(23,6,i%3+3), B_HEIGHT+j*6000, "deploy"));
+                            }
+                        }
                         wave_count++;
                         break;
                     case 4:// level 7, wave 4
-                        
+                        for (int i = 0; i < 10; i++)
+                        {
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 1), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 2), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 3), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 4), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 5), B_HEIGHT+200*i, difficulty));
+                        }
                         wave_count++;
                         break;
                     case 5:// level 7, wave 5
-                        
+                        for (int i = 0; i < 3; i++)
+                        {
+                            aliens.add(new Alien10(B_WIDTH, 150+320*i, difficulty));
+                        }
+                        for (int i = 0; i < 3; i++)
+                        {
+                            aliens.add(new LaserBarrier(GetPos.splitX(23,6,i%2+5), B_HEIGHT+1300, "deploy"));
+                        }
                         wave_count++;
                         break;
                     case 6:// level 7, wave 6
-                        
+                        for (int i = 0; i < 10; i++)
+                        {
+                            aliens.add(new Alien1(B_WIDTH+i*400, GetPos.splitY(29,5,1), difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*400, GetPos.splitY(29,5,2), difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*400, GetPos.splitY(29,5,3), difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*400, GetPos.splitY(29,5,4), difficulty));
+                            aliens.add(new Alien1(B_WIDTH+i*400, GetPos.splitY(29,5,5), difficulty));
+                            aliens.add(new Alien2(B_WIDTH+200+i*400, GetPos.splitY(29,3,1), difficulty));
+                            aliens.add(new Alien2(B_WIDTH+200+i*400, GetPos.splitY(29,3,2), difficulty));
+                            aliens.add(new Alien2(B_WIDTH+200+i*400, GetPos.splitY(29,3,3), difficulty));
+                        }
                         wave_count++;
                         break;
                     case 7:// level 7, wave 7
-                        
+                        for (int i = 0; i < 10; i++)
+                        {
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 1), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 2), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 3), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 4), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 5), B_HEIGHT+200*i, difficulty));
+                        }
                         wave_count++;
                         break;
                     case 8:// level 7, wave 8
-                        
+                        for (int i = 0;i<16;i++)
+                        {
+                            aliens.add(new Alien5(B_WIDTH+79*i, 250, difficulty,200,B_WIDTH-220,4));
+                            
+                        }
+                        aliens.add(new Alien10(B_WIDTH+2300, 150,difficulty));
+                        aliens.add(new Alien10(B_WIDTH+2300, B_HEIGHT-150, difficulty));
                         wave_count++;
                         break;
                     case 9://level 7, wave 9
-                        
+                        for (int i = 0;i<8;i++)
+                        {
+                            aliens.add(new Alien3(B_WIDTH+100*i, 300, difficulty));
+                            
+                        }
+                        for (int i = 0;i<8;i++)
+                        {
+                            aliens.add(new Alien4(B_WIDTH+800+100*i, 300, difficulty));
+                        }
+                        for (int i = 0;i<4;i++)
+                        {
+                             aliens.add(new LaserBarrier(B_WIDTH+400*i, 120, "barrier"));
+                             aliens.add(new LaserBarrier(B_WIDTH+400*i, B_HEIGHT-120, "barrier"));
+                        }
+                        aliens.add(new LaserBarrier(B_WIDTH+1200, 340, "barrier"));
+                        aliens.add(new LaserBarrier(B_WIDTH+1200, B_HEIGHT-340, "barrier"));
                         wave_count++;
                         break;
                     case 10://level 7, wave 10
-                        
+                        for (int i = 0; i < 10; i++)
+                        {
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 1), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 2), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 3), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 4), B_HEIGHT+200*i, difficulty));
+                            aliens.add(new Alien9(GetPos.splitX(10, 5, 5), B_HEIGHT+200*i, difficulty));
+                        }
                         wave_count++;
                         break;
                     case 11: //warning!

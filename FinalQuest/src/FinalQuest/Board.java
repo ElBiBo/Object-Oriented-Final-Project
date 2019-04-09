@@ -185,6 +185,18 @@ public class Board extends JPanel implements ActionListener {
                 drawCredits(g);
                 ship_input = false;
                 break;
+            case "instructions":
+                drawInstructions(g);
+                ship_input = false;
+                break;
+            case "achievements":
+                drawAchievements(g);
+                ship_input = false;
+                break;
+            case "options":
+                drawOptions(g);
+                ship_input = false;
+                break;
             default:
                 game_mode = "mainmenu";
                 ship_input = false;
@@ -363,6 +375,7 @@ public class Board extends JPanel implements ActionListener {
      */
     private void drawGameOver(Graphics g) {
         
+        Stage.playOnce(MusicPlayer.GAMEOVER);
         String msg = "Game Over";
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
@@ -440,12 +453,15 @@ public class Board extends JPanel implements ActionListener {
      * This draws a list of the top 10 scores to the screen
      */
     private void drawHighscore(Graphics g) {
+        Stage.setSong(MusicPlayer.MENU);
         g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         String msg = "Top 10";
         Font small = new Font("Impact", Font.BOLD, 40);
         FontMetrics fm = getFontMetrics(small);
-        g.setColor(Color.white);
+        g.setColor(Color.gray);
         g.setFont(small);
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2+2, B_HEIGHT / 7+2);
+        g.setColor(Color.white);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 7);
         
         small = new Font("Impact", Font.BOLD, 30);
@@ -462,12 +478,17 @@ public class Board extends JPanel implements ActionListener {
         for (int i = 0; i<10;i++)
         {
             color = new Color(255-i*20,255-i/2*20,255-i/2*20);
-            g.setColor(color);
             msg = scores.get(i).getName();
             bounds = fm.getStringBounds(msg, g);
             adjust = (int) bounds.getWidth();
+            g.setColor(Color.gray);
+            g.drawString(msg, B_WIDTH/ 2-adjust-20+2, B_HEIGHT / 7+2+90+40*i);
+            g.setColor(color);
             g.drawString(msg, B_WIDTH/ 2-adjust-20, B_HEIGHT / 7+90+40*i);
             msg = myFormat.format(scores.get(i).getScore());
+            g.setColor(Color.gray);
+            g.drawString(msg, B_WIDTH/ 2+20+2, B_HEIGHT / 7+90+2+40*i);
+            g.setColor(color);
             g.drawString(msg, B_WIDTH/ 2+20, B_HEIGHT / 7+90+40*i);
             
         }
@@ -475,21 +496,109 @@ public class Board extends JPanel implements ActionListener {
     }
     
     /**
-     * This draws a list of the top 10 scores to the screen
+     * quick instructions for the player
+     */
+    private void drawInstructions(Graphics g) {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg = {"#", "Instructions", "!", 
+            "The goal of the game is simple. Navigate your ship through space, avoiding", 
+            "enemies along the way. Destroy enemies for points. Every 30,000 points earns",
+            "you a spare life.",
+            " ", "#", "Controls", "!", 
+            "Use the arrow keys to navigate and the space bar to fire. P pauses the game. ", 
+            " ", "#", "Powerups", "!", 
+            "Occasionally barrels appear on the screen if you've destroyed enough enemies.",
+            "These barrels contain powerups! Destroy the barrel and touch the powerup to  ", 
+            "improve your ship.                                                                           "};
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        int y = B_HEIGHT/10;
+        int x = B_WIDTH/16;
+        drawText(g,msg,x,y);
+        Sprite p = new SpaceShip(0,0,"normal");
+        g.drawImage(p.getImage(), 270, 290,this);
+        p = new PowerUp(0,0);
+        g.drawImage(p.getImage(), 280, 470,this);
+        p.damage();
+        
+        String[] powers={"invincibility", "bullet", "fast", "rapid", "spread","life","points"};
+        String[] msg1 = {"Temporary invincibility", "More bullets", "Move faster", "Faster bullets", "Spread fire", "Bonus life", "5,000 points!"};
+        for (int i = 0; i < 7; i++)
+        {
+            x = 150 + (i%2)*500;
+            y = 650 + (i/2) * 50;
+            g.drawString(msg1[i], x+40, y+20);
+            p = new PowerUp(0,0,powers[i]);
+            p.damage();
+            if (i==5)
+            {
+                x-=5;
+                y-=10;
+            }
+            else if (i==6)
+            {
+                x-=10;
+                y-=10;
+            }
+            g.drawImage(p.getImage(), x, y,this);
+        }
+        
+        
+    }
+    
+    /**
+     * This the game's system options
+     */
+    private void drawOptions(Graphics g) {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg = {"#", "Options", "!", "To be included later"};
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        int y = B_HEIGHT/7;
+        drawCenteredText(g,msg,y);
+        
+    }
+    
+    /**
+     * Any achievements the player has acquired are displayed here
+     */
+    private void drawAchievements(Graphics g) {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg = {"#", "Achievements", "!", "To be included later"};
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        int y = B_HEIGHT/7;
+        drawCenteredText(g,msg,y);
+        
+    }
+    
+    /**
+     * This the game's credits
      */
     private void drawCredits(Graphics g) {
+        Stage.setSong(MusicPlayer.MENU);
         String[] msg = {"#", "Programmers", "!", "Marco Tacca", "Nicholas Gacharich", 
             " ", "#", "Game Assets", "!", "OpenGameArt.org", 
             " ", "#", "Special Thanks", "!", "Dr. David Jaramillo"};
         g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int y = B_HEIGHT/7;
+        drawCenteredText(g,msg,y);
+        
+    }
+    
+    /**
+     * Used for drawing centered text to the screen
+     * @param g the screen to be drawn on
+     * @param msg   an array of strings. "#" sets size to large, "!" to small and " " skips a line
+     * @param y     y coordinate for the top of the text
+     */
+    private void drawCenteredText(Graphics g, String[] msg, int y)
+    {
+        Stage.setSong(MusicPlayer.MENU);
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int adjust = 40;
         Font size = new Font("Impact", Font.BOLD, adjust);
         FontMetrics fm = getFontMetrics(size);
         g.setFont(size);
-        for (int i = 0; i < msg.length; i++)
-        {
-            switch (msg[i]){
+        for (String msg1 : msg) {
+            switch (msg1) {
                 case "#":
                     adjust = 40;
                     size = new Font("Impact", Font.BOLD, adjust);
@@ -507,14 +616,55 @@ public class Board extends JPanel implements ActionListener {
                     break;
                 default:
                     g.setColor(Color.gray);
-                    g.drawString(msg[i], (B_WIDTH - fm.stringWidth(msg[i])) / 2, y);
+                    g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2, y);
                     g.setColor(Color.white);
-                    g.drawString(msg[i], (B_WIDTH - fm.stringWidth(msg[i])) / 2+2, y+2);
+                    g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2 + 2, y+2);
                     y+=adjust;
                     break;
             }
         }
-        
+    }
+    
+    /**
+     * Used for drawing left aligned text to the screen
+     * @param g the screen to be drawn on
+     * @param msg   an array of strings. "#" sets size to large, "!" to small and " " skips a line
+     * @param y     y coordinate for the top of the text
+     */
+    private void drawText(Graphics g, String[] msg, int x , int y)
+    {
+        Stage.setSong(MusicPlayer.MENU);
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        int adjust = 40;
+        Font size = new Font("Impact", Font.BOLD, adjust);
+        FontMetrics fm = getFontMetrics(size);
+        g.setFont(size);
+        for (String msg1 : msg) {
+            switch (msg1) {
+                case "#":
+                    adjust = 40;
+                    size = new Font("Impact", Font.BOLD, adjust);
+                    fm = getFontMetrics(size);
+                    g.setFont(size);
+                    break;
+                case "!":
+                    adjust = 30;
+                    size = new Font("Impact", Font.BOLD, adjust);
+                    fm = getFontMetrics(size);
+                    g.setFont(size);
+                    break;
+                case " ":
+                    y += 100;
+                    break;
+                default:
+                    g.setColor(Color.gray);
+                    g.drawString(msg1, x, y);
+                    g.setColor(Color.white);
+                    g.drawString(msg1, x + 2, y+2);
+                    y+=adjust;
+                    break;
+            }
+        }
     }
     
     /**
@@ -565,6 +715,9 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
+    /**
+     * Background images should move
+     */
     private void updateBackground() {
         for (Background bg : background)
         {
@@ -895,6 +1048,4 @@ public class Board extends JPanel implements ActionListener {
             
         }
     }
-    
-    
 }

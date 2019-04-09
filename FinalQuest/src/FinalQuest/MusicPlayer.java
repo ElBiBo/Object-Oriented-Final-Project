@@ -23,6 +23,7 @@ public enum MusicPlayer{
     MAIN7("src/resources/level7.wav"),         // level 7 theme
     MAIN8("src/resources/FinalTheme.wav"),     // level 8 theme
     MENU("src/resources/menu.wav"),            // menu music
+    GAMEOVER("src/resources/GAMEOVER.wav"),    // game over music
     VICTORY("src/resources/victory.wav");      // victory theme
     // Nested class for specifying volume
     public static enum Volume {
@@ -77,6 +78,30 @@ public enum MusicPlayer{
              public void run(){
                  
             clip.loop(Clip.LOOP_CONTINUOUSLY);
+
+     
+             }
+             
+         }.start();
+         
+      }
+    
+    }
+    
+    /**
+     * This plays a song once instead of continuously
+     */
+    public void playOnce() {
+         if (volume != Volume.MUTE) {
+
+         if (clip.isRunning())
+
+            clip.stop();   // Stop the player if it is still running
+         
+         new Thread(){//multi-tasking stuff
+             public void run(){
+                 
+            clip.loop(0);
 
      
              }
