@@ -27,8 +27,8 @@ public class Stage {
     
     public Stage(String d, SpaceShip s)
     {
-        level = 8;
-        wave_count = 10;
+        level = 1;
+        wave_count = 0;
         difficulty = d;
         Stage.spaceship = s;
         
