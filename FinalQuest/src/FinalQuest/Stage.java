@@ -27,8 +27,8 @@ public class Stage {
     
     public Stage(String d, SpaceShip s)
     {
-        level = 7;
-        wave_count = 9;
+        level = 8;
+        wave_count = 10;
         difficulty = d;
         Stage.spaceship = s;
         
@@ -1395,43 +1395,173 @@ public class Stage {
                         wave_count++;
                         break;
                     case 1: // level 8, wave 1
-                        
+                        num = 0;
+                        for (int i = 0; i<10;i++)
+                        {
+                            num += GetPos.splitX(1,6,1); 
+                            aliens.add(new UTentacle(B_WIDTH+num, 0));
+                            num += GetPos.splitX(1,6,1); 
+                            aliens.add(new Tentacle(B_WIDTH+num, B_HEIGHT-360));
+                        }
+                        for (int i = 0;i<40;i++)
+                        {
+                            aliens.add(new Alien11(B_WIDTH+1000+i*250, GetPos.splitY(29, 5, 3), difficulty));
+                        }
                         wave_count++;
                         break;
                     case 2:// level 8, wave 2
-                        
+                        for (int i = 0; i< 5;i++)
+                        {
+                            aliens.add(new Alien11(B_WIDTH+i*300, GetPos.splitY(16, 5, 5), difficulty));
+                            aliens.add(new Alien11(B_WIDTH+i*300, GetPos.splitY(16, 5, 4), difficulty));
+                            aliens.add(new Alien11(B_WIDTH+i*300, GetPos.splitY(16, 5, 3), difficulty));
+                            aliens.add(new Alien11(B_WIDTH+i*300, GetPos.splitY(16, 5, 2), difficulty));
+                            aliens.add(new Alien11(B_WIDTH+i*300, GetPos.splitY(16, 5, 1), difficulty));
+                            aliens.add(new Alien12(B_WIDTH+150+i*300, GetPos.splitY(48, 2, 1), difficulty));
+                            aliens.add(new Alien12(B_WIDTH+150+i*300, GetPos.splitY(48, 2, 2), difficulty));
+                            
+                        }
                         wave_count++;
                         break;
                     case 3:// level 8, wave 3
-                        
+                        for (int i = 0; i < 5; i++)
+                        {
+                            for (int j = 0;j<2;j++)
+                            {
+                                aliens.add(new LaserBarrier(GetPos.splitX(23,6,i%3+3), B_HEIGHT+j*6000, "deploy"));
+                            }
+                        }
+                        for (int i = 0; i < 6; i++)
+                        {
+                            aliens.add(new Alien11(B_WIDTH+150+i*300, GetPos.splitY(48, 2, 1), difficulty));
+                            aliens.add(new Alien11(B_WIDTH+150+i*300, GetPos.splitY(48, 2, 2), difficulty));
+                            aliens.add(new Alien12(B_WIDTH+1150+i*300, GetPos.splitY(48, 2, 1), difficulty));
+                            aliens.add(new Alien12(B_WIDTH+1150+i*300, GetPos.splitY(48, 2, 2), difficulty));
+                            aliens.add(new Alien13(B_WIDTH+2150+i*300, GetPos.splitY(48, 2, 1), difficulty));
+                            aliens.add(new Alien13(B_WIDTH+2150+i*300, GetPos.splitY(48, 2, 2), difficulty));
+                        }
                         wave_count++;
                         break;
                     case 4:// level 8, wave 4
-                        
+                        num = 0;
+                        for (int i = 0; i<8;i++)
+                        {
+                            num += GetPos.splitX(1,6,1); 
+                            aliens.add(new UTentacle(B_WIDTH+num, 0));
+                            num += GetPos.splitX(1,6,1); 
+                            aliens.add(new Tentacle(B_WIDTH+num, B_HEIGHT-360));
+                        }
+                        for (int i = 0;i<26;i++)
+                        {
+                            aliens.add(new Alien12(B_WIDTH+1500+i*450, GetPos.splitY(48, 5, 3), difficulty));
+                        }
                         wave_count++;
                         break;
                     case 5:// level 8, wave 5
-                        
+                        for (int i = 0;i < 4;i++)
+                        {
+                            aliens.add(new Alien14(B_WIDTH+i*600, GetPos.splitY(48,5,(i%3)+2), difficulty));
+                        }
                         wave_count++;
                         break;
                     case 6:// level 8, wave 6
-                        
+                        num = 500;
+                        for (int i=0;i<4;i++)
+                        {
+                            aliens.add(new Tentacle(num, B_HEIGHT-200+GetPos.splitY(1,100,1)));
+                            num += GetPos.splitX(1,8,2);
+                        }
+                        for (int i = 0; i < 15; i++)
+                        {
+                            aliens.add(new Asteroid(GetPos.splitX(64,4,1), 0-64-i*250, difficulty,0,6));
+                            aliens.add(new Asteroid(GetPos.splitX(64,4,2), 0-64-i*250, difficulty,0,6));
+                            aliens.add(new Asteroid(GetPos.splitX(64,4,3), 0-64-i*250, difficulty,0,6));
+                            aliens.add(new Asteroid(GetPos.splitX(64,4,4), 0-64-i*250, difficulty,0,6));
+                           
+                        }
+                        for (int i = 0;i<20;i++)
+                        {
+                            aliens.add(new Alien11(B_WIDTH+2500+i*50, GetPos.justY(16), difficulty));
+                        }
                         wave_count++;
                         break;
                     case 7:// level 8, wave 7
-                        
+                        num = 0;
+                        for (int i = 0; i<7;i++)
+                        {
+                            num += GetPos.splitX(1,6,1); 
+                            aliens.add(new UTentacle(B_WIDTH+num, 0));
+                            num += GetPos.splitX(1,6,1); 
+                            aliens.add(new Tentacle(B_WIDTH+num, B_HEIGHT-360));
+                        }
+                        for (int i = 0;i<30;i++)
+                        {
+                            aliens.add(new Alien13(B_WIDTH+1500+i*300, GetPos.splitY(29, 5, 3), difficulty));
+                        }
                         wave_count++;
                         break;
                     case 8:// level 8, wave 8
-                        
+                        for (int i = 0; i < 5; i++)
+                        {
+                            for (int j = 0;j<2;j++)
+                            {
+                                aliens.add(new LaserBarrier(GetPos.splitX(23,6,i%3+3), B_HEIGHT+j*6000, "deploy"));
+                            }
+                        }
+                        aliens.add(new Alien14(B_WIDTH, GetPos.splitY(48,5,3), difficulty));
+                        aliens.add(new Alien14(B_WIDTH+1000, GetPos.splitY(48,5,3), difficulty));
                         wave_count++;
                         break;
                     case 9://level 8, wave 9
+                        num = -4;
+                        for (int i = 0;i<202;i++)
+                        {
+                            aliens.add(new Block(B_WIDTH+100+i*32, 32+num*32, "dkblue", 16));
+                            aliens.add(new Block(B_WIDTH+100+i*32, B_HEIGHT-32-num*32, "dkblue", 16));
+                            
+                            if (i%3==0)
+                            {
+                                if (i<45)
+                                {
+                                    num++;
+                                }
+                                else if (i <165)
+                                {
+                               
+                                }
+                                else
+                                {
+                                    num--;
+                                }
+                            }
+                        }
+                        for (int i = 0;i<5;i++)
+                        {
+                            aliens.add(new LaserBarrier(B_WIDTH+580+(32*3*i), 100+(32*i), "sentry"));
+                            aliens.add(new LaserBarrier(B_WIDTH+580+(32*3*i), B_HEIGHT-100-(32*i), "sentry"));
+                        }
+                        for (int i = 0;i<9;i++)
+                        {
+                            aliens.add(new LaserBarrier(B_WIDTH+1500+485*i, B_HEIGHT/2, "barrier"));
+                        }
+                        
+                        for (int i = 0; i < 3; i++)
+                        {
+                            aliens.add(new Alien14(B_WIDTH+1600+i*1420, GetPos.splitY(48, 7, 4), difficulty));
+                        }
                         
                         wave_count++;
                         break;
                     case 10://level 8, wave 10
-                        
+                        for (int i = 0; i < 8; i++)
+                        {
+                            aliens.add(new Alien11(B_WIDTH+150+i*300, GetPos.splitY(48, 2, 1), difficulty));
+                            aliens.add(new Alien11(B_WIDTH+150+i*300, GetPos.splitY(48, 2, 2), difficulty));
+                            aliens.add(new Alien12(B_WIDTH+1150+i*300, GetPos.splitY(48, 2, 1), difficulty));
+                            aliens.add(new Alien12(B_WIDTH+1150+i*300, GetPos.splitY(48, 2, 2), difficulty));
+                            aliens.add(new Alien13(B_WIDTH+2150+i*300, GetPos.splitY(48, 2, 1), difficulty));
+                            aliens.add(new Alien13(B_WIDTH+2150+i*300, GetPos.splitY(48, 2, 2), difficulty));
+                        }
                         wave_count++;
                         break;
                     case 11: //warning!

@@ -190,7 +190,7 @@ public class Block extends Alien {
      */
     @Override
     public int damage(){
-        SoundEffect.ALIEN_HIT.play();
+        SoundEffect.TENTACLE.play();
         
         return health;
     }
