@@ -55,7 +55,7 @@ public class Block extends Alien {
     }
     
     /**
-     * gets the starting coordinates of the brick for later drawing
+     * gets the starting coordinates of the brick on the image map for later drawing
      */
     private void getPlace()
     {
@@ -173,9 +173,9 @@ public class Block extends Alien {
     }
     
     /**
-     *  Alien's AI
+     * Block's AI
      * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * then is destroyed.
      */
     @Override
     public void move() {

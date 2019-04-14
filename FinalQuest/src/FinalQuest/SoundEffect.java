@@ -24,8 +24,9 @@ public enum SoundEffect {
     PLAYER_RESPAWN("src/resources/revive.wav"),          // player comes back to life
     LIFE_UP("src/resources/new_life.wav"),               // player gains a life
     ALERT("src/resources/alert.wav"),                    // warning alarm
-    MENU_SELECTION("src/resources/Selection.wav"),           // warning alarm
-    TENTACLE("src/resources/tentaclehit.wav"),           // warning alarm
+    MENU_SELECTION("src/resources/Selection.wav"),       // menu choice change
+    SELECTION("src/resources/select.wav"),               // menu choice selection
+    TENTACLE("src/resources/tentaclehit.wav"),           // hit a tentacle
     POWERUP("src/resources/Powerup3.wav");               // Powerup
     
     // Nested class for specifying volume

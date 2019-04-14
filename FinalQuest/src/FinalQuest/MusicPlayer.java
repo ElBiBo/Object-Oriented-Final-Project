@@ -22,6 +22,9 @@ public enum MusicPlayer{
     MAIN6("src/resources/level6.wav"),         // level 6 theme
     MAIN7("src/resources/level7.wav"),         // level 7 theme
     MAIN8("src/resources/FinalTheme.wav"),     // level 8 theme
+    LOGO("src/resources/chipnese.wav"),        // our logo jingle
+    INTRO("src/resources/TheAdventureBEGINS.wav"), //intro song
+    ROCKET("src/resources/rocket.wav"),        // rocket sound
     MENU("src/resources/menu.wav"),            // menu music
     GAMEOVER("src/resources/GAMEOVER.wav"),    // game over music
     VICTORY("src/resources/victory.wav");      // victory theme

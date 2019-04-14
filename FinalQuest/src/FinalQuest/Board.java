@@ -14,6 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 /**
@@ -27,7 +28,7 @@ import javax.swing.Timer;
 public class Board extends JPanel implements ActionListener {
     
     private Timer timer;
-    private static SpaceShip spaceship;
+    public static SpaceShip spaceship;
     private List<Sprite> aliens;
     private List<Sprite> power_ups;
     private List<Explosion> explosions;
@@ -39,17 +40,21 @@ public class Board extends JPanel implements ActionListener {
     private final int ICRAFT_Y = B_HEIGHT/2;
     private final int DELAY = 15;
     private int stage_count = 0;
-    private int level = 1;
-    private String game_mode = "mainmenu";
+    private String game_mode = "logo";
     private String difficulty;
-    private int wave_count = 0;
     private Stage stage;
     private int num_players;
     private String name = "";
     private boolean enter_score = false;
     private boolean ship_input;
+    private boolean cut_scene = false;
     private HighscoreManager hm = new HighscoreManager();
     private int menu_option = 0;
+    private int step = 0;
+    private int count = 0;
+    private int speed = 0;
+    private int num1,num2,num3;
+    private int cursor = 0;
     
     /**
      * Constructor
@@ -81,11 +86,6 @@ public class Board extends JPanel implements ActionListener {
         menu = new Background(0,0,"src/resources/menu_image.png");
         warning = new Background(0,0,"src/resources/warning.png");
         arrow = new Background(0,0,"src/resources/blueArrow.png");
-        //Stage stage = new Stage(difficulty, spaceship);
-        
-        //initBG();
-        //initAliens();
-        
         timer = new Timer(DELAY, this);
         timer.start();
     }
@@ -129,7 +129,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        if (game_mode != "starting" && spaceship.checkMode() == "starting")
+        if (!cut_scene && game_mode != "starting" && spaceship.checkMode() == "starting")
         {
             initAliens();
             initBG();
@@ -138,71 +138,443 @@ public class Board extends JPanel implements ActionListener {
         {
             game_mode = spaceship.checkMode();
         }
+        
         switch (game_mode) {
+            case "logo":
+                CSLogo(g);
+                ship_input = false;
+                cut_scene = true;
+                break;
+            case "intro":
+                CSIntro(g);
+                ship_input = false;
+                cut_scene = true;
+                break;
             case "dead":
                 drawObjects(g);
+                cut_scene = false;
                 ship_input = true;
                 break;
             case "starting":
                 drawStart(g);
+                cut_scene = false;
                 ship_input = true;
                 break;
             case "gametime":
                 drawObjects(g);
+                cut_scene = false;
                 ship_input = true;
                 break;
             case "level":
                 drawLevelComplete(g);
                 ship_input = true;
+                cut_scene = false;
                 break;
             case "pause":
                 drawObjects(g);
                 drawPause(g);
                 ship_input = true;
+                cut_scene = false;
                 break;
             case "gameover":
                 drawGameOver(g);
                 ship_input = false;
+                cut_scene = false;
                 break;
             case "highscore":
                 drawHighscore(g);
                 ship_input = false;
+                cut_scene = false;
                 break;
             case "mainmenu":
                 drawMainMenu(g);
                 ship_input = false;
+                cut_scene = false;
                 break;
             case "boss":
                 drawObjects(g);
                 drawWarning(g);
                 ship_input = true;
+                cut_scene = false;
                 break;
             case "complete": case "flyoff":
                 drawObjects(g);
                 ship_input = true;
+                cut_scene = false;
                 break;
             case "credits":
                 drawCredits(g);
                 ship_input = false;
+                cut_scene = false;
                 break;
             case "instructions":
                 drawInstructions(g);
                 ship_input = false;
+                cut_scene = false;
                 break;
             case "achievements":
                 drawAchievements(g);
                 ship_input = false;
+                cut_scene = false;
                 break;
             case "options":
                 drawOptions(g);
                 ship_input = false;
+                cut_scene = false;
                 break;
             default:
                 game_mode = "mainmenu";
                 ship_input = false;
+                cut_scene = false;
                 break;
         }
         
+    }
+    
+    /**
+     * Animation scene for our logo
+     * @param g the board we draw to
+     */
+    public void CSLogo(Graphics g)
+    {
+        switch(step)
+        {
+            case 0:
+                if (count >= 255)
+                {
+                    count = 255;
+                    step++;
+                }
+                else
+                {
+                    count += 15;
+                    if (count > 255)
+                    {
+                        count = 255;
+                    }
+                }
+                g.setColor(new Color(count, count,count));
+                g.fillRect(0, 0, 1280, 960);
+                g.setColor(Color.black);
+                g.fillOval(355, 235, 500, 500);
+                g.setColor(new Color(count, 0,0));
+                g.fillOval(350, 230, 500, 500);
+                break;
+            case 1:
+                count = 0;
+                step++;
+                g.setColor(Color.white);
+                g.fillRect(0, 0, 1280, 960);
+                g.setColor(Color.black);
+                g.fillOval(355, 235, 500, 500);
+                g.setColor(Color.red);
+                g.fillOval(350, 230, 500, 500);
+                break;
+            case 2:
+                g.setColor(Color.white);
+                g.fillRect(0, 0, 1280, 960);
+                g.setColor(Color.black);
+                g.fillOval(355, 235, 500, 500);
+                g.setColor(Color.red);
+                g.fillOval(350, 230, 500, 500);
+                count++;
+                if (count > 60)
+                {
+                    count = 700;
+                    step++;
+                    speed = 50;
+                    Stage.playOnce(MusicPlayer.ROCKET);
+                }
+                break;
+            case 3:
+                g.setColor(Color.white);
+                g.fillRect(0, 0, 1280, 960);
+                g.setColor(Color.black);
+                g.fillOval(355, 235, 500, 500);
+                g.drawImage(spaceship.getImage(), count, B_HEIGHT/2,this);
+                g.setColor(Color.red);
+                g.fillOval(350, 230, 500, 500);
+                
+                count+=speed/4;
+                speed--;
+                if (speed <= 0)
+                {
+                    step++;
+                }
+                break;
+            case 4:
+                g.setColor(Color.white);
+                g.fillRect(0, 0, 1280, 960);
+                g.setColor(Color.black);
+                g.fillOval(355, 235, 500, 500);
+                g.setColor(Color.red);
+                g.fillOval(350, 230, 500, 500);
+                g.drawImage(spaceship.getImage(), count+36, B_HEIGHT/2, -36, 39, null);
+                count+=speed/4;
+                speed--;
+                if (count < -50)
+                {
+                    step++;
+                    count = 0;
+                }
+                break;
+            case 5:
+                g.setColor(Color.white);
+                g.fillRect(0, 0, 1280, 960);
+                g.setColor(Color.black);
+                g.fillOval(355, 235, 500, 500);
+                g.setColor(Color.red);
+                g.fillOval(350, 230, 500, 500);
+                count++;
+                if (count <90)
+                {
+                    
+                }
+                else if (count <255+90)
+                {
+                    count+=4;
+                    Stage.playOnce(MusicPlayer.LOGO);
+                    g.setColor(new Color(0,0,0,count-90));
+                    String msg = "AKAMARU GAMES";
+                    Font small = new Font("Impact", Font.BOLD, 120);
+                    FontMetrics fm = getFontMetrics(small);
+                    g.setFont(small);
+                    g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 7*3);
+                }
+                else if (count < 450)
+                {
+                    g.setColor(new Color(0,0,0,255));
+                    String msg = "AKAMARU GAMES";
+                    Font small = new Font("Impact", Font.BOLD, 120);
+                    FontMetrics fm = getFontMetrics(small);
+                    g.setFont(small);
+                    g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 7*3);
+                }
+                else if (count < 705)
+                {
+                    count +=4;
+                    g.setColor(new Color(0,0,0,255));
+                    String msg = "AKAMARU GAMES";
+                    Font small = new Font("Impact", Font.BOLD, 120);
+                    FontMetrics fm = getFontMetrics(small);
+                    g.setFont(small);
+                    g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 7*3);
+                    g.setColor(new Color(0,0,0,count-450));
+                    g.fillRect(0, 0, 1280, 960);
+                }
+                else{
+                    g.setColor(new Color(0,0,0,255));
+                    g.fillRect(0, 0, 1280, 960);
+                    count = 0;
+                    step++;
+                }
+                break;
+            default:
+                step = 0;
+                count = 0;
+                game_mode = "intro";                
+        }
+    }
+    
+    /**
+     * Our intro cut scene at the beginning of the game
+     * @param g the board we draw to
+     */
+    public void CSIntro(Graphics g)
+    {
+        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
+        Sprite a1 = new Alien1(0,0,"normal");
+        Sprite a2 = new Alien3(0,0,"normal");
+        Sprite b1 = new Boss1(0,0,"normal");
+        
+        Stage.playOnce(MusicPlayer.INTRO);
+        String[] msg1 = {"The year is 20XX...",
+                    "   You have been studying hard for your post graduate degree ",
+                    "at the local space academy. Everything was going well until ", 
+                    "they attacked...", "Aliens from outer space."," "," "," "};
+        String[] msg2 = {"   The enemy forces rained down death and destruction upon",
+                    "the Earth. The worst part is that in all the noise and confusion,",
+                    "it is absolutely impossible for you to concentrate on your studies.",
+                    "Your grades are slipping and it is looking like you may fail the",
+                    "semester. You have only one hope: extra credit.  "," "," "," "};
+        String[] msg3 = {
+                    "   Given your terrible grades, even extra credit is a long shot, ",
+                    "so you go to the professor and say that you will single-handedly ",
+                    "drive off the alien invasion for an 'A' in the class. The professor ", 
+                    "takes a look at your grades and says that is a mathematical ",
+                    "impossibility. The best he can give you is a 'B'. ", " ", " ", " "};
+        String[] msg4={            
+                    "   \"Deal!\" you exclaim! You didn't expect he would be so kind ",
+                    "and happily comandeer the last remaining battle-ready ", 
+                    "spacecraft on Earth before the professor can change his mind. ",
+                    "The only thing standing between you and a passing grade is an ",
+                    "entire fleet of aliens hell-bent on wiping out all life in ", 
+                    "the galaxy... ", 
+                    "That grade is as good as yours! ", " ", " "};
+        
+        
+        int adjust;
+        int d = 400;
+        if (num2 > 800-d)
+        {
+            num2--;
+        }
+        if (step == 2 || step == 3)
+        {
+            if (num3%15 == 0)
+            {
+                int ex = ThreadLocalRandom.current().nextInt(B_WIDTH/2-100, B_WIDTH/2+100);
+                int ey = ThreadLocalRandom.current().nextInt(850, 900);
+                explosions.add(new Explosion(ex,ey));
+            }
+            updateMissiles();
+            drawExplosions(g);
+        }
+        num3++;
+        if (num3/8 %8 < 4)
+        {
+            adjust = (num3/8 % 4)*3;
+        }
+        else
+        {
+            adjust = (4-(num3/8%4))*3;
+        }
+        g.drawImage(a1.getImage(), num2+d, 800+adjust,this);
+        g.drawImage(a1.getImage(), num2+100+d, 850+adjust,this);
+        g.drawImage(a1.getImage(), num2+200+d, 900+adjust,this);
+        g.drawImage(a2.getImage(), 1100-d - num2, 900+adjust,-23,28,null);
+        g.drawImage(a2.getImage(), 1100-d - num2+100, 850+adjust,-23,28,null);
+        g.drawImage(a2.getImage(), 1100-d - num2+200, 800+adjust,-23,28,null);
+        
+        adjust = num3-3070;
+        if (adjust > 150)
+        {
+            if (adjust/8 %8 < 4)
+            {
+                adjust = 150+(adjust/8 % 4)*3;
+            }
+            else
+            {
+                adjust = 150+(4-(adjust/8%4))*3;
+            }
+        }
+        if (step == 4)
+        {
+            g.drawImage(spaceship.getImage(), B_WIDTH/2, 960-adjust,this);
+        }
+        
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = 1500; 
+                num3 = 0;
+            case 1:
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            case 2:
+                if (scrollingText(g, msg2, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            case 3:
+                if (scrollingText(g, msg3, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            case 4:
+                if (scrollingText(g, msg4, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            default:
+                step = 0;
+                count = 0;
+                game_mode = "mainmenu";
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+        }
+        
+    }
+    
+    /**
+     * Used to make text appear during cut scenes.
+     * This makes use of Board's count and num1 variables to keep track of things. 
+     * They should be initiated to 0 and -1 respectively prior to using this function
+     * @param g     The graphics board we're drawing to
+     * @param msg   the message to be displayed. It should be an array of strings with each string representing a line
+     * @param size  desired font size
+     * @param x     starting x position
+     * @param y     starting y position
+     * @return      returns true when the text is fully displayed, otherwise false.
+     */
+    public boolean scrollingText(Graphics g, String[] msg, int size, int x, int y){
+        Font fontsize = new Font("Impact", Font.BOLD, size);
+        FontMetrics fm = getFontMetrics(fontsize);
+        g.setFont(fontsize);
+        size = size*2;
+        for (int i = 0; i<=num1;i++)
+        {
+            g.setColor(new Color(153,153,153));
+            g.drawString(msg[i], x, y+i*size);
+            g.setColor(new Color(255,255,255));
+            g.drawString(msg[i], x+2, y+i*size+2);
+        }
+        
+        count+= 2;
+        if (count > 255)
+        {
+            count = 255;
+        }
+        if (num1+1<msg.length)
+        {
+            g.setColor(new Color(153,153,153,count));
+            g.drawString(msg[num1+1], x, y+(num1+1)*size);
+            g.setColor(new Color(255,255,255,count));
+            g.drawString(msg[num1+1], x+2, y+(num1+1)*size+2);
+        }
+        if (count >= 255)
+        {
+            count = 0;
+            if (num1+1 < msg.length)
+            {
+                num1++;
+            }
+        }
+        return num1+1 >= msg.length;
+    }
+    
+    /**
+     * Setter for the game mode
+     * @param m a string representing the current game mode
+     */
+    public void setGameMode(String m)
+    {
+        game_mode = m;
     }
     
     /**
@@ -245,6 +617,10 @@ public class Board extends JPanel implements ActionListener {
         drawGUI(g);
     }
     
+    /**
+     * used to draw in any explosions that happen in the game
+     * @param g the board we're drawing to
+     */
     private void drawExplosions(Graphics g)
     {
         for (Explosion e : explosions){
@@ -255,6 +631,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
+    /**
+     * When the boss appears, a warning is drawn on the screen
+     * @param g  the board we're drawing to
+     */
     private void drawWarning(Graphics g)
     {
         stage_count++;
@@ -273,6 +653,10 @@ public class Board extends JPanel implements ActionListener {
         }
     }
     
+    /**
+     * Draw a level complete screen whenever we beat a level
+     * @param g  the board we're drawing to
+     */
     private void drawLevelComplete(Graphics g)
     {
         String msg = "Level complete!";
@@ -286,6 +670,10 @@ public class Board extends JPanel implements ActionListener {
         drawGUI(g);
     }
     
+    /**
+     * Draw the GUI to the screen to display points, lives and the high score
+     * @param g  the board we're drawing to
+     */
     private void drawGUI(Graphics g)
     {
         int high_score = hm.getScores().get(0).getScore();
@@ -562,11 +950,31 @@ public class Board extends JPanel implements ActionListener {
      */
     private void drawAchievements(Graphics g) {
         Stage.setSong(MusicPlayer.MENU);
-        String[] msg = {"#", "Achievements", "!", "To be included later"};
+        String[] msg = {"#", "Achievements"};
         g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int y = B_HEIGHT/7;
         drawCenteredText(g,msg,y);
-        
+        Achievement a;
+        int x = 50;
+        y = B_HEIGHT/7*2;
+        boolean[] achievements ={true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+        a = new Achievement(x, y,1);
+        g.setColor(Color.red);
+        g.fillRect(x-8+150*(cursor%8), y-8+150*(cursor/8),150,150);
+        for (int i = 0;i<achievements.length;i++)
+        {
+            if (achievements[i])
+            {
+                a.getPlace(x+150*(i%8), y+150*(i/8),i);// = new Achievement(x+150*(i%8), y+150*(i/8),i);
+                g.drawImage(a.getImage(), a.getX(), a.getY(),this);
+            }
+            else
+            {
+                g.setColor(Color.gray);
+                g.fillRect(x+150*(i%8), y+150*(i/8), 134, 134);
+            }
+        }
+        drawCenteredText(g,a.getPlace(0, 0, cursor),B_HEIGHT/7*5);
     }
     
     /**
@@ -592,7 +1000,6 @@ public class Board extends JPanel implements ActionListener {
     private void drawCenteredText(Graphics g, String[] msg, int y)
     {
         Stage.setSong(MusicPlayer.MENU);
-        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int adjust = 40;
         Font size = new Font("Impact", Font.BOLD, adjust);
         FontMetrics fm = getFontMetrics(size);
@@ -957,6 +1364,10 @@ public class Board extends JPanel implements ActionListener {
             {
                 spaceship.keyPressed(e);
             }
+            else if (cut_scene)
+            {
+                step = 500;
+            }
             else
             {
                 non_game_input(e);
@@ -996,6 +1407,7 @@ public class Board extends JPanel implements ActionListener {
             case "mainmenu":
                 if (e.getKeyCode() == KeyEvent.VK_ENTER)
                 {
+                    SoundEffect.SELECTION.play();
                     switch (menu_option){
                         case 0: //play
                             ship_input = true;
@@ -1042,7 +1454,51 @@ public class Board extends JPanel implements ActionListener {
                     }
                 }
                 break;
+            case "achievements":
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    SoundEffect.SELECTION.play();
+                    game_mode = "mainmenu";
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_UP)
+                {
+                    SoundEffect.MENU_SELECTION.play();
+                    cursor -= 8;
+                    if (cursor <0)
+                    {
+                        cursor += 8;
+                    }
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_DOWN)
+                {
+                    SoundEffect.MENU_SELECTION.play();
+                    cursor += 8;
+                    if (cursor > 15)
+                    {
+                        cursor -= 8;
+                    }
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+                {
+                    SoundEffect.MENU_SELECTION.play();
+                    cursor += 1;
+                    if (cursor > 15)
+                    {
+                        cursor = 15;
+                    }
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT)
+                {
+                    SoundEffect.MENU_SELECTION.play();
+                    cursor -= 1;
+                    if (cursor <0)
+                    {
+                        cursor = 0;
+                    }
+                }
+                break;
             default:
+                SoundEffect.SELECTION.play();
                 game_mode = "mainmenu";
                 break;
             
