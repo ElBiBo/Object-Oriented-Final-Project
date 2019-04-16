@@ -37,7 +37,8 @@ public boolean[] getAchievements() {
 }
     
      
-public void addAchievement() {
+public void addAchievement(int i) {
+        achievements[i] = true;
         loadAchievementFile();
         updateAchievementFile();
 }
