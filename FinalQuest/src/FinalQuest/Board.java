@@ -55,7 +55,6 @@ public class Board extends JPanel implements ActionListener {
     private int speed = 0;
     private int num1,num2,num3;
     private int cursor = 0;
-    private boolean[] achievements ={false,false,false,false,false,false,false,false,false,false,false,false,false,false,false,false}; 
     
     /**
      * Constructor
@@ -113,10 +112,6 @@ public class Board extends JPanel implements ActionListener {
         if (stage.getWave() == 11)
         {
             spaceship.bossMode();
-            if (!achievements[12])
-            {
-                achievements[12] = spaceship.achievement12();
-            }
         }
         aliens = new ArrayList<>();
         aliens =  stage.sendWave();
@@ -126,13 +121,6 @@ public class Board extends JPanel implements ActionListener {
         power_ups = new ArrayList<>();
         power_ups = stage.sendWave();
     }
-    
-    public void achievement(int a)
-    {
-        if (!achievements[a])
-            achievements[a] = true;
-    }
-    
     /**
      * Ignore the default swing paintComponent function. This is where
      * we decide what screen we are on. It will also be what we have to edit
@@ -150,7 +138,7 @@ public class Board extends JPanel implements ActionListener {
         {
             game_mode = spaceship.checkMode();
         }
-        game_mode = "ending";
+        
         switch (game_mode) {
             case "logo":
                 CSLogo(g);
@@ -159,11 +147,6 @@ public class Board extends JPanel implements ActionListener {
                 break;
             case "intro":
                 CSIntro(g);
-                ship_input = false;
-                cut_scene = true;
-                break;
-            case "ending":
-                CSEnding(g);
                 ship_input = false;
                 cut_scene = true;
                 break;
@@ -539,91 +522,6 @@ public class Board extends JPanel implements ActionListener {
     }
     
     /**
-     * Final cutscene of the game
-     * @param g the board we draw to
-     */
-    public void CSEnding (Graphics g)
-    {
-        Stage.playOnce(MusicPlayer.INTRO);
-        String[] msg1 = {
-                    "   With the grand general of the alien forces defeated the",
-                    "alien planet begins to self destruct. You have no idea why",
-                    "anyone would design a planet to self destruct, but rather than", 
-                    "question it, you decide to get off the planet before it happens."," "," "," "};
-        String[] msg2 = {
-                    "   With the grand general of the alien forces defeated the",
-                    "alien planet begins to self destruct. You have no idea why",
-                    "anyone would design a planet to self destruct, but rather than", 
-                    "question it, you decide to get off the planet before it happens."," "," "," "};
-        String[] msg3 = {
-                    "   With the grand general of the alien forces defeated the",
-                    "alien planet begins to self destruct. You have no idea why",
-                    "anyone would design a planet to self destruct, but rather than", 
-                    "question it, you decide to get off the planet before it happens."," "," "," "};
-        String[] msg4 = {
-                    "   With the grand general of the alien forces defeated the",
-                    "alien planet begins to self destruct. You have no idea why",
-                    "anyone would design a planet to self destruct, but rather than", 
-                    "question it, you decide to get off the planet before it happens."," "," "," "};
-        g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
-         switch(step)
-        {
-            case 0:
-                num1 = -1;
-                step++;
-                num2 = 1500; 
-                num3 = 0;
-            case 1:
-                if (scrollingText(g, msg1, 40, 50, 100))
-                {
-                    if (count > 120)
-                    {
-                        step++;
-                        num1 = -1;
-                    }
-                }
-                break;
-            case 2:
-                if (scrollingText(g, msg2, 40, 50, 100))
-                {
-                    if (count > 120)
-                    {
-                        step++;
-                        num1 = -1;
-                    }
-                }
-                break;
-            case 3:
-                if (scrollingText(g, msg3, 40, 50, 100))
-                {
-                    if (count > 120)
-                    {
-                        step++;
-                        num1 = -1;
-                    }
-                }
-                break;
-            case 4:
-                if (scrollingText(g, msg4, 40, 50, 100))
-                {
-                    if (count > 120)
-                    {
-                        step++;
-                        num1 = -1;
-                    }
-                }
-                break;
-            default:
-                step = 0;
-                count = 0;
-                game_mode = "mainmenu";
-                num1 = -1;
-                num2 = -1;
-                num3 = -1;
-    }
-    }
-    
-    /**
      * Used to make text appear during cut scenes.
      * This makes use of Board's count and num1 variables to keep track of things. 
      * They should be initiated to 0 and -1 respectively prior to using this function
@@ -687,6 +585,7 @@ public class Board extends JPanel implements ActionListener {
         {
             g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
         }
+        
         if (spaceship.isVisible() && spaceship.invincibilityFlash() && !spaceship.isRespawning()) { // draw our spaceship first
             g.drawImage(spaceship.getImage(), spaceship.getX(), spaceship.getY(),this);
         }
@@ -767,8 +666,6 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(Color.white);
         g.setFont(small);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2);
-        msg = "Aliens destroyed: "+spaceship.getAlienCount()+"   Accuracy: "+spaceship.getAccuracy()+"%";
-        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2+40);
         
         drawGUI(g);
     }
@@ -1054,14 +951,13 @@ public class Board extends JPanel implements ActionListener {
     private void drawAchievements(Graphics g) {
         Stage.setSong(MusicPlayer.MENU);
         String[] msg = {"#", "Achievements"};
-        String[] mystery = {"????"};
         g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int y = B_HEIGHT/7;
         drawCenteredText(g,msg,y);
         Achievement a;
         int x = 50;
         y = B_HEIGHT/7*2;
-        
+        boolean[] achievements ={true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
         a = new Achievement(x, y,1);
         g.setColor(Color.red);
         g.fillRect(x-8+150*(cursor%8), y-8+150*(cursor/8),150,150);
@@ -1071,24 +967,14 @@ public class Board extends JPanel implements ActionListener {
             {
                 a.getPlace(x+150*(i%8), y+150*(i/8),i);// = new Achievement(x+150*(i%8), y+150*(i/8),i);
                 g.drawImage(a.getImage(), a.getX(), a.getY(),this);
-                
             }
             else
             {
                 g.setColor(Color.gray);
                 g.fillRect(x+150*(i%8), y+150*(i/8), 134, 134);
-                
             }
         }
-        if (achievements[cursor])
-        {
-            drawCenteredText(g,a.getPlace(0, 0, cursor),B_HEIGHT/7*5);
-        }
-        else
-        {
-            drawCenteredText(g,mystery,B_HEIGHT/7*5);
-        }
-        
+        drawCenteredText(g,a.getPlace(0, 0, cursor),B_HEIGHT/7*5);
     }
     
     /**
@@ -1414,7 +1300,6 @@ public class Board extends JPanel implements ActionListener {
                 r2 = alien.getBounds();
                 if (r1.intersects(r2)) {
                     m.setVisible(false);
-                    spaceship.hit();
                     if (alien.damage() <=0)
                     {
                         
