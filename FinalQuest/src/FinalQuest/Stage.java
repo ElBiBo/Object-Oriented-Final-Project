@@ -28,7 +28,7 @@ public class Stage {
     public Stage(String d, SpaceShip s)
     {
         level = 1;
-        wave_count = 0;
+        wave_count = 10;
         difficulty = d;
         Stage.spaceship = s;
         
@@ -409,6 +409,7 @@ public class Stage {
                         break;
                     case 13: // move on to the next level
                         level++;
+                        
                         wave_count = 0;
                         break;
                 }

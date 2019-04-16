@@ -1,6 +1,7 @@
 package FinalQuest;
 
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,11 +30,15 @@ public class SpaceShip extends Sprite {
     private int respawn_count;
     private String game_mode;
     private int life_score;
-    private String sprite_type;
+    private final String sprite_type;
     private int count;
     private int kills;
     private int dummy;
     private int powerup_count;
+    private float shoot_count=0;
+    private int alien_count=0;
+    private float hit_count = 0;
+    private boolean shot; // a flag to check if the player has fired a weapon during the level
     
     /**
      * Constructor
@@ -124,6 +129,7 @@ public class SpaceShip extends Sprite {
         }
         else if (game_mode == "starting")
         {
+            newLevel();
             switch (count){
                 case 0:
                     x = -200;
@@ -193,7 +199,7 @@ public class SpaceShip extends Sprite {
                 Stage.setSong(MusicPlayer.VICTORY);
             }
         }
-        else if (game_mode == "flyoff")
+        else if (game_mode == "flyoff" && !isRespawning())
         {
             switch (count){
                 case 0:
@@ -229,6 +235,53 @@ public class SpaceShip extends Sprite {
                     break;
             }
         }
+    }
+    
+    /**
+     * reset some variables at the beginning of a new level
+     */
+    private void newLevel()
+    {
+        shot = false;
+        alien_count = 0;
+        shoot_count = 0;
+        hit_count = 0;
+    }
+    
+    /**
+     * Used every time a target is hit to calculate accuracy
+     */
+    public void hit()
+    {
+        hit_count++;
+    }
+    
+    /**
+     * A getter for the player's accuracy. This accuracy is per bullet fired
+     * so spread fire will likely cause a significant decrease in accuracy
+     * due to the extra shots fired
+     * @return  the accuracy rate as an integer percentage
+     */
+    public String getAccuracy()
+    {
+        DecimalFormat df = new DecimalFormat("###.##");
+        if (hit_count == 0)
+        {
+            return df.format(0);
+        }
+        else
+        {
+            return df.format(hit_count/shoot_count*100);
+        }
+    }
+    
+    /**
+     * A getter that reports how many aliens have been destroyed in the past level
+     * @return
+     */
+    public int getAlienCount()
+    {
+        return alien_count;
     }
     
     /**
@@ -349,10 +402,12 @@ public class SpaceShip extends Sprite {
      */
     public int die(){
         SoundEffect.PLAYER_EXPLODE.play();
-        invincibility_count = 200;
+        shot = true;
+        invincibility_count = 300;
         remaining_lives -=1;
         x = START_X;
         y = START_Y;
+        normalFire();
         
         if (remaining_lives <= 0)
             gameoverMode();
@@ -435,6 +490,7 @@ public class SpaceShip extends Sprite {
      */
     public void addPoints(int newPoints){
         score += newPoints;
+        alien_count++;
         if (score >= life_score)
         {
             life_score += LIFE_POINTS;
@@ -529,12 +585,14 @@ public class SpaceShip extends Sprite {
      * destroyed first
      */
     public void fire() {
+        
         switch (firing_mode){
             case "normal":
                 if (missiles.size() < num_missiles)
                 {
                     SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                    shoot_count++;
                 }
                 break;
             case "spread":
@@ -544,6 +602,7 @@ public class SpaceShip extends Sprite {
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
+                    shoot_count += 3;
                 }
                 break;
             case "double spread":
@@ -555,6 +614,7 @@ public class SpaceShip extends Sprite {
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,2));
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,-2));
+                    shoot_count += 5;
                 }
                 break;
             default:
@@ -562,6 +622,7 @@ public class SpaceShip extends Sprite {
                 {
                     SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                    shoot_count++;
                 }
                 break;            
         }
@@ -606,7 +667,8 @@ public class SpaceShip extends Sprite {
         }
             
         if (key == KeyEvent.VK_SPACE && game_mode == "gametime") { // fire missile on space
-            fire();            
+            fire();
+            shot = true;
         }
         if (key == KeyEvent.VK_S && game_mode == "gametime") { // enable spread fire mode (DEBUG PURPOSES, DELETE LATER)
             spreadFire();
@@ -656,5 +718,10 @@ public class SpaceShip extends Sprite {
         if (key == KeyEvent.VK_DOWN) { //stop moving down when you release down
             dy = 0;
         }
+    }
+    
+    public boolean achievement12()
+    {
+        return shot;
     }
 }
