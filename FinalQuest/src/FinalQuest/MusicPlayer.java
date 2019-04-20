@@ -27,6 +27,7 @@ public enum MusicPlayer{
     ROCKET("src/resources/rocket.wav"),        // rocket sound
     MENU("src/resources/menu.wav"),            // menu music
     GAMEOVER("src/resources/GAMEOVER.wav"),    // game over music
+    ENDING("src/resources/AlexBeroza_-_Strike_The_Root.wav"), // game ending music
     VICTORY("src/resources/victory.wav");      // victory theme
     // Nested class for specifying volume
     public static enum Volume {

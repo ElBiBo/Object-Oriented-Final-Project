@@ -1,11 +1,7 @@
 package FinalQuest;
 
-import java.io.*;
 import java.io.File;
-import java.net.URL;
 import javax.sound.sampled.*;
-import java.applet.Applet;
-import java.applet.AudioClip;
 
 /**
  * This enum encapsulates all the sound effects of a game, so as to separate the sound playing
@@ -26,6 +22,7 @@ public enum SoundEffect {
     ALERT("src/resources/alert.wav"),                    // warning alarm
     MENU_SELECTION("src/resources/Selection.wav"),       // menu choice change
     SELECTION("src/resources/select.wav"),               // menu choice selection
+    ACHIEVEMENT("src/resources/achievement.wav"),        // player meets an achievement
     TENTACLE("src/resources/tentaclehit.wav"),           // hit a tentacle
     POWERUP("src/resources/Powerup3.wav");               // Powerup
     

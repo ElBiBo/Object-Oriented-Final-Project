@@ -10,6 +10,7 @@ public class Background extends Sprite {
     private String img;
     private int start_x;
     private String sprite_type;
+    private int y_shake; 
     
     /**
      * Constructor, default background
@@ -57,7 +58,7 @@ public class Background extends Sprite {
      * Init our background by assigning it an image and getting it's dimensions
     */
     private void initBackground() {
-
+        y_shake = 0;
         loadImage(img);
         getImageDimensions();
     }
@@ -76,6 +77,17 @@ public class Background extends Sprite {
                 x = start_x;
         }
 
+        
+    }
+    /**
+     *  shake the screen up and down
+     */
+    public void shake() {
+        y_shake++;
+        if (y_shake%10 == 5)
+            y+=10;
+        else if (y_shake%10 == 0)
+            y -= 10;
         
     }
 }

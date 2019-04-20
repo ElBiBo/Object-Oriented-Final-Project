@@ -144,6 +144,7 @@ public class Asteroid extends Sprite {
         }
         else
         {
+            Board.am.addAchievement(15); // player has destroyed an asteroid! Achievement!
             SoundEffect.ALIEN_EXPLODE.play();
         }
         return health;

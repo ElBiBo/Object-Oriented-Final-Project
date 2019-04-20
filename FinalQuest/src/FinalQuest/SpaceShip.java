@@ -1,9 +1,9 @@
 package FinalQuest;
 
 import java.awt.event.KeyEvent;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Spaceship child of our sprite class. Controls the player's spaceship.
@@ -29,11 +29,13 @@ public class SpaceShip extends Sprite {
     private int respawn_count;
     private String game_mode;
     private int life_score;
-    private String sprite_type;
+    private final String sprite_type;
     private int count;
     private int kills;
     private int dummy;
     private int powerup_count;
+    private float shot_count, hit_count;
+    private boolean got12;
     
     /**
      * Constructor
@@ -82,6 +84,7 @@ public class SpaceShip extends Sprite {
         life_score = LIFE_POINTS;
         kills = 0;
         powerup_count = 30;
+        got12 = true;
         startingMode();
         loadImage("src/resources/Player1.png");
         getImageDimensions();
@@ -91,6 +94,7 @@ public class SpaceShip extends Sprite {
      * Control the movement of our spaceship. 
      * Also prevents the player from moving off the screen
      */
+    @Override
     public void move() {
         if (game_mode == "gametime")
         {
@@ -126,6 +130,7 @@ public class SpaceShip extends Sprite {
         {
             switch (count){
                 case 0:
+                    got12 = true;
                     x = -200;
                     y = START_Y+110;
                     dummy = 25;
@@ -232,12 +237,44 @@ public class SpaceShip extends Sprite {
     }
     
     /**
+     * Any time a bullet hits something, use this to indicate it. Used for
+     * determining accuracy.
+     */
+    public void hitCount()
+    {
+        hit_count++;
+    }
+    
+    /**
+     * a getter for the number of shots fired by the player
+     * @return the number of shots fired
+     */
+    public int getShots()
+    {
+        return (int) shot_count;
+    }
+    
+    /**
+     * Getter for the player's accuracy at the end of the level
+     * @return Returns a float equal to the % of shots that hit an enemy
+     */
+    public String getAccuracy()
+    {
+        DecimalFormat df = new DecimalFormat("#.##"); 
+        String formatted = df.format(100*hit_count/shot_count); 
+        return formatted;
+    }
+    
+    /**
      * A boss is coming! WARNING!!!
      */
     public void bossMode()
     {
         count = 0;
-            
+        if (got12)//player got to the boss without shooting anything or dying
+        {
+            Board.am.addAchievement(12);
+        }
         game_mode = "boss";
     }
     
@@ -353,7 +390,8 @@ public class SpaceShip extends Sprite {
         remaining_lives -=1;
         x = START_X;
         y = START_Y;
-        
+        got12 = false;
+        normalFire();
         if (remaining_lives <= 0)
             gameoverMode();
         else {
@@ -440,6 +478,7 @@ public class SpaceShip extends Sprite {
             life_score += LIFE_POINTS;
             remaining_lives++;
             SoundEffect.LIFE_UP.play();
+            Board.am.addAchievement(13); // achievement for gaining a life
         }
     }
     
@@ -448,7 +487,7 @@ public class SpaceShip extends Sprite {
     public void powerup(String power)
     {
         SoundEffect.POWERUP.play();
-        
+        Board.am.addAchievement(14); // achievement for your first powerup!
         switch (power){
             case "invincibility": //player can't be hurt
                 invincibility_count = 800;
@@ -479,6 +518,7 @@ public class SpaceShip extends Sprite {
                 break;
             case "life": // an extra life!
                 remaining_lives++;
+                Board.am.addAchievement(13); // player gained a life! achievement!
                 break;
              case "points": // 5,000 points
                 score += 5000;
@@ -529,12 +569,14 @@ public class SpaceShip extends Sprite {
      * destroyed first
      */
     public void fire() {
+        got12 = false;
         switch (firing_mode){
             case "normal":
                 if (missiles.size() < num_missiles)
                 {
                     SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                    shot_count++;
                 }
                 break;
             case "spread":
@@ -542,8 +584,11 @@ public class SpaceShip extends Sprite {
                 {
                     SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                    shot_count++;
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
+                    shot_count++;
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
+                    shot_count++;
                 }
                 break;
             case "double spread":
@@ -551,10 +596,15 @@ public class SpaceShip extends Sprite {
                 {
                     SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                    shot_count++;
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
+                    shot_count++;
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
+                    shot_count++;
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,2));
+                    shot_count++;
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,-2));
+                    shot_count++;
                 }
                 break;
             default:
@@ -562,6 +612,7 @@ public class SpaceShip extends Sprite {
                 {
                     SoundEffect.LASER.play();
                     missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                    shot_count++;
                 }
                 break;            
         }
@@ -602,6 +653,25 @@ public class SpaceShip extends Sprite {
         {
             Stage.setLevelSong();
             startingMode();
+            Board.am.addAchievement(Stage.getLevel()-1);
+            if (Stage.getLevel() == 8)
+            {
+                switch (DIFFICULTY)
+                {
+                    case "normal":
+                        Board.am.addAchievement(8);
+                        break;
+                    case "hard":
+                        Board.am.addAchievement(9);
+                        break;
+                    case "unforgiving":
+                        Board.am.addAchievement(10);
+                        break;
+                    default:
+                        Board.am.addAchievement(8);
+                        break;
+                }
+            }
             
         }
             

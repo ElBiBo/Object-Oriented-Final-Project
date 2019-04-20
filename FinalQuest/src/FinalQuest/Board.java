@@ -55,6 +55,8 @@ public class Board extends JPanel implements ActionListener {
     private int speed = 0;
     private int num1,num2,num3;
     private int cursor = 0;
+    public static AchievementManager am;
+    private boolean[] achievements; //={true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
     
     /**
      * Constructor
@@ -88,6 +90,9 @@ public class Board extends JPanel implements ActionListener {
         arrow = new Background(0,0,"src/resources/blueArrow.png");
         timer = new Timer(DELAY, this);
         timer.start();
+        am = new AchievementManager();
+        achievements = am.getAchievements();
+        
     }
     
     /**
@@ -138,7 +143,6 @@ public class Board extends JPanel implements ActionListener {
         {
             game_mode = spaceship.checkMode();
         }
-        
         switch (game_mode) {
             case "logo":
                 CSLogo(g);
@@ -147,6 +151,11 @@ public class Board extends JPanel implements ActionListener {
                 break;
             case "intro":
                 CSIntro(g);
+                ship_input = false;
+                cut_scene = true;
+                break;
+            case "ending":
+                CSEnding(g);
                 ship_input = false;
                 cut_scene = true;
                 break;
@@ -228,7 +237,13 @@ public class Board extends JPanel implements ActionListener {
                 cut_scene = false;
                 break;
         }
-        
+        for (int i=0;i<16;i++)
+        {
+            if (am.popupAchievement(g, i))
+            {
+                break;
+            }
+        }
     }
     
     /**
@@ -522,6 +537,461 @@ public class Board extends JPanel implements ActionListener {
     }
     
     /**
+     * Our With the game completed, this is the ending cut scene
+     * @param g the board we draw to
+     */
+    public void CSEnding(Graphics g)
+    {
+        for (Background bg : background)
+        {
+            g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+        }
+        
+        Stage.playOnce(MusicPlayer.ENDING);
+        String[] msg1 = {"   As the leader of the alien forces falls before your might,",
+                    "the planet begins to self destruct. You are unsure why anyone",
+                    "would design a planet to self destruct, but rather than nitpick ", 
+                    "the absurdity, you decide to get out of there before you end up ", 
+                    "dead. "};
+        String[] msg2 = {"   You make it off the planet just as it goes critical and ",
+                    "explodes into a shower of space dust. You've defeated the alien",
+                    "invaders and more than earned your 'B' for the semester. ",
+                    "All that's left now is a long trip back home where you can cash",
+                    "in your reward! "," "};
+        String[] msg3 = {
+                    "   When you finally make it back to Earth, you land back at the",
+                    "space academy and tell the professor what you have done and that  ",
+                    "the aliens will no longer be a problem.", 
+                    "The professor smiles and says, 'You've worked pretty hard for this",
+                    "grade. Why couldn't you work this hard during your class?' ", " ", " ", " "};
+        String[] msg4={            
+                    "   You don't really have an answer for that, but you ask him for",
+                    "confirmation that your grade would be adjusted for your work.", 
+                    "He says, 'Sure. You've certainly earned this B!'  ",
+                    " ",
+                    "", 
+                    "", 
+                    ""};
+        String[] msg5={            
+                    "   You celebrate your hard won victory and head back home. ",
+                    "However, your victory is short lived because you still have ", 
+                    "three other classes to pass and you are doing just as badly",
+                    "in each of those. Guess you will be needing to drive off a few ",
+                    "more alien invasions for you to pass this semester...", 
+                    "", 
+                    "", " ", " "};
+        
+        String[] credit = { " ", " ", "#", "Programmers", "!", "Marco Tacca", "Nicholas Gacharich", 
+            " ", " ", " ", "#", "Game Art", "!", "OpenGameArt.org", 
+            " ", " ", " ", "#", "Music", "!", "Strike The Root by Alex (c) copyright 2011",
+            "Licensed under a Creative Commons Attribution Share-Alike  (3.0) license. ",
+            "http://dig.ccmixter.org/files/AlexBeroza/31622 Ft: Snowflake",
+            " ","Matthew Pablo","www.matthewpablo.com", " ",
+            " ","Jump to Win by Neocrey"," ",
+            " ","Mr Poly"," ",
+            " ", " ", " ", "#", "Sound FX", "!", "bfxr.org",
+            " ", " ", " ", "#", "Special Thanks", "!"," ", "Dr. David Jaramillo", " ", "and YOU!",
+            " ", " ", " "," ", " ", " ", "#", "The End", " " , " ", " "};
+       
+        int adjust = 0;
+        int ex, ey, ac;
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = 300; 
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(0,0,"src/resources/bg_lvl8.png"));
+                background.add(new Background(2000,0,"src/resources/bg_lvl8.png"));
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    for (int i = 0; i<15;i++)
+                    {
+                        bg.move();
+                    }
+                    bg.shake();
+                }
+                num3++;
+                if (num3/8 %8 < 4)
+                {
+                    adjust = (num3/8 % 4)*3;
+                }
+                else
+                {
+                    adjust = (4-(num3/8%4))*3;
+                }
+                g.drawImage(spaceship.getImage(), num2, 500+adjust,this);
+                for (int i = 0; i<num2/50;i++)
+                {
+                    ex = ThreadLocalRandom.current().nextInt(0, num2-40);
+                    ey = ThreadLocalRandom.current().nextInt(0, 960);
+                    explosions.add(new Explosion(ex,ey));
+                }
+                updateMissiles();
+                drawExplosions(g);
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    for (int i = 0; i<num2/50 && i <1280/40;i++)
+                    {
+                        ex = ThreadLocalRandom.current().nextInt(0, num2-40);
+                        ey = ThreadLocalRandom.current().nextInt(0, 960);
+                        explosions.add(new Explosion(ex,ey));
+                    }
+                    num2 +=5;
+                    if (num2 > 1280)
+                    {
+                        num3++;
+                        int c = num3-836;
+                        if (c>254)
+                        {
+                            g.setColor(new Color(255,255,255,255));
+                        }
+                        else
+                        {
+                            g.setColor(new Color(255,255,255,c));
+                        }
+                        g.fillRect(0, 0, 1280, 960);
+                        if (c > 400)
+                        {
+                            step++;
+                            num2 = -1;
+                            num1 = -1;
+                            num3 = -1;
+                            count = 0;
+                        }
+                    }
+                }
+                
+                break;
+            case 2:
+                num1 = -1;
+                step++;
+                num2 = 255; 
+                num3 = -1;
+                background = new ArrayList<>();
+                explosions = new ArrayList<>();
+                background.add(new Background(-200,0,"src/resources/bg_lvl6.png"));
+                background.add(new Background(900,B_HEIGHT/2,"src/resources/hjm-big_gas_planet.png"));
+                g.setColor(new Color(255,255,255,num2));
+                g.fillRect(0, 0, 1280, 960);
+                break;
+            case 3:
+                if (num2>0)
+                {
+                    num2-=5;
+                    g.setColor(new Color(255,255,255,num2));
+                    g.fillRect(0, 0, 1280, 960);
+                }
+                else
+                {
+                    if (num3 % 3 == 0)
+                    {
+                        ex = ThreadLocalRandom.current().nextInt(900, 970);
+                        ey = ThreadLocalRandom.current().nextInt(B_HEIGHT/2+10, B_HEIGHT/2+90);
+                        explosions.add(new Explosion(ex,ey));
+                    }
+                    ac = 0;
+                    for (Background bg : background)
+                    {
+                        if (ac == 1)
+                        {
+                            bg.shake();
+                        }
+                        ac++;
+                    }
+                    updateMissiles();
+                    drawExplosions(g);
+                    num3++;
+                    if (num3/8 %8 < 4)
+                    {
+                        adjust = (num3/8 % 4)*3;
+                    }
+                    else
+                    {
+                        adjust = (4-(num3/8%4))*3;
+                    }
+                    g.drawImage(spaceship.getImage(), 920-num3, 500+adjust,-36, 39, null);
+                }
+                if (num3 > 200)
+                {
+                    num1 = -1;
+                    num2 = -1;
+                    num3 = -1;
+                    step++;
+                }
+                break;
+            case 4:
+                num3++;
+                if (num3/8 %8 < 4)
+                {
+                    adjust = (num3/8 % 4)*3;
+                }
+                else
+                {
+                    adjust = (4-(num3/8%4))*3;
+                }
+                g.drawImage(spaceship.getImage(), 720-num3, 500+adjust,-36, 39, null);
+                ac = 0;
+                for (Background bg : background)
+                {
+                    if (ac == 1)
+                    {
+                        bg.shake();
+                    }
+                    ac++;
+                }
+                updateMissiles();
+                drawExplosions(g);
+                g.setColor(Color.white);
+                adjust = 15*num3;
+                g.fillOval(955-adjust, (B_HEIGHT/2+56)-(adjust/2), adjust*2, adjust);
+                if (num3>50)
+                {
+                    num1 = -1;
+                    num2 = -1;
+                    num3 = 0;
+                    step++;
+                    background = new ArrayList<>();
+                    background.add(new Background(-200,0,"src/resources/bg_lvl6.png"));
+                    
+                }
+                break;
+            case 5:
+                if (num3/8 %8 < 4)
+                {
+                    adjust = (num3/8 % 4)*3;
+                }
+                else
+                {
+                    adjust = (4-(num3/8%4))*3;
+                }
+                g.drawImage(spaceship.getImage(), 650-num3, 500+adjust,-36, 39, null);
+                num2++;
+                if (num2 >= 10)
+                {
+                    
+                    adjust = (num2-10)*5;
+                    
+                    if (num2 >= 50)
+                    {
+                        adjust = (255+50-num2)*2;
+                        num3++;
+                        
+                    }
+                    if (adjust >255)
+                    {
+                        adjust = 255;
+                    }
+                    else if (adjust <0)
+                    {
+                        adjust = 0;
+                        step++;
+                    }
+                    g.setColor(new Color (255,255,255,adjust));
+                    g.fillRect(0, 0, 1280, 960);
+                    
+                }
+                
+                g.setColor(Color.white);
+                adjust = 765-15*num3;
+                g.fillOval(955-adjust, (B_HEIGHT/2+56)-(adjust/2), adjust*2, adjust);
+                if (step==6)
+                {
+                    num3=0;
+                    num2 = 0;
+                }
+                break;
+            case 6:
+                num3++;
+                if (num3/8 %8 < 4)
+                {
+                    adjust = (num3/8 % 4)*3;
+                }
+                else
+                {
+                    adjust = (4-(num3/8%4))*3;
+                }
+                g.drawImage(spaceship.getImage(), 394-num2, 500+adjust,-36, 39, null);
+                if (scrollingText(g, msg2, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        num2 +=10;
+                        if (num2 > 500)
+                        {
+                            step++;
+                            num1 = -1;
+                            num2 = 0;
+                            num3 = 0;
+                            count = 0;
+                            background = new ArrayList<>();
+                            background.add(new Background(0,0,"src/resources/menu_image.png"));
+                        }
+                        
+                    }
+                }
+                break;
+            case 7:
+                num3++;
+                num2++;
+                if (num3/8 %8 < 4)
+                {
+                    adjust = (num3/8 % 4)*3;
+                }
+                else
+                {
+                    adjust = (4-(num3/8%4))*3;
+                }
+                if (1300-num2 > B_WIDTH/2)
+                {
+                    g.drawImage(spaceship.getImage(), 1300-num2, 500+adjust,-36, 39, null);
+                }
+                else if (num2-660 < 300)
+                {
+                    g.drawImage(spaceship.getImage(), B_WIDTH/2, 500+(num2-660),-36, 39, null);
+                }
+                else if (scrollingText(g, msg3, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                        count = 0;
+                    }
+                }
+                break;
+            case 8:
+                if (scrollingText(g, msg4, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                        count = 0;
+                    }
+                }
+                break;
+            case 9:
+                if (scrollingText(g, msg5, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = 0;
+                        count = 0;
+                    }
+                }
+                break;
+            case 10:
+                g.drawImage(menu.getImage(), 0, 0, this);
+                
+                if (creditRoll(g,credit))
+                {
+                    step = 0;
+                    count = 0;
+                    game_mode = "mainmenu";
+                    num1 = -1;
+                    num2 = -1;
+                    num3 = -1;
+                }
+                break;
+            default:
+                step = 0;
+                count = 0;
+                game_mode = "mainmenu";
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+        }
+        
+    }
+    
+    public boolean creditRoll(Graphics g, String[] msg){
+        boolean done = false;
+        int adjust = 40;
+        int y = 650;
+        int fade;
+        Font size = new Font("Impact", Font.BOLD, adjust);
+        FontMetrics fm = getFontMetrics(size);
+        g.setFont(size);
+        num1--;
+        for (String msg1 : msg) {
+            switch (msg1) {
+                case "#":
+                    adjust = 40;
+                    size = new Font("Impact", Font.BOLD, adjust);
+                    fm = getFontMetrics(size);
+                    g.setFont(size);
+                    break;
+                case "!":
+                    adjust = 30;
+                    size = new Font("Impact", Font.BOLD, adjust);
+                    fm = getFontMetrics(size);
+                    g.setFont(size);
+                    break;
+                case " ":
+                    y += 100;
+                    break;
+                default:
+                    if (msg1 == "The End" && y+num1+50 < 350)
+                    {
+                        g.setColor(Color.gray);
+                        g.drawString("The End?", (B_WIDTH - fm.stringWidth(msg1)) / 2, 350);
+                        g.setColor(Color.white);
+                        g.drawString("The End?", (B_WIDTH - fm.stringWidth(msg1)) / 2 + 2, 350);
+                    }
+                    else if (y+num1 > 550)
+                    {
+                        fade = 255-(y+num1-(550));
+                        if (fade >255)
+                        {
+                            fade = 255;
+                        }
+                        else if (fade <0)
+                        {
+                            fade =0;
+                        }
+                        g.setColor(new Color(153,153,153,fade));
+                        g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2, y+num1+50);
+                        g.setColor(new Color(255,255,255,fade));
+                        g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2 + 2, y+2+num1+50);
+                    }
+                    else if (y+num1 < 100)
+                    {
+                        fade = y+num1;
+                        if (fade >255)
+                        {
+                            fade = 255;
+                        }
+                        else if (fade <0)
+                        {
+                            fade =0;
+                        }
+                        g.setColor(new Color(153,153,153,fade));
+                        g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2, y+num1+50);
+                        g.setColor(new Color(255,255,255,fade));
+                        g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2 + 2, y+2+num1+50);
+                    }
+                    else
+                    {
+                        g.setColor(Color.gray);
+                        g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2, y+num1+50);
+                        g.setColor(Color.white);
+                        g.drawString(msg1, (B_WIDTH - fm.stringWidth(msg1)) / 2 + 2, y+2+num1+50);
+                        
+                    }
+                    y+=adjust;
+                    break;
+            }
+        }
+        return done;
+    }
+    
+    /**
      * Used to make text appear during cut scenes.
      * This makes use of Board's count and num1 variables to keep track of things. 
      * They should be initiated to 0 and -1 respectively prior to using this function
@@ -667,6 +1137,13 @@ public class Board extends JPanel implements ActionListener {
         g.setFont(small);
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2);
         
+        
+        small = new Font("Impact", Font.BOLD, 30);
+        fm = getFontMetrics(small);
+        g.setFont(small);
+        msg = "Aliens destroyed: "+spaceship.getKills()+"    Accuracy: "+spaceship.getAccuracy()+"%";
+        g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2+40);
+        
         drawGUI(g);
     }
     
@@ -680,6 +1157,7 @@ public class Board extends JPanel implements ActionListener {
         if (spaceship.getScore() > high_score)
         {
             high_score = spaceship.getScore();
+            am.addAchievement(11);
         }
         g.drawImage(GUI_bar.getImage(), GUI_bar.getX(), GUI_bar.getY(),this);
         g.drawImage(GUI_bar_player.getImage(), GUI_bar_player.getX(), GUI_bar_player.getY(),this);
@@ -716,6 +1194,8 @@ public class Board extends JPanel implements ActionListener {
             g.drawString("Player 2: " + spaceship.getScore(), 895, 23);
             g.drawString("Lives: " + spaceship.getLives(), 1180, 23);
         }
+        
+        
     }
     
     /**
@@ -945,19 +1425,21 @@ public class Board extends JPanel implements ActionListener {
         
     }
     
+    
     /**
      * Any achievements the player has acquired are displayed here
      */
     private void drawAchievements(Graphics g) {
         Stage.setSong(MusicPlayer.MENU);
         String[] msg = {"#", "Achievements"};
+        String[] unknown = {"???"};
         g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int y = B_HEIGHT/7;
         drawCenteredText(g,msg,y);
         Achievement a;
         int x = 50;
         y = B_HEIGHT/7*2;
-        boolean[] achievements ={true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+        achievements = am.getAchievements();
         a = new Achievement(x, y,1);
         g.setColor(Color.red);
         g.fillRect(x-8+150*(cursor%8), y-8+150*(cursor/8),150,150);
@@ -965,7 +1447,7 @@ public class Board extends JPanel implements ActionListener {
         {
             if (achievements[i])
             {
-                a.getPlace(x+150*(i%8), y+150*(i/8),i);// = new Achievement(x+150*(i%8), y+150*(i/8),i);
+                a.getPlace(x+150*(i%8), y+150*(i/8),i);
                 g.drawImage(a.getImage(), a.getX(), a.getY(),this);
             }
             else
@@ -974,7 +1456,14 @@ public class Board extends JPanel implements ActionListener {
                 g.fillRect(x+150*(i%8), y+150*(i/8), 134, 134);
             }
         }
-        drawCenteredText(g,a.getPlace(0, 0, cursor),B_HEIGHT/7*5);
+        if (achievements[cursor])
+        {
+            drawCenteredText(g,a.getPlace(0, 0, cursor),B_HEIGHT/7*5);
+        }
+        else
+        {
+            drawCenteredText(g,unknown,B_HEIGHT/7*5);
+        }
     }
     
     /**
@@ -1233,6 +1722,8 @@ public class Board extends JPanel implements ActionListener {
      */
     public void checkCollisions() {
         
+        
+        //first check to see if the spaceship collides with anything
         Rectangle r3 = spaceship.getBounds();
         
         for (Sprite alien : aliens) {
@@ -1253,6 +1744,7 @@ public class Board extends JPanel implements ActionListener {
                 alien.fire();
                 spaceship.powerup(alien.getType());
                 alien.setVisible(false);
+                am.addAchievement(14);
             }
         }
         
@@ -1300,6 +1792,7 @@ public class Board extends JPanel implements ActionListener {
                 r2 = alien.getBounds();
                 if (r1.intersects(r2)) {
                     m.setVisible(false);
+                    spaceship.hitCount();
                     if (alien.damage() <=0)
                     {
                         
@@ -1363,6 +1856,7 @@ public class Board extends JPanel implements ActionListener {
             if (ship_input)
             {
                 spaceship.keyPressed(e);
+                
             }
             else if (cut_scene)
             {

@@ -28,7 +28,7 @@ public class Stage {
     public Stage(String d, SpaceShip s)
     {
         level = 1;
-        wave_count = 0;
+        wave_count = 1;
         difficulty = d;
         Stage.spaceship = s;
         
@@ -1580,9 +1580,15 @@ public class Stage {
                 break;
         }
         
+       
+        
         return (aliens);
     }
     
+    /**
+     * Sends background sprites for use in drawing a pretty background
+     * @return  a single background from the list of images currently kept track of, or null once the list is complete
+     */
     public static Background background()
     {
         pickBackground();
@@ -1594,6 +1600,43 @@ public class Stage {
         else
         {           
             return draw_sprite;
+        }
+    }
+    
+    /**
+     * Mostly used for cutscenes to set a specific background
+     * @param level the level's background you desire
+     */
+    public static void setBackground(int level)
+    {
+        switch (level){
+            case 1:
+                draw_sprite = level1BG();
+                break;
+            case 2:
+                draw_sprite = level2BG();
+                break;
+            case 3:
+                draw_sprite = level3BG();
+                break;
+            case 4:
+                draw_sprite = level4BG();
+                break;
+            case 5:
+                draw_sprite = level5BG();
+                break;
+            case 6:
+                draw_sprite = level6BG();
+                break;
+            case 7:
+                draw_sprite = level7BG();
+                break;
+            case 8:
+                draw_sprite = level8BG();
+                break;
+            default:
+                draw_sprite = level1BG();
+                break;               
         }
     }
     
