@@ -36,6 +36,8 @@ public class SpaceShip extends Sprite {
     private int powerup_count;
     private float shot_count, hit_count;
     private boolean got12;
+    private String spread_fire_mode;
+    private int charging;
     
     /**
      * Constructor
@@ -85,9 +87,11 @@ public class SpaceShip extends Sprite {
         kills = 0;
         powerup_count = 30;
         got12 = true;
-        startingMode();
+        charging = 0;
+        cutsceneMode();
         loadImage("src/resources/Player1.png");
         getImageDimensions();
+        spread_fire_mode = "off";
     }
 
     /**
@@ -96,6 +100,14 @@ public class SpaceShip extends Sprite {
      */
     @Override
     public void move() {
+        if (charging > 0)
+        {
+            charging++;
+        }
+        if (charging == 90)
+        {
+            SoundEffect.PLASER.play();
+        }
         if (game_mode == "gametime")
         {
             x += dx;
@@ -265,6 +277,48 @@ public class SpaceShip extends Sprite {
         return formatted;
     }
     
+    public void cutsceneMode()
+    {
+        count = 0;
+        Board.waitTime();
+        int adjust = 0;
+        if (Stage.getWave() == 13)
+        {
+            adjust = 1;
+        }
+        switch (Stage.getLevel()+adjust)
+        {
+            case 1:
+                game_mode = "level1";
+                break;
+            case 2:
+                game_mode = "level2";
+                break;
+            case 3:
+                game_mode = "level3";
+                break;
+            case 4:
+                game_mode = "level4";
+                break;
+            case 5:
+                game_mode = "level5";
+                break;
+            case 6:
+                game_mode = "level6";
+                break;
+            case 7:
+                game_mode = "level7";
+                break;
+            case 8:
+                game_mode = "level8";
+                break;
+            default:
+                game_mode = "ending";
+                break;
+        }
+        
+    }
+    
     /**
      * A boss is coming! WARNING!!!
      */
@@ -392,8 +446,17 @@ public class SpaceShip extends Sprite {
         y = START_Y;
         got12 = false;
         normalFire();
+        charging = 0;
+        missiles = new ArrayList<>();
         if (remaining_lives <= 0)
+        {
             gameoverMode();
+            for (int i = 0;i<12;i++)
+            {
+                Board.waitTime();
+            }
+            
+        }
         else {
             respawn_count = 100;
             deadMode();
@@ -570,51 +633,68 @@ public class SpaceShip extends Sprite {
      */
     public void fire() {
         got12 = false;
-        switch (firing_mode){
-            case "normal":
-                if (missiles.size() < num_missiles)
-                {
-                    SoundEffect.LASER.play();
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
-                    shot_count++;
-                }
-                break;
-            case "spread":
-                if (missiles.size() < num_missiles*3)
-                {
-                    SoundEffect.LASER.play();
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
-                    shot_count++;
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
-                    shot_count++;
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
-                    shot_count++;
-                }
-                break;
-            case "double spread":
-                if (missiles.size() < num_missiles*5)
-                {
-                    SoundEffect.LASER.play();
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
-                    shot_count++;
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
-                    shot_count++;
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
-                    shot_count++;
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,2));
-                    shot_count++;
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,-2));
-                    shot_count++;
-                }
-                break;
-            default:
-                if (missiles.size() < num_missiles)
-                {
-                    SoundEffect.LASER.play();
-                    missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
-                    shot_count++;
-                }
-                break;            
+        if (spread_fire_mode == "on")
+        {
+            firing_mode = "double spread";
+        }
+        if (charging > 110)
+        {
+            SoundEffect.PLASER_BLAST.play();
+            for (int i = 0; i< 6; i++)
+            {
+                missiles.add(new Missile(x+i*7, y+height/2-4 , missile_speed+5,0,"src/resources/power_missile.png"));
+                shot_count++;
+            }
+            
+        }
+        else
+        {
+            switch (firing_mode){
+                case "normal":
+                    if (missiles.size() < num_missiles)
+                    {
+                        SoundEffect.LASER.play();
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                        shot_count++;
+                    }
+                    break;
+                case "spread":
+                    if (missiles.size() < num_missiles*3)
+                    {
+                        SoundEffect.LASER.play();
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                        shot_count++;
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
+                        shot_count++;
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
+                        shot_count++;
+                    }
+                    break;
+                case "double spread":
+                    if (missiles.size() < num_missiles*5)
+                    {
+                        SoundEffect.LASER.play();
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                        shot_count++;
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,1));
+                        shot_count++;
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,-1));
+                        shot_count++;
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,2));
+                        shot_count++;
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,-2));
+                        shot_count++;
+                    }
+                    break;
+                default:
+                    if (missiles.size() < num_missiles)
+                    {
+                        SoundEffect.LASER.play();
+                        missiles.add(new Missile(x + width, y + height / 2, missile_speed,0));
+                        shot_count++;
+                    }
+                    break;
+            }
         }
     }
 
@@ -636,6 +716,15 @@ public class SpaceShip extends Sprite {
     }
     
     /**
+     * Used for options. Special bonus option that allows the player to start with
+     * spread fire
+     */
+    public void fireMode(String mode)
+    {
+        spread_fire_mode = mode; 
+    }
+    
+    /**
      * Activates normal fire mode for the spaceship 
      */
     public void normalFire() {
@@ -652,7 +741,7 @@ public class SpaceShip extends Sprite {
         if (game_mode == "level")
         {
             Stage.setLevelSong();
-            startingMode();
+            cutsceneMode();
             Board.am.addAchievement(Stage.getLevel()-1);
             if (Stage.getLevel() == 8)
             {
@@ -676,10 +765,16 @@ public class SpaceShip extends Sprite {
         }
             
         if (key == KeyEvent.VK_SPACE && game_mode == "gametime") { // fire missile on space
-            fire();            
+            if (charging == 0)
+            {
+                fire();
+                charging++;
+            }
+            
+            
         }
-        if (key == KeyEvent.VK_S && game_mode == "gametime") { // enable spread fire mode (DEBUG PURPOSES, DELETE LATER)
-            spreadFire();
+        if (key == KeyEvent.VK_ESCAPE && game_mode == "gametime") { // return to the main menu
+            menuMode();
         }
         if (key == KeyEvent.VK_P) { // Pause the game
             pause();
@@ -725,6 +820,14 @@ public class SpaceShip extends Sprite {
 
         if (key == KeyEvent.VK_DOWN) { //stop moving down when you release down
             dy = 0;
+        }
+        
+        if (key == KeyEvent.VK_SPACE){
+            if (charging > 60)
+            {
+                fire();
+            }
+            charging = 0;
         }
     }
 }

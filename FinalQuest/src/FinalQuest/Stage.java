@@ -80,6 +80,12 @@ public class Stage {
         }
     }
     
+    public static void restart()
+    {
+        level = 1;
+        wave_count = 0;
+    }
+    
     /**
      * This class chooses the current music based on the level and location
      * in the level. Ideally there should be different music for each level and 
@@ -267,6 +273,23 @@ public class Stage {
     {
         return level;
     }
+    
+    /**
+     * level select! input the level you want to go to. must be between 1 and 8
+     */
+    public static void setLevel(int a)
+    {
+        level = a;
+        if (level>8)
+        {
+            level = 1;
+        }
+        else if (level<1)
+        {
+            level = 8;
+        }
+    }
+    
     
     /**
      * check what wave you currently are on
@@ -1579,8 +1602,6 @@ public class Stage {
                 }
                 break;
         }
-        
-       
         
         return (aliens);
     }

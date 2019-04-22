@@ -53,10 +53,13 @@ public class Board extends JPanel implements ActionListener {
     private int step = 0;
     private int count = 0;
     private int speed = 0;
-    private int num1,num2,num3;
+    private int num1,num2,num3, game_level;
+    private int options;
     private int cursor = 0;
+    private String spread_fire_mode;
     public static AchievementManager am;
-    private boolean[] achievements; //={true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true};
+    private boolean[] achievements;
+    private static int wait;
     
     /**
      * Constructor
@@ -92,6 +95,11 @@ public class Board extends JPanel implements ActionListener {
         timer.start();
         am = new AchievementManager();
         achievements = am.getAchievements();
+        game_level = 1;
+        spread_fire_mode = "off";
+        wait = 0;
+        background = new ArrayList<>();
+        aliens = new ArrayList<>();
         
     }
     
@@ -134,6 +142,7 @@ public class Board extends JPanel implements ActionListener {
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        wait--;
         if (!cut_scene && game_mode != "starting" && spaceship.checkMode() == "starting")
         {
             initAliens();
@@ -143,21 +152,62 @@ public class Board extends JPanel implements ActionListener {
         {
             game_mode = spaceship.checkMode();
         }
+        
         switch (game_mode) {
             case "logo":
-                CSLogo(g);
                 ship_input = false;
                 cut_scene = true;
+                CSLogo(g);
                 break;
             case "intro":
-                CSIntro(g);
                 ship_input = false;
                 cut_scene = true;
+                CSIntro(g);
+                break;
+            case "level1":
+                ship_input = false;
+                cut_scene = true;
+                CSLevel1(g);
+                break;
+            case "level2":
+                ship_input = false;
+                cut_scene = true;
+                CSLevel2(g);
+                break;
+            case "level3":
+                ship_input = false;
+                cut_scene = true;
+                CSLevel3(g);
+                break;
+            case "level4":
+                ship_input = false;
+                cut_scene = true;
+                CSLevel4(g);
+                break;
+            case "level5":
+                ship_input = false;
+                cut_scene = true;
+                CSLevel5(g);
+                break;
+            case "level6":
+                ship_input = false;
+                cut_scene = true;
+                CSLevel6(g);
+                break;
+            case "level7":
+                ship_input = false;
+                cut_scene = true;
+                CSLevel7(g);
+                break;
+            case "level8":
+                ship_input = false;
+                cut_scene = true;
+                CSLevel8(g);
                 break;
             case "ending":
-                CSEnding(g);
                 ship_input = false;
                 cut_scene = true;
+                CSEnding(g);
                 break;
             case "dead":
                 drawObjects(g);
@@ -244,6 +294,24 @@ public class Board extends JPanel implements ActionListener {
                 break;
             }
         }
+    }
+    
+    /**
+     * At some times we want the player to wait before they get the chance to
+     * hit a button so they don't accidentally skip something they should see
+     * (like cutscenes, for example) This function adds a little wait time
+     */
+    public static void waitTime()
+    {
+        if (wait<0)
+        {    
+            wait = 30;
+        }
+        else
+        {
+            wait += 30;
+        }
+        
     }
     
     /**
@@ -387,7 +455,7 @@ public class Board extends JPanel implements ActionListener {
             default:
                 step = 0;
                 count = 0;
-                game_mode = "intro";                
+                game_mode = "intro";
         }
     }
     
@@ -404,28 +472,28 @@ public class Board extends JPanel implements ActionListener {
         
         Stage.playOnce(MusicPlayer.INTRO);
         String[] msg1 = {"The year is 20XX...",
-                    "   You have been studying hard for your post graduate degree ",
-                    "at the local space academy. Everything was going well until ", 
-                    "they attacked...", "Aliens from outer space."," "," "," "};
+            "   You have been studying hard for your post graduate degree ",
+            "at the local space academy. Everything was going well until ",
+            "they attacked...", "Aliens from outer space."," "," "," "};
         String[] msg2 = {"   The enemy forces rained down death and destruction upon",
-                    "the Earth. The worst part is that in all the noise and confusion,",
-                    "it is absolutely impossible for you to concentrate on your studies.",
-                    "Your grades are slipping and it is looking like you may fail the",
-                    "semester. You have only one hope: extra credit.  "," "," "," "};
+            "the Earth. The worst part is that in all the noise and confusion,",
+            "it is absolutely impossible for you to concentrate on your studies.",
+            "Your grades are slipping and it is looking like you may fail the",
+            "semester. You have only one hope: extra credit.  "," "," "," "};
         String[] msg3 = {
-                    "   Given your terrible grades, even extra credit is a long shot, ",
-                    "so you go to the professor and say that you will single-handedly ",
-                    "drive off the alien invasion for an 'A' in the class. The professor ", 
-                    "takes a look at your grades and says that is a mathematical ",
-                    "impossibility. The best he can give you is a 'B'. ", " ", " ", " "};
-        String[] msg4={            
-                    "   \"Deal!\" you exclaim! You didn't expect he would be so kind ",
-                    "and happily comandeer the last remaining battle-ready ", 
-                    "spacecraft on Earth before the professor can change his mind. ",
-                    "The only thing standing between you and a passing grade is an ",
-                    "entire fleet of aliens hell-bent on wiping out all life in ", 
-                    "the galaxy... ", 
-                    "That grade is as good as yours! ", " ", " "};
+            "   Given your terrible grades, even extra credit is a long shot, ",
+            "so you go to the professor and say that you will single-handedly ",
+            "drive off the alien invasion for an 'A' in the class. The professor ",
+            "takes a look at your grades and says that is a mathematical ",
+            "impossibility. The best he can give you is a 'B'. ", " ", " ", " "};
+        String[] msg4={
+            "   \"Deal!\" you exclaim! You didn't expect he would be so kind ",
+            "and happily comandeer the last remaining battle-ready ",
+            "spacecraft on Earth before the professor can change his mind. ",
+            "The only thing standing between you and a passing grade is an ",
+            "entire fleet of aliens hell-bent on wiping out all life in ",
+            "the galaxy... ",
+            "That grade is as good as yours! ", " ", " "};
         
         
         int adjust;
@@ -483,7 +551,7 @@ public class Board extends JPanel implements ActionListener {
             case 0:
                 num1 = -1;
                 step++;
-                num2 = 1500; 
+                num2 = 1500;
                 num3 = 0;
             case 1:
                 if (scrollingText(g, msg1, 40, 50, 100))
@@ -537,6 +605,516 @@ public class Board extends JPanel implements ActionListener {
     }
     
     /**
+     * Cut scene before the first level starts
+     * @param g the board we draw to
+     */
+    public void CSLevel1(Graphics g)
+    {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg1 = {"   You've escaped earth's atmosphere and the artificial gravity",
+            "in your ship gently pulls you down into your seat. The aliens ",
+            "have sent forces throughout our solar system to probe for life. ",
+            "You must bring them death. ",
+            "Extra credit demands this."};
+        
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = 300;
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(0,0));
+                background.add(new Background(1920,0));
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    bg.move();
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            default:
+                step = 0;
+                count = 0;
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+                ship_input = true;
+                cut_scene = false;
+                spaceship.startingMode();
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+            
+        }
+        
+    }
+    
+    /**
+     * Cut scene before the second level starts
+     * @param g the board we draw to
+     */
+    public void CSLevel2(Graphics g)
+    {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg1 = {"   With the first alien commander's ship now flaming space",
+            "debris, you continue your way out of the solar system and into",
+            "deep space. Asteriods are everywhere out here, threatening to ",
+            "smash your tiny ship to pieces.",
+            "But this is where the mothership for Earth's invasion lies.",
+            "Destroy it and that should cut off their attack for now."};
+        
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = -1;
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(0,0,"src/resources/bg_lvl2.png"));
+                background.add(new Background(2880,0,"src/resources/bg_lvl2.png"));
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    bg.move();
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            default:
+                step = 0;
+                count = 0;
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+                ship_input = true;
+                cut_scene = false;
+                spaceship.startingMode();
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+            
+        }
+    }
+    
+    /**
+     * Cut scene before the third level starts
+     * @param g the board we draw to
+     */
+    public void CSLevel3(Graphics g)
+    {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg1 = {"   The alien mothership is destroyed, and the attack on Earth",
+            "has been disrupted... at least temporarily. Left to their own",
+            "devices, the aliens will regroup and attack the earth with a",
+            "new mothership.",
+            "A new attack will not allow you peace to study.",
+            "A new attack will ruin your extra credit. To battle!"};
+        
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = -1;
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(0,0,"src/resources/bg_lvl3.png"));
+                background.add(new Background(2880,0,"src/resources/bg_lvl3.png"));
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    bg.move();
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            default:
+                step = 0;
+                count = 0;
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+                ship_input = true;
+                cut_scene = false;
+                spaceship.startingMode();
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+            
+        }
+    }
+    
+    /**
+     * Cut scene before the fourth level starts
+     * @param g the board we draw to
+     */
+    public void CSLevel4(Graphics g)
+    {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg1 = {"   The aliens are quickly ramping up their response to you.",
+            "You've destroyed yet another one of their warships and countless",
+            "fighters. You are about halfway to their home planet and the final",
+            "source of their invasion. They will not allow you to get there,",
+            "but you didn't ask for their permission. ",
+            "You will wipe out their entire race!"};
+        
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = -1;
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(0,0,"src/resources/bg_lvl4.png"));
+                background.add(new Background(1280,0,"src/resources/bg_lvl4.png"));
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    bg.move();
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            default:
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                step = 0;
+                count = 0;
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+                ship_input = true;
+                cut_scene = false;
+                spaceship.startingMode();
+                
+        }
+    }
+    
+    /**
+     * Cut scene before the fifth level starts
+     * @param g the board we draw to
+     */
+    public void CSLevel5(Graphics g)
+    {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg1 = {"   Violent swirls of pink and purple space gas flow all around",
+            "as yet another warship is reduced to scrap thanks to you. Every",
+            "victory you get that much closer to the alien homeworld. They are",
+            "growing more and more desperate with your approach. ",
+            "On your screen you see a protective structure up ahead and ",
+            "fearless kamikaze warriors flying straight at you with seeking",
+            "missiled...",
+            "Things are heating up!"};
+        
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = -1;
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(0,0,"src/resources/bg_lvl5.png"));
+                background.add(new Background(2880,0,"src/resources/bg_lvl5.png"));
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    bg.move();
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            default:
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                step = 0;
+                count = 0;
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+                ship_input = true;
+                cut_scene = false;
+                spaceship.startingMode();
+                
+        }
+    }
+    
+    /**
+     * Cut scene before the sixth level starts
+     * @param g the board we draw to
+     */
+    public void CSLevel6(Graphics g)
+    {
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg1 = {"   Swirving around ships that expertly attempt to crash into",
+            "you, you manage to destroy yet another warship. And with that",
+            "victory you enter the star system of the alien homeworld.",
+            "    They have prepared for your arrival, errecting laser barriers",
+            "and sentry cannons in an effort to take you down. Extra credit",
+            "is within your grasp. You can't allow a little planetary defense",
+            "system stop you now!"};
+        
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = -1;
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(0,0,"src/resources/bg_lvl6.png"));
+                background.add(new Background(2851,0,"src/resources/bg_lvl6.png"));
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    bg.move();
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        step++;
+                        num1 = -1;
+                    }
+                }
+                break;
+            default:
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                step = 0;
+                count = 0;
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+                ship_input = true;
+                cut_scene = false;
+                spaceship.startingMode();
+                
+        }
+    }
+    
+    /**
+     * Cut scene before the seventh level starts
+     * @param g the board we draw to
+     */
+    public void CSLevel7(Graphics g)
+    {
+        int adjust;
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg1 = {"   Taking down the enemy spacecraft carrier with ease, you",
+            "finally arrive at the alien homeworld. Their planetary defenses",
+            "were useless against your skills and you descend into the planet's",
+            "atmosphere. As you do, your ships sensors immediately begin to",
+            "wail at you. It seems they have launched ground missiles at you!",
+            "There's no way you fought through that many aliens just to get",
+            "shot down now!"};
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = -1;
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(-200,0,"src/resources/bg_lvl6.png"));
+                background.add(new Background(900,B_HEIGHT/2+100,"src/resources/hjm-big_gas_planet.png"));
+                
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                if (num2 < 800)
+                {
+                    num2++;
+                }
+                num3++;
+                if (num3/8 %8 < 4)
+                {
+                    adjust = (num3/8 % 4)*3;
+                }
+                else
+                {
+                    adjust = (4-(num3/8%4))*3;
+                }
+                if (num2 < 940)
+                {
+                    g.drawImage(spaceship.getImage(), num2, 600+adjust,this);
+                }
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 120)
+                    {
+                        num2 +=3;
+                        if (num2 > 1000)
+                        {
+                            step++;
+                            num1 = -1;
+                        }
+                    }
+                }
+                break;
+            default:
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                step = 0;
+                count = 0;
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+                ship_input = true;
+                cut_scene = false;
+                spaceship.startingMode();
+                
+        }
+    }
+    
+    /**
+     * Cut scene before the eighth level starts
+     * @param g the board we draw to
+     */
+    public void CSLevel8(Graphics g)
+    {
+        int adjust;
+        Stage.setSong(MusicPlayer.MENU);
+        String[] msg1 = {"   The planet's defenses are nothing to you. The only thing left",
+            "to do is to fly into the heart of the planet and destroy the head ",
+            "alien. You decend from the clouds into a massive cave and your ",
+            "sensors detect something big living down there...",
+            "The aliens have run out of war machines and have begun ",
+            "attacking without ships. The creatures are giant flying monsters",
+            "that deserve to be destroyed!", 
+            "You can practically TASTE that 'B'!"};
+        switch(step)
+        {
+            case 0:
+                num1 = -1;
+                step++;
+                num2 = -1;
+                num3 = -1;
+                background = new ArrayList<>();
+                background.add(new Background(0,0,"src/resources/bg_lvl7.png"));
+                background.add(new Background(1914,0,"src/resources/bg_lvl7.png"));
+                
+                break;
+            case 1:
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                num2+=2;
+                if (num2 < 500)
+                {
+                    num3++;
+                }
+                
+                if (num3/8 %8 < 4)
+                {
+                    adjust = (num3/8 % 4)*3;
+                }
+                else
+                {
+                    adjust = (4-(num3/8%4))*3;
+                }
+                if (num2 < 500)
+                {
+                    g.drawImage(spaceship.getImage(), num2, 600+adjust,this);
+                }
+                else
+                {
+                    num2++;
+                    g.drawImage(spaceship.getImage(), num2, 600+num2-500,this);
+                }
+                if (scrollingText(g, msg1, 40, 50, 100))
+                {
+                    if (count > 180)
+                    {
+                        num2 +=3;
+                        if (num2 > 1000)
+                        {
+                            step++;
+                            num1 = -1;
+                        }
+                    }
+                }
+                break;
+            default:
+                for (Background bg : background)
+                {
+                    g.drawImage(bg.getImage(), bg.getX(), bg.getY(), this);
+                }
+                step = 0;
+                count = 0;
+                num1 = -1;
+                num2 = -1;
+                num3 = -1;
+                ship_input = true;
+                cut_scene = false;
+                spaceship.startingMode();
+                
+        }
+    }
+    
+    /**
      * Our With the game completed, this is the ending cut scene
      * @param g the board we draw to
      */
@@ -549,58 +1127,66 @@ public class Board extends JPanel implements ActionListener {
         
         Stage.playOnce(MusicPlayer.ENDING);
         String[] msg1 = {"   As the leader of the alien forces falls before your might,",
-                    "the planet begins to self destruct. You are unsure why anyone",
-                    "would design a planet to self destruct, but rather than nitpick ", 
-                    "the absurdity, you decide to get out of there before you end up ", 
-                    "dead. "};
+            "the planet begins to self destruct. You are unsure why anyone",
+            "would design a planet to self destruct, but rather than nitpick ",
+            "the absurdity, you decide to get out of there before you end up ",
+            "dead. "};
         String[] msg2 = {"   You make it off the planet just as it goes critical and ",
-                    "explodes into a shower of space dust. You've defeated the alien",
-                    "invaders and more than earned your 'B' for the semester. ",
-                    "All that's left now is a long trip back home where you can cash",
-                    "in your reward! "," "};
+            "explodes into a shower of space dust. You've defeated the alien",
+            "invaders and more than earned your 'B' for the semester. ",
+            "All that's left now is a long trip back home where you can cash",
+            "in your reward! "," "};
         String[] msg3 = {
-                    "   When you finally make it back to Earth, you land back at the",
-                    "space academy and tell the professor what you have done and that  ",
-                    "the aliens will no longer be a problem.", 
-                    "The professor smiles and says, 'You've worked pretty hard for this",
-                    "grade. Why couldn't you work this hard during your class?' ", " ", " ", " "};
-        String[] msg4={            
-                    "   You don't really have an answer for that, but you ask him for",
-                    "confirmation that your grade would be adjusted for your work.", 
-                    "He says, 'Sure. You've certainly earned this B!'  ",
-                    " ",
-                    "", 
-                    "", 
-                    ""};
-        String[] msg5={            
-                    "   You celebrate your hard won victory and head back home. ",
-                    "However, your victory is short lived because you still have ", 
-                    "three other classes to pass and you are doing just as badly",
-                    "in each of those. Guess you will be needing to drive off a few ",
-                    "more alien invasions for you to pass this semester...", 
-                    "", 
-                    "", " ", " "};
+            "   When you finally make it back to Earth, you land back at the",
+            "space academy and tell the professor what you have done and that  ",
+            "the aliens will no longer be a problem.",
+            "The professor smiles and says, 'You've worked pretty hard for this",
+            "grade. Why couldn't you work this hard during your class?' ", " ", " ", " "};
+        String[] msg4={
+            "   You don't really have an answer for that, but you ask him for",
+            "confirmation that your grade would be adjusted for your work.",
+            "He says, 'Sure. You've certainly earned this B!'  ",
+            " ",
+            "",
+            "",
+            ""};
+        String[] msg5={
+            "   You celebrate your hard won victory and head back home. ",
+            "However, your victory is short lived because you still have ",
+            "three other classes to pass and you are doing just as badly",
+            "in each of those. Guess you will be needing to drive off a few ",
+            "more alien invasions for you to pass this semester...",
+            "",
+            "", " ", " "};
         
-        String[] credit = { " ", " ", "#", "Programmers", "!", "Marco Tacca", "Nicholas Gacharich", 
-            " ", " ", " ", "#", "Game Art", "!", "OpenGameArt.org", 
-            " ", " ", " ", "#", "Music", "!", "Strike The Root by Alex (c) copyright 2011",
+        String[] credit = { " ", " ", "#", "Programmers", "!", "Marco Tacca", "Nicholas Gacharich",
+            " ", " ", " ", "#", "Story (or lack thereof)", "!", "Marco Tacca",
+            " ", " ", " ", "#", "Game Art", "!", "OpenGameArt.org",
+            " ", " ", " ", "#", "Music", "!", "Strike The Root by Alex Ft: Snowflake © copyright 2011",
             "Licensed under a Creative Commons Attribution Share-Alike  (3.0) license. ",
-            "http://dig.ccmixter.org/files/AlexBeroza/31622 Ft: Snowflake",
-            " ","Matthew Pablo","www.matthewpablo.com", " ",
-            " ","Jump to Win by Neocrey"," ",
-            " ","Mr Poly"," ",
+            "http://dig.ccmixter.org/files/AlexBeroza/31622 ",
+            " ","Matthew Pablo","www.matthewpablo.com", 
+            " ","Jump to Win by Neocrey",
+            " ","Mr Poly",
             " ", " ", " ", "#", "Sound FX", "!", "bfxr.org",
+            " ", " ", " ", "#", "Game Testing", "!", "Akamaru Gamers Club",
             " ", " ", " ", "#", "Special Thanks", "!"," ", "Dr. David Jaramillo", " ", "and YOU!",
-            " ", " ", " "," ", " ", " ", "#", "The End", " " , " ", " "};
-       
-        int adjust = 0;
+            " ", " ", " ", "%", "No animals were harmed in the making of this game.",
+            "The programmers got some carpal tunnel and countless sprites were destroyed",
+            "but the animals are perfectly fine.",
+            " ", "%", "All characters and events depicted in this game are entirely fictitious.", 
+            "Any similarity to actual events or persons, living or dead, is purely coincidental.", " "," ",
+            "#", "© 2019 Akamaru Games. All rights reserved.",
+            " ", " ", " "," ", " "," "," ", "#", "The End", " " , " ", " "};
+        
+        int adjust;
         int ex, ey, ac;
         switch(step)
         {
             case 0:
                 num1 = -1;
                 step++;
-                num2 = 300; 
+                num2 = 300;
                 num3 = -1;
                 background = new ArrayList<>();
                 background.add(new Background(0,0,"src/resources/bg_lvl8.png"));
@@ -670,7 +1256,7 @@ public class Board extends JPanel implements ActionListener {
             case 2:
                 num1 = -1;
                 step++;
-                num2 = 255; 
+                num2 = 255;
                 num3 = -1;
                 background = new ArrayList<>();
                 explosions = new ArrayList<>();
@@ -893,19 +1479,23 @@ public class Board extends JPanel implements ActionListener {
                 {
                     step = 0;
                     count = 0;
-                    game_mode = "mainmenu";
+                    game_mode = "level1";
                     num1 = -1;
                     num2 = -1;
                     num3 = -1;
+                    explosions = new ArrayList<>();
+                    Stage.restart();
                 }
                 break;
             default:
                 step = 0;
                 count = 0;
-                game_mode = "mainmenu";
+                game_mode = "level1";
                 num1 = -1;
                 num2 = -1;
                 num3 = -1;
+                explosions = new ArrayList<>();
+                Stage.restart();
         }
         
     }
@@ -929,6 +1519,12 @@ public class Board extends JPanel implements ActionListener {
                     break;
                 case "!":
                     adjust = 30;
+                    size = new Font("Impact", Font.BOLD, adjust);
+                    fm = getFontMetrics(size);
+                    g.setFont(size);
+                    break;
+                case "%":
+                    adjust = 20;
                     size = new Font("Impact", Font.BOLD, adjust);
                     fm = getFontMetrics(size);
                     g.setFont(size);
@@ -993,7 +1589,7 @@ public class Board extends JPanel implements ActionListener {
     
     /**
      * Used to make text appear during cut scenes.
-     * This makes use of Board's count and num1 variables to keep track of things. 
+     * This makes use of Board's count and num1 variables to keep track of things.
      * They should be initiated to 0 and -1 respectively prior to using this function
      * @param g     The graphics board we're drawing to
      * @param msg   the message to be displayed. It should be an array of strings with each string representing a line
@@ -1314,7 +1910,8 @@ public class Board extends JPanel implements ActionListener {
         }
         
         g.drawImage(arrow.getImage(), x-40, y+menu_option*spacing-25, null);
-        
+        msg = new String[] {"%", "© 2019 Akamaru Games. All rights reserved."};
+        drawCenteredText(g,msg,190);
     }
     
     /**
@@ -1368,15 +1965,15 @@ public class Board extends JPanel implements ActionListener {
      */
     private void drawInstructions(Graphics g) {
         Stage.setSong(MusicPlayer.MENU);
-        String[] msg = {"#", "Instructions", "!", 
-            "The goal of the game is simple. Navigate your ship through space, avoiding", 
+        String[] msg = {"#", "Instructions", "!",
+            "The goal of the game is simple. Navigate your ship through space, avoiding",
             "enemies along the way. Destroy enemies for points. Every 30,000 points earns",
             "you a spare life.",
-            " ", "#", "Controls", "!", 
-            "Use the arrow keys to navigate and the space bar to fire. P pauses the game. ", 
-            " ", "#", "Powerups", "!", 
+            " ", "#", "Controls", "!",
+            "Use the arrow keys to navigate and the space bar to fire. P pauses the game. ",
+            " ", "#", "Powerups", "!",
             "Occasionally barrels appear on the screen if you've destroyed enough enemies.",
-            "These barrels contain powerups! Destroy the barrel and touch the powerup to  ", 
+            "These barrels contain powerups! Destroy the barrel and touch the powerup to  ",
             "improve your ship.                                                                           "};
         g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int y = B_HEIGHT/10;
@@ -1418,10 +2015,117 @@ public class Board extends JPanel implements ActionListener {
      */
     private void drawOptions(Graphics g) {
         Stage.setSong(MusicPlayer.MENU);
-        String[] msg = {"#", "Options", "!", "To be included later"};
+        String[] msg = {"#", "Options"};
         g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int y = B_HEIGHT/7;
+        int x = 540;
         drawCenteredText(g,msg,y);
+        
+        y = 200;
+        int spacing = 50;
+        msg = new String[] {"Difficulty: ", "Sound: ", "Music: ", "Start Level: ", "Spread fire: ", "Back"};
+        
+        Font small = new Font("Impact", Font.BOLD, 30);
+        FontMetrics fm = getFontMetrics(small);
+        g.setFont(small);
+        if (options <0)
+        {
+            options = 5;
+        }
+        if (options > 5)
+        {
+            options = 0;
+        }
+        String sound, music, level, spread_fire;
+        if (SoundEffect.volume == SoundEffect.Volume.MUTE)
+        {
+            sound = "Off";
+        }
+        else
+        {
+            sound = "On";
+        }
+        if (MusicPlayer.volume == MusicPlayer.Volume.MUTE)
+        {
+            music = "Off";
+        }
+        else
+        {
+            music = "On";
+        }
+        int skip_level = 1;
+        achievements = am.getAchievements();
+        for (int i = 0; i<7;i++)
+        {
+            if (!achievements[i])
+            {
+                break;
+            }
+            else
+            {
+                skip_level++;
+            }
+        }
+        if (game_level > skip_level)
+        {
+            game_level = 1;
+        }
+        if (game_level < 1)
+        {
+            game_level = skip_level;
+        }
+        level = Integer.toString(game_level);
+        
+        if (!achievements[12])
+        {
+            spread_fire_mode = "off";
+        }
+        spread_fire = spread_fire_mode;
+        for (int i = 0;i < msg.length;i++)
+        {
+            switch (i)
+            {
+                case 0:
+                    msg[i] += difficulty;
+                    break;
+                case 1:
+                    msg[i] += sound;
+                    break;
+                case 2:
+                    msg[i] += music;
+                    break;
+                case 3:
+                    msg[i] += level;
+                    break;
+                case 4:
+                    msg[i] += spread_fire;
+                    break;
+            }
+            
+            if (i==3)
+            {
+                y+=60;
+                drawCenteredText(g,new String[] {"Cheats","!", "(must be unlocked to use) "},y+2+i*spacing);
+                y+=90;
+            }
+            g.setColor(Color.gray);
+            g.drawString(msg[i], x+2, y+2+i*spacing);
+            if (options == i)
+            {
+                g.setColor(Color.blue);
+            }
+            else
+            {
+                g.setColor(Color.white);
+            }
+            g.drawString(msg[i], x, y+i*spacing);
+        }
+        if (options <3)
+        {
+            y-=150;
+        }
+        g.drawImage(arrow.getImage(), x-40, y+options*spacing-25, null);
+        
         
     }
     
@@ -1471,8 +2175,8 @@ public class Board extends JPanel implements ActionListener {
      */
     private void drawCredits(Graphics g) {
         Stage.setSong(MusicPlayer.MENU);
-        String[] msg = {"#", "Programmers", "!", "Marco Tacca", "Nicholas Gacharich", 
-            " ", "#", "Game Assets", "!", "OpenGameArt.org", 
+        String[] msg = {"#", "Programmers", "!", "Marco Tacca", "Nicholas Gacharich",
+            " ", "#", "Game Assets", "!", "OpenGameArt.org",
             " ", "#", "Special Thanks", "!", "Dr. David Jaramillo"};
         g.drawImage(menu.getImage(), menu.getX(), menu.getY(),this);
         int y = B_HEIGHT/7;
@@ -1503,6 +2207,12 @@ public class Board extends JPanel implements ActionListener {
                     break;
                 case "!":
                     adjust = 30;
+                    size = new Font("Impact", Font.BOLD, adjust);
+                    fm = getFontMetrics(size);
+                    g.setFont(size);
+                    break;
+                case "%":
+                    adjust = 20;
                     size = new Font("Impact", Font.BOLD, adjust);
                     fm = getFontMetrics(size);
                     g.setFont(size);
@@ -1860,7 +2570,10 @@ public class Board extends JPanel implements ActionListener {
             }
             else if (cut_scene)
             {
-                step = 500;
+                if (wait <=0)
+                {
+                    step = 500;
+                }
             }
             else
             {
@@ -1893,7 +2606,7 @@ public class Board extends JPanel implements ActionListener {
                     }
                     
                 }
-                else
+                else if (wait <= 0)
                 {
                     game_mode = "highscore";
                 }
@@ -1906,7 +2619,13 @@ public class Board extends JPanel implements ActionListener {
                         case 0: //play
                             ship_input = true;
                             spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
-                            Stage stage = new Stage(difficulty, spaceship);
+                            spaceship.fireMode(spread_fire_mode);
+                            stage = new Stage(difficulty, spaceship);
+                            stage.setLevel(game_level);
+                            spaceship = new SpaceShip(ICRAFT_X, ICRAFT_Y, difficulty);
+                            spaceship.fireMode(spread_fire_mode);
+                            stage.spaceship = spaceship;
+                            
                             break;
                         case 1: // instructions
                             game_mode = "instructions";
@@ -1926,7 +2645,7 @@ public class Board extends JPanel implements ActionListener {
                         case 6: // exit
                             System.exit(0);
                             break;
-                             
+                            
                     }
                 }
                 else if (e.getKeyCode() == KeyEvent.VK_UP)
@@ -1991,11 +2710,146 @@ public class Board extends JPanel implements ActionListener {
                     }
                 }
                 break;
+            case "options":
+                if (e.getKeyCode() == KeyEvent.VK_ENTER)
+                {
+                    SoundEffect.SELECTION.play();
+                    game_mode = "mainmenu";
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_UP)
+                {
+                    SoundEffect.MENU_SELECTION.play();
+                    options--;
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_DOWN)
+                {
+                    SoundEffect.MENU_SELECTION.play();
+                    options++;
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+                {
+                    switch(options)
+                    {
+                        case 0:
+                            switch (difficulty)
+                            {
+                                case "normal":
+                                    difficulty = "hard";
+                                    break;
+                                case "hard":
+                                    difficulty = "unforgiving";
+                                    break;
+                                default:
+                                    difficulty = "normal";
+                                    break;
+                            }
+                            break;
+                        case 1:
+                            if (SoundEffect.volume == SoundEffect.Volume.MUTE)
+                            {
+                                SoundEffect.volume = SoundEffect.Volume.HIGH;
+                            }
+                            else
+                            {
+                                SoundEffect.volume = SoundEffect.Volume.MUTE;
+                            }
+                            break;
+                        case 2:
+                            if (MusicPlayer.volume == MusicPlayer.Volume.MUTE)
+                            {
+                                MusicPlayer.volume = MusicPlayer.Volume.HIGH;
+                            }
+                            else
+                            {
+                                MusicPlayer.volume = MusicPlayer.Volume.MUTE;
+                            }
+                            Stage.stopSong();
+                            Stage.startSong();
+                            break;
+                        case 3:
+                            game_level++;
+                            break;
+                        case 4:
+                            if (spread_fire_mode == "off")
+                            {
+                                spread_fire_mode = "on";
+                                
+                            }
+                            else
+                            {
+                                spread_fire_mode = "off";
+                            }
+                            break;
+                            
+                    }
+                    SoundEffect.MENU_SELECTION.play();
+                    
+                    
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_LEFT)
+                {
+                    switch(options)
+                    {
+                        case 0:
+                            switch (difficulty)
+                            {
+                                case "normal":
+                                    difficulty = "unforgiving";
+                                    break;
+                                case "hard":
+                                    difficulty = "normal";
+                                    break;
+                                default:
+                                    difficulty = "hard";
+                                    break;
+                            }
+                            break;
+                        case 1:
+                            if (SoundEffect.volume == SoundEffect.Volume.MUTE)
+                            {
+                                SoundEffect.volume = SoundEffect.Volume.HIGH;
+                            }
+                            else
+                            {
+                                SoundEffect.volume = SoundEffect.Volume.MUTE;
+                            }
+                            break;
+                        case 2:
+                            if (MusicPlayer.volume == MusicPlayer.Volume.MUTE)
+                            {
+                                MusicPlayer.volume = MusicPlayer.Volume.HIGH;
+                            }
+                            else
+                            {
+                                MusicPlayer.volume = MusicPlayer.Volume.MUTE;
+                            }
+                            Stage.stopSong();
+                            Stage.startSong();
+                            break;
+                        case 3:
+                            game_level--;
+                            break;
+                        case 4:
+                            if (spread_fire_mode == "off")
+                            {
+                                spread_fire_mode = "on";
+                                
+                            }
+                            else
+                            {
+                                spread_fire_mode = "off";
+                            }
+                            break;
+                    }
+                    SoundEffect.MENU_SELECTION.play();
+                    
+                }
+                break;
             default:
                 SoundEffect.SELECTION.play();
                 game_mode = "mainmenu";
                 break;
-            
+                
         }
     }
 }

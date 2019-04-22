@@ -14,6 +14,8 @@ import javax.sound.sampled.*;
  */
 public enum SoundEffect {
     LASER("src/resources/Laser_Shoot3.wav"),             // laser blast
+    PLASER("src/resources/power_laser.wav"),             // laser charging up
+    PLASER_BLAST("src/resources/big_laser.wav"),       // charged laser blast
     ALIEN_EXPLODE("src/resources/alien_death.wav"),      // aliens get blown up
     ALIEN_HIT("src/resources/alien_hit.wav"),            // aliens get damaged
     PLAYER_EXPLODE("src/resources/player_death.wav"),    // player blows up
