@@ -138,7 +138,7 @@ public class Boss6 extends Boss {
     }
     
     /**
-     * This is just an accessor for the ship's score
+     * This is just an accessor for the boss's point value
      * @return  the number of points destroying the alien is worth
      */
     public int getPoints(){
@@ -155,9 +155,7 @@ public class Boss6 extends Boss {
     }
     
     /**
-     * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being
-     * destroyed first
+     * Doesn't fire missiles, launches ships instead
      */
     public void fire() {
         fire_count +=1;
@@ -165,14 +163,11 @@ public class Boss6 extends Boss {
         {
             reinforcement_list.add(new Alien1(x+width/2, y+height/2, DIFFICULTY,"launch"));
         }
-        
     }
-    
     
     /**
      *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * The boss moves about, launching a barrage of alien ships at you
      */
     public void move()
     {
@@ -279,6 +274,10 @@ public class Boss6 extends Boss {
         }
     }
     
+    /**
+     * Explosion animation for the boss
+     */
+    @Override
     public void blowup()
     {
         step++;
@@ -300,7 +299,9 @@ public class Boss6 extends Boss {
             visible = false;
         }
     }
-    
+    /**
+     * generates little explosions all over the boss when it dies
+     */
     private void makeBoom()
     {
         SoundEffect.ALIEN_EXPLODE.play();
@@ -309,6 +310,12 @@ public class Boss6 extends Boss {
         boom = new Explosion(x_pos,y_pos);
     }
     
+     
+    /**
+     * lets board know that the boss is exploding for purposes of status
+     * change. Returns an explosion to draw if it is exploding, null otherwise
+     * @return null or an explosion
+     */
     public Explosion getBoom()
     {
         if (boom == null)
@@ -322,7 +329,10 @@ public class Boss6 extends Boss {
             return tmp;
         }
     }
-    
+     /**
+     * Aliens are randomly generated to act as backup for the boss
+     */
+    @Override
     public void update_reinforcements()
     {
         int ypos;
@@ -359,7 +369,12 @@ public class Boss6 extends Boss {
             reinforcement_list.add(new PowerUp(1200, ypos));
         }
     }
-    
+    /**
+     * When aliens have been generated, this lets Board know they are ready to go
+     * returns an alien if there is an alien, otherwise it returns null
+     * @return An alien sprite, or null
+     */
+    @Override
     public Sprite checkReinforcements()
     {
         if (reinforcement_list.size() <= 0)
@@ -375,6 +390,7 @@ public class Boss6 extends Boss {
     /**
      * sets status to exploding
      */
+    @Override
     public void explode()
     {
         status = "gone";
@@ -386,6 +402,7 @@ public class Boss6 extends Boss {
      * mostly used to make things explode
      * @return  the current status of the sprite
      */
+    @Override
     public String getStatus()
     {
         return status;
@@ -395,6 +412,7 @@ public class Boss6 extends Boss {
      * see what type the sprite is
      * @return  a string containing the sprite's type
      */
+    @Override
     public String getType()
     {
         return sprite_type;

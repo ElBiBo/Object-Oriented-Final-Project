@@ -1,10 +1,10 @@
-
 package FinalQuest;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
+ * Targeting Alien
  * Alien child of our sprite class. Controls the AI of our alien.
  * Behavior should be:
  * - fly to the left, steering towards the player so long as the player is in front of it
@@ -85,14 +85,12 @@ public class Alien6 extends Alien {
         
         loadImage("src/resources/BomberC.png");
         getImageDimensions();
-        
     }
     
     /**
      *  Alien's AI
-     * currently moves it to the left until it reaches the end of the screen
-     * then pops it back to the right side of the screen
-     * We will program some more interesting AI here
+     * Moves from right to left, tracking the player's vertical position as it
+     * fires.
      */
     @Override
     public void move() {

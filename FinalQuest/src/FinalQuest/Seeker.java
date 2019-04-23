@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 /**
  * Special seeker missile, follows the player around until it eventually runs out of power
  *
- * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
+ * @author Marco Tacca 
  */
 public class Seeker extends Missile {
     
@@ -68,23 +68,6 @@ public class Seeker extends Missile {
         {
             dy--;
         }
-        /*
-        if (x+dx < ship.getX()+18)
-        {
-            dx++;
-        }
-        else if (x-dx > ship.getX()+18)
-        {
-            dx--;
-        }
-        if (y+dx < ship.getY()+19)
-        {
-            dy++;
-        }
-        else if (y-dy > ship.getY()+19)
-        {
-            dy--;
-        }*/
         int adjust = 5;
         if (dx > MAX_SPEED*adjust)
         {
@@ -149,7 +132,7 @@ public class Seeker extends Missile {
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the boss's shield animation.
+     * sprite sheet of images to make the missile look like it is flashing.
      * @return returns the image currently assigned to our sprite
      */
     public BufferedImage getImage() {

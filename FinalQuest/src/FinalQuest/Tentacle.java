@@ -37,7 +37,7 @@ public class Tentacle extends Alien {
     }
     
     /**
-     * Init our brick by assigning it an image and getting it's dimensions
+     * Init our tentacle by assigning it an image and getting it's dimensions
      */
     private void initTentacle() {
         health = 10;
@@ -48,7 +48,8 @@ public class Tentacle extends Alien {
     }
     
     /**
-     * gets the starting coordinates of the brick for later drawing
+     * gets the starting coordinates of the tentacle for later drawing and 
+     * animation from a sprite sheet
      */
     private void getPlace()
     {
@@ -111,7 +112,6 @@ public class Tentacle extends Alien {
                 if (frame/rate > 7)
                 {
                     frame = 0;
-                    
                 }
                 break;
         }
@@ -120,7 +120,7 @@ public class Tentacle extends Alien {
     /**
      *  Alien's AI
      * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * then is destroyed. it also reaches up to grab the player
      */
     @Override
     public void move() {
@@ -169,7 +169,7 @@ public class Tentacle extends Alien {
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the asteroid's rotation.
+     * sprite sheet of images to allow for the tentacle's animation.
      * @return returns the image currently assigned to our sprite
      */
     @Override

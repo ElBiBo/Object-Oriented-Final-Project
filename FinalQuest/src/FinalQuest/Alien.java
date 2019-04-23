@@ -4,7 +4,8 @@ package FinalQuest;
 import java.util.List;
 
 /**
- * Alien child of our sprite class. Controls the AI of our alien.
+ * Alien child of our sprite class. 
+ * All alien behavior is based on this class
  * 
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
  */
@@ -45,7 +46,7 @@ public abstract class Alien extends Sprite {
     }
     
     /**
-     * This is just an accessor for the ship's score
+     * This is just an accessor for the alien's point value
      * @return  the number of points destroying the alien is worth
      */
     @Override
@@ -86,7 +87,7 @@ public abstract class Alien extends Sprite {
      *  Alien's AI
      * currently moves it to the left until it reaches the end of the screen
      * then pops it back to the right side of the screen
-     * We will program some more interesting AI here
+     * Mostly just a filler as our other aliens have more interesting AI
      */
     @Override
     public void move() {

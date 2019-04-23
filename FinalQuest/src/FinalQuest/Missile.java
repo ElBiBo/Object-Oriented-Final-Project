@@ -12,8 +12,7 @@ public class Missile extends Sprite {
     private int dy;
     private String sprite_type;
     private String m_img;
-    
-    
+   
     public Missile(int x, int y) {
         super(x, y);
     }

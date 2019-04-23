@@ -6,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
+ * Wave Alien
  * Alien child of our sprite class. Controls the AI of our alien.
  * Behavior should be:
  * - swerve up and down as it flies to the left
@@ -145,7 +146,7 @@ public class Alien3 extends Alien {
     
     /**
      *  Alien's AI
-     * swerves up and down as it moves across the screen to the left
+     * swerves up and down along a sin wave as it moves across the screen to the left
      * also fires a laser
      */
     @Override

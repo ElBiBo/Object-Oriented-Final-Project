@@ -1,4 +1,3 @@
-
 package FinalQuest;
 
 import static java.lang.Math.cos;
@@ -7,6 +6,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
+ * Looping Alien!
  * Alien child of our sprite class. Controls the AI of our alien.
  * Behavior should be:
  * - fly in a straight line then do 3 loops before continuing in a straight
@@ -154,7 +154,8 @@ public class Alien5 extends Alien {
     /**
      *  Alien's AI
      * Moves to the left until about halfway across the screen, does 3 loops,
-     * and then flies off the screen. Has a pretty quick fire rate
+     * and then flies off the screen. Has a pretty quick fire rate so best to
+     * kill them before they start looping
      */
     @Override
     public void move() {

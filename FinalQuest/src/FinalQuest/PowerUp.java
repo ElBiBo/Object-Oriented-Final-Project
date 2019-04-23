@@ -4,7 +4,8 @@ package FinalQuest;
 import java.util.Random;
 
 /**
- * PowerUp child of our sprite class. Controls the AI of power-ups.
+ * Power Ups! 
+ * achild of our sprite class. Controls the AI of power-ups.
  * Behavior should be:
  * - fly in a straight line
  * - occasionally fire a laser

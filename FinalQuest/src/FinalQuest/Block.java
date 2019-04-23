@@ -12,7 +12,6 @@ import javax.imageio.ImageIO;
 /**
  * This is just a solid brick, used to build structures. 
  * Crashing into it is lethal. There are 18 colors of 16 different bricks
- * 
  * @author Marco Tacca
  */
 public class Block extends Alien {

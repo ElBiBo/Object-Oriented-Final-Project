@@ -106,8 +106,6 @@ public enum MusicPlayer{
              public void run(){
                  
             clip.loop(0);
-
-     
              }
              
          }.start();
@@ -116,6 +114,9 @@ public enum MusicPlayer{
     
     }
     
+    /**
+     *  Used to stop the music
+     */
     public void stop(){
             clip.stop();//Stop music if dead
         }

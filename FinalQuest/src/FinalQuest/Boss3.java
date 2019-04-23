@@ -140,7 +140,7 @@ public class Boss3 extends Boss {
     }
     
     /**
-     * This is just an accessor for the ship's score
+     * This is just an accessor for the boss's point value
      * @return  the number of points destroying the alien is worth
      */
     @Override
@@ -159,9 +159,8 @@ public class Boss3 extends Boss {
     }
     
     /**
-     * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being
-     * destroyed first
+     * Create a missile when activated. Sometimes fires regular missiles. 
+     * Sometimes fires plasma sprays
      */
     @Override
     public void fire() {
@@ -187,8 +186,7 @@ public class Boss3 extends Boss {
     
     /**
      *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * Alternates between moving up and down, shooting and trying to crash into the player
      */
     @Override
     public void move()
@@ -322,6 +320,9 @@ public class Boss3 extends Boss {
         }
     }
     
+     /**
+     * Explosion animation for the boss
+     */
     @Override
     public void blowup()
     {

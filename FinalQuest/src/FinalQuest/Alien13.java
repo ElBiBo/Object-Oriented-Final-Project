@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 /**
+ * Bio-alien
  * Alien child of our sprite class. Controls the AI of our alien.
  * It's basically a freakier looking and slightly animated version of Alien 1 
  * with a bit more armor
@@ -158,7 +159,7 @@ public class Alien13 extends Alien {
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the asteroid's rotation.
+     * sprite sheet of images to allow for the alien's animation.
      * @return returns the image currently assigned to our sprite
      */
     @Override
@@ -167,6 +168,9 @@ public class Alien13 extends Alien {
         return image.getSubimage(image_x, image_y+height*((frame/rate)%4), width,height);        
     }
     
+    /**
+     * Fires a pair of thick laser blasts
+     */
     @Override
     public void fire() {
         missiles.add(new Missile(x, y + height / 2-6, missile_speed,0));

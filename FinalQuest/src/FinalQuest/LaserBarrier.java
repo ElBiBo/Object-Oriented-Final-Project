@@ -40,7 +40,7 @@ public class LaserBarrier extends Alien {
     }
     
     /**
-     * Init our brick by assigning it an image and getting it's dimensions
+     * Init our laser barrier by assigning it an image and getting it's dimensions
      */
     private void initBarrier() {
         health = 10;
@@ -52,7 +52,7 @@ public class LaserBarrier extends Alien {
     }
     
     /**
-     * gets the starting coordinates of the brick for later drawing
+     * gets the starting coordinates of the laser barrier for animation
      */
     private void getPlace()
     {
@@ -127,7 +127,6 @@ public class LaserBarrier extends Alien {
      */
     @Override
     public void move() {
-        
         getPlace();
         x -= move_speed;
         if (x < -500-width) //alien gets destroyed if it goes off the screen
@@ -172,7 +171,8 @@ public class LaserBarrier extends Alien {
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the asteroid's rotation.
+     * sprite sheet of images to allow for animation and different types
+     * of barriers
      * @return returns the image currently assigned to our sprite
      */
     @Override
@@ -212,5 +212,4 @@ public class LaserBarrier extends Alien {
             missiles.add(new Missile(x, y+height/2, vx, vy, "src/resources/plasma_bolt.png"));
         }
     }
-    
 }

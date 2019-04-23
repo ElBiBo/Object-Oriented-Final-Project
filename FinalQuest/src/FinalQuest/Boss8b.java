@@ -134,7 +134,6 @@ public class Boss8b extends Boss {
         }
     }
     
-    
     /**
      *  Alien's AI
      * just circles around the boss and fires, or blows up. pretty simple

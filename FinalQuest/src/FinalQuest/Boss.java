@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- *
- * @author Mtacc
+ * The parent class of all our bosses
+ * @author Marco Tacca
  */
 public abstract class Boss extends Sprite {
     private final int POINTS = 3000;
@@ -76,7 +76,7 @@ public abstract class Boss extends Sprite {
     }
     
     /**
-     * This is just an accessor for the ship's score
+     * This is just an accessor for the alien's point value
      * @return  the number of points destroying the alien is worth
      */
     @Override
@@ -95,9 +95,7 @@ public abstract class Boss extends Sprite {
     }
     
     /**
-     * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being
-     * destroyed first
+     * Create a missile when activated. Triples the shot when damaged enough
      */
     @Override
     public void fire() {
@@ -147,8 +145,8 @@ public abstract class Boss extends Sprite {
     
     /**
      *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * enters the screen and attempts to crash into the player. This
+     * is overridden by other boss' individual AI patterns
      */
     @Override
     public void move()
@@ -387,4 +385,3 @@ public abstract class Boss extends Sprite {
         return sprite_type;
     }
 }
-

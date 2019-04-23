@@ -24,6 +24,9 @@ public class AchievementManager {
     ObjectOutputStream outputStream = null;
     ObjectInputStream inputStream = null;
     
+    /**
+     * Constructor
+     */
     public AchievementManager() {
         
         counter = new int[16];
@@ -34,11 +37,23 @@ public class AchievementManager {
         
     }
     
+    /**
+     * Used to load the achievements file and return the list of achievements the
+     * player has already scored
+     * @return The list of achievements scored as a boolean array
+     */
     public boolean[] getAchievements() {
         loadAchievementFile();
         return achievements;
     }
     
+    /**
+     * When an achievement is cored, the achievement appears on the screen, makes
+     * a chime then disappears. This function covers that animation
+     * @param g  The graphic board we are drawing to
+     * @param i the achievement we want to pop up from 0-15
+     * @return  returns a counter. Once the counter == 0, the achievement alert vanishes
+     */
     public boolean popupAchievement(Graphics g, int i)
     {
         if (counter[i] < 0)
@@ -56,6 +71,10 @@ public class AchievementManager {
         return counter[i] >0;
     }
     
+    /**
+     * Used when an achievement is scored to update the achievement list
+     * @param i the achievement that was scored (0-15)
+     */
     public void addAchievement(int i) {
         if (!achievements[i])
         {
@@ -66,6 +85,9 @@ public class AchievementManager {
         }
     }
     
+    /**
+     * Loads up the file used for the achievement. Creates one if none exists.
+     */
     public void loadAchievementFile() {
         
         try {
@@ -92,6 +114,9 @@ public class AchievementManager {
         }
     }
     
+    /**
+     *  Once an achievement is scored, we update the achievement list by using this
+     */
     public void updateAchievementFile() {
         try {
             outputStream = new ObjectOutputStream(new FileOutputStream(ACHIEVEMENT_FILE));
@@ -111,6 +136,4 @@ public class AchievementManager {
             }
         }
     }
-    
-    
 }

@@ -26,7 +26,6 @@ public class Explosion extends Sprite{
      * Get the height and width of an image (used for collision)
      */
     protected void getImageDimensions() {
-        
         width = 32;
         height = 32;
     }
@@ -49,7 +48,7 @@ public class Explosion extends Sprite{
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the asteroid's rotation.
+     * sprite sheet of images to allow for the explosion's animation.
      * @return returns the image currently assigned to our sprite
      */
     public BufferedImage getImage() {
@@ -62,5 +61,4 @@ public class Explosion extends Sprite{
         }
         return image.getSubimage(frame, 0, width,height);
     }
-    
 }

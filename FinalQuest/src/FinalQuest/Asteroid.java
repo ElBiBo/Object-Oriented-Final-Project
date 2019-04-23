@@ -1,8 +1,3 @@
-/*
-* To change this license header, choose License Headers in Project Properties.
-* To change this template file, choose Tools | Templates
-* and open the template in the editor.
-*/
 package FinalQuest;
 
 import java.awt.image.BufferedImage;
@@ -53,7 +48,7 @@ public class Asteroid extends Sprite {
         } else {
             direction = 1;
         }
-        frame = (int)(Math.random()*((max-min)+1))+min;;
+        frame = (int)(Math.random()*((max-min)+1))+min;
         initAsteroid();
     }
     
@@ -75,13 +70,14 @@ public class Asteroid extends Sprite {
         } else {
             direction = 1;
         }
-        frame = (int)(Math.random()*((max-min)+1))+min;;
+        frame = (int)(Math.random()*((max-min)+1))+min;
         initAsteroid();
         initAsteroid();
     }
     
     /**
-     * Constructor, to adjust the speed, if needed
+     * Constructor, to adjust the speed, if needed. Also adjusts vertical speed
+     * to allow for meteors that don't fly strictly horizontally
      * @param x starting x coordinate for the asteroid
      * @param y starting y coordinate for the asteroid
      * @param D is the difficulty of the alien: normal, hard, unforgiving
@@ -99,7 +95,7 @@ public class Asteroid extends Sprite {
         } else {
             direction = 1;
         }
-        frame = (int)(Math.random()*((max-min)+1))+min;;
+        frame = (int)(Math.random()*((max-min)+1))+min;
         initAsteroid();
         initAsteroid();
     }
@@ -109,20 +105,19 @@ public class Asteroid extends Sprite {
      * Init our asteroid by assigning it an image and getting it's dimensions
      */
     private void initAsteroid() {
-        if (DIFFICULTY == "normal")
-        {
-            health = 10; // how many times they can be hit before dying
-            move_speed += 0; // how fast the asteroid moves
-        }
-        else if (DIFFICULTY == "hard")
-        {
-            health = 20; // how many times they can be hit before dying
-            move_speed += 6; // how fast the asteroid moves
-        }
-        else if (DIFFICULTY == "unforgiving")
-        {
-            health = 30; // how many times they can be hit before dying
-            move_speed += 12; // how fast the asteroid moves
+        switch (DIFFICULTY) {
+            case "normal":
+                health = 10; // how many times they can be hit before dying
+                move_speed += 0; // how fast the asteroid moves
+                break;
+            case "hard":
+                health = 20; // how many times they can be hit before dying
+                move_speed += 6; // how fast the asteroid moves
+                break;
+            case "unforgiving":
+                health = 30; // how many times they can be hit before dying
+                move_speed += 12; // how fast the asteroid moves
+                break;
         }
         
         missiles = new ArrayList<>();
@@ -131,11 +126,12 @@ public class Asteroid extends Sprite {
     }
     
     /**
-     * This damages the alien and then returns its current health
+     * This damages the asteroid and then returns its current health
      * if health less than or equal to 0 it should be destroyed
      * otherwise it makes a sound and takes some damage
-     * @return  the alien's current health
+     * @return  the asteroid's current health
      */
+    @Override
     public int damage(){
         health -= 1;
         if (health > 0)
@@ -151,9 +147,10 @@ public class Asteroid extends Sprite {
     }
     
     /**
-     * This is just an accessor for the ship's score
+     * This is just an accessor for the asteroid's point value
      * @return  the number of points destroying the alien is worth
      */
+    @Override
     public int getPoints(){
         return POINTS;
     }
@@ -163,6 +160,7 @@ public class Asteroid extends Sprite {
      *  Asteroid's AI
      * Just moves in a straight line and is destroyed if it goes off the screen
      */
+    @Override
     public void move() {
         x -= move_speed;
         y += vert;
@@ -186,6 +184,7 @@ public class Asteroid extends Sprite {
     /**
      * Get the height and width of an image (used for collision)
      */
+    @Override
     protected void getImageDimensions() {
         
         width = 64;
@@ -196,6 +195,7 @@ public class Asteroid extends Sprite {
      * Assigns an image to our sprite
      * @param imageName name and path of the image to be used
      */
+    @Override
     protected void loadImage(String imageName) {
         
         try
@@ -213,6 +213,7 @@ public class Asteroid extends Sprite {
      * sprite sheet of images to allow for the asteroid's rotation.
      * @return returns the image currently assigned to our sprite
      */
+    @Override
     public BufferedImage getImage() {
         
         return image.getSubimage(frame*64, 0, width,height);
@@ -222,6 +223,7 @@ public class Asteroid extends Sprite {
      * see what type the sprite is
      * @return  a string containing the sprite's type
      */
+    @Override
     public String getType()
     {
         return sprite_type;

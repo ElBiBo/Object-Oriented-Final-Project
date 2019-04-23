@@ -1,12 +1,11 @@
-
 package FinalQuest;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
- * Alien child of our sprite class. Controls the AI of our alien.
  * Kamikaze alien!
+ * Alien child of our sprite class. Controls the AI of our alien.
  * Behavior should be:
  * - Rapidly fly towards the player
  * - be destroyed with 3 hits
@@ -83,8 +82,7 @@ public class Alien8 extends Alien {
     
     /**
      *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * Flies straight at the player in kamikaze style.
      */
     @Override
     public void move() {
@@ -110,5 +108,4 @@ public class Alien8 extends Alien {
         if (x < 0-width) //alien gets destroyed if it goes off the screen
             visible = false;
     }
-    
 }

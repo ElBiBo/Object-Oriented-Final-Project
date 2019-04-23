@@ -10,7 +10,7 @@ import javax.imageio.ImageIO;
 
 /**
  * A black tentacle erupts from the ceiling, attacking the player. 
- * It is indestructable
+ * It is indestructible
  * 
  * @author Marco Tacca
  */
@@ -37,7 +37,7 @@ public class UTentacle extends Alien {
     }
     
     /**
-     * Init our brick by assigning it an image and getting it's dimensions
+     * Init our tentacle by assigning it an image and getting it's dimensions
      */
     private void initTentacle() {
         health = 10;
@@ -48,7 +48,7 @@ public class UTentacle extends Alien {
     }
     
     /**
-     * gets the starting coordinates of the brick for later drawing
+     * gets the starting coordinates of the tentacle from a sprite map for later drawing
      */
     private void getPlace()
     {
@@ -67,10 +67,8 @@ public class UTentacle extends Alien {
                     else
                     {
                         step++;
-                        
                     }
-                }
-                    
+                }   
                 break;
             case 1:
                 t_height = 360;
@@ -112,7 +110,6 @@ public class UTentacle extends Alien {
                 if (frame/rate > 7)
                 {
                     frame = 0;
-                    
                 }
                 break;
         }
@@ -121,7 +118,8 @@ public class UTentacle extends Alien {
     /**
      *  Alien's AI
      * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * then is destroyed. It also sprouts out of a black hole, attempting to 
+     * grab the player
      */
     @Override
     public void move() {
@@ -170,7 +168,7 @@ public class UTentacle extends Alien {
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the asteroid's rotation.
+     * sprite sheet of images to allow for the tentacle's animation
      * @return returns the image currently assigned to our sprite
      */
     @Override

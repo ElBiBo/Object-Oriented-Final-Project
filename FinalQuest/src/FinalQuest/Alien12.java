@@ -1,4 +1,3 @@
-
 package FinalQuest;
 
 import java.awt.Rectangle;
@@ -155,7 +154,7 @@ public class Alien12 extends Alien {
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the asteroid's rotation.
+     * sprite sheet of images to allow for the alien's movement animation.
      * @return returns the image currently assigned to our sprite
      */
     @Override
@@ -164,6 +163,9 @@ public class Alien12 extends Alien {
         return image.getSubimage(image_x, image_y+height*((frame/rate)%4), width,height);        
     }
     
+    /**
+     * Fires a pair of laser bolts at the player
+     */
     @Override
     public void fire() {
         missiles.add(new Missile(x, y + height / 2-6, missile_speed,0));

@@ -137,7 +137,7 @@ public class Boss7 extends Boss {
     }
     
     /**
-     * This is just an accessor for the ship's score
+     * This is just an accessor for the boss's point value
      * @return  the number of points destroying the alien is worth
      */
     public int getPoints(){
@@ -154,9 +154,8 @@ public class Boss7 extends Boss {
     }
     
     /**
-     * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being
-     * destroyed first
+     * Create a missile when activated. 
+     * can fire a 4 missile blast, a plasma spray or a seeker missile
      */
     public void fire() {
         fire_count +=1;
@@ -199,16 +198,12 @@ public class Boss7 extends Boss {
                 }
                 break;
         }
-        
-        
-        
     }
     
     
     /**
      *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * Moves about randomly, firing in one of three laser modes
      */
     public void move()
     {
@@ -235,7 +230,6 @@ public class Boss7 extends Boss {
         {
             update_reinforcements();
         }
-        
     }
     
     /**
@@ -307,6 +301,9 @@ public class Boss7 extends Boss {
         }
     }
     
+    /**
+     * boss chooses what kind of attack to make
+     */
     public void attack_mode()
     {
         attack_mode = "fire";
@@ -321,8 +318,7 @@ public class Boss7 extends Boss {
                 break;
             case 2:
                 fire_mode = "seek";
-                break;
-                        
+                break;  
         }
     }
     
@@ -355,6 +351,9 @@ public class Boss7 extends Boss {
         }
     }
     
+    /**
+     * Explosion animation for the boss
+     */
     public void blowup()
     {
         step++;
@@ -377,6 +376,9 @@ public class Boss7 extends Boss {
         }
     }
     
+    /**
+     * generates little explosions all over the boss when it dies
+     */
     private void makeBoom()
     {
         SoundEffect.ALIEN_EXPLODE.play();
@@ -385,6 +387,12 @@ public class Boss7 extends Boss {
         boom = new Explosion(x_pos,y_pos);
     }
     
+    /**
+     * lets board know that the boss is exploding for purposes of status
+     * change. Returns an explosion to draw if it is exploding, null otherwise
+     * @return null or an explosion
+     */
+    @Override
     public Explosion getBoom()
     {
         if (boom == null)
@@ -399,6 +407,9 @@ public class Boss7 extends Boss {
         }
     }
     
+    /**
+     * Aliens are randomly generated to act as backup for the boss
+     */
     public void update_reinforcements()
     {
         int ypos;
@@ -436,6 +447,12 @@ public class Boss7 extends Boss {
         }
     }
     
+    /**
+     * When aliens have been generated, this lets Board know they are ready to go
+     * returns an alien if there is an alien, otherwise it returns null
+     * @return An alien sprite, or null
+     */
+    @Override
     public Sprite checkReinforcements()
     {
         if (reinforcement_list.size() <= 0)

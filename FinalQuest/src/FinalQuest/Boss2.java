@@ -133,9 +133,7 @@ public class Boss2 extends Alien {
     }
     
     /**
-     * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being
-     * destroyed first
+     * Creates a spray of plasma bolts when activated
      */
     public void fire() {
         
@@ -144,19 +142,7 @@ public class Boss2 extends Alien {
         missiles.add(new Missile(x+width-337, y+15, -1,-4,"src/resources/plasma_bolt.png"));
         missiles.add(new Missile(x+width-337, y+height-25, -1,4,"src/resources/plasma_bolt.png"));
         missiles.add(new Missile(x+15, y+height/2-5, -4,0,"src/resources/plasma_bolt.png"));
-        if (DIFFICULTY == "hard")
-        {
-            missiles.add(new Missile(x, y -40 + height / 2, missile_speed,-1));
-            missiles.add(new Missile(x-width+80, y -2 + height / 2, missile_speed,1));
-        }
-        else if (DIFFICULTY == "unforgiving")
-        {
-            missiles.add(new Missile(x-width+80, y -2 + height / 2, missile_speed,-4));
-            missiles.add(new Missile(x-width+80, y -2 + height / 2, missile_speed,4));
-            missiles.add(new Missile(x-width+80, y -2 + height / 2, missile_speed,-2));
-            missiles.add(new Missile(x-width+80, y -2 + height / 2, missile_speed,2));
-        }
-        
+       
     }
     
     
@@ -347,7 +333,9 @@ public class Boss2 extends Alien {
         }
         
     }
-    
+    /**
+     * Explosion animation for the boss
+     */
     private void blowup()
     {
         step++;
@@ -369,7 +357,9 @@ public class Boss2 extends Alien {
             visible = false;
         }
     }
-    
+    /**
+     * generates little explosions all over the boss when it dies
+     */
     private void makeBoom()
     {
         SoundEffect.ALIEN_EXPLODE.play();
@@ -378,6 +368,11 @@ public class Boss2 extends Alien {
         boom = new Explosion(x_pos,y_pos);
     }
     
+    /**
+     * lets board know that the boss is exploding for purposes of status
+     * change. Returns an explosion to draw if it is exploding, null otherwise
+     * @return null or an explosion
+     */
     @Override
     public Explosion getBoom()
     {
@@ -394,7 +389,7 @@ public class Boss2 extends Alien {
     }
     
     /**
-     *
+     * Aliens are randomly generated to act as backup for the boss
      */
     public void update_reinforcements()
     {
@@ -458,7 +453,11 @@ public class Boss2 extends Alien {
             }
         }
     }
-    
+     /**
+     * When aliens have been generated, this lets Board know they are ready to go
+     * returns an alien if there is an alien, otherwise it returns null
+     * @return An alien sprite, or null
+     */
     @Override
     public Sprite checkReinforcements()
     {
@@ -531,9 +530,8 @@ public class Boss2 extends Alien {
     }
     
     /**
-     * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the asteroid's rotation.
-     * @return returns the image currently assigned to our sprite
+     * Get the image currently assigned to our sprite. This swaps between 
+     * two images of the ship to provide a shield animation
      */
     @Override
     public BufferedImage getImage() {

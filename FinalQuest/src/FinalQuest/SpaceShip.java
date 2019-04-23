@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * Spaceship child of our sprite class. Controls the player's spaceship.
+ * Also contains all needed player info.
  * 
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
  */
@@ -277,6 +278,10 @@ public class SpaceShip extends Sprite {
         return formatted;
     }
     
+    /**
+     * Used to figure out what cut scene should be played. changes the game mode
+     * appropriately.
+     */
     public void cutsceneMode()
     {
         count = 0;
@@ -362,7 +367,7 @@ public class SpaceShip extends Sprite {
     }
     
     /**
-     * Adjusts mode to gameover. This is when a player run out of lives
+     * Adjusts mode to gameover. This is when a player runs out of lives
      */
     public void gameoverMode()
     {
@@ -413,6 +418,7 @@ public class SpaceShip extends Sprite {
      * Used to find their coordinates for drawing them
      * @return  list of missiles
      */
+    @Override
     public List<Missile> getMissiles() {
         return missiles;
     }
@@ -545,8 +551,12 @@ public class SpaceShip extends Sprite {
         }
     }
     
-    
-    
+    /**
+     * Player has scored a powerup. This function applies the effect.
+     * Valid powers include: "invincibility", "bullet", "fast", "spread",
+     * "rapid", "life" and "points. Any other string does nothing.
+     * @param power a string that consists of one of the above valid powers.
+     */
     public void powerup(String power)
     {
         SoundEffect.POWERUP.play();
@@ -609,7 +619,9 @@ public class SpaceShip extends Sprite {
     }
     
     /**
-     * Decides when to release a powerup based on the number of aliens killed
+     * Decides when to release a powerup based on the number of aliens killed.
+     * Powerups are released during a new wave if the player has destroyed at 
+     * least 30 aliens prior to that wave
      * @return  True if it is time to release a powerup. False if it is not
      */
     public boolean powerupCheck()
@@ -718,6 +730,7 @@ public class SpaceShip extends Sprite {
     /**
      * Used for options. Special bonus option that allows the player to start with
      * spread fire
+     * @param mode Must be either "on" or "off"
      */
     public void fireMode(String mode)
     {
@@ -761,16 +774,13 @@ public class SpaceShip extends Sprite {
                         break;
                 }
             }
-            
-        }
-            
+        }   
         if (key == KeyEvent.VK_SPACE && game_mode == "gametime") { // fire missile on space
-            if (charging == 0)
+            if (charging == 0) // start charging up the attack
             {
                 fire();
                 charging++;
             }
-            
             
         }
         if (key == KeyEvent.VK_ESCAPE && game_mode == "gametime") { // return to the main menu
@@ -822,7 +832,7 @@ public class SpaceShip extends Sprite {
             dy = 0;
         }
         
-        if (key == KeyEvent.VK_SPACE){
+        if (key == KeyEvent.VK_SPACE){ // fire off a charged attack if space has been held down long enough
             if (charging > 60)
             {
                 fire();

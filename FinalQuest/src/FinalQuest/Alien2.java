@@ -1,10 +1,10 @@
-
 package FinalQuest;
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
+ * Tough shot alien
  * Another alien. Slightly tougher. Behavior includes:
  * - Moves in a straight line from right to left
  * - Fires 3 shots to the left (diagonal up/down and straight ahead), once every x seconds
@@ -84,9 +84,7 @@ public class Alien2 extends Alien {
     }
     
     /**
-     * Create a missile when activated. No more than num_missiles
-     * missiles can be fired without one of the previous missiles being
-     * destroyed first
+     * Create a missile when activated.
      */
     @Override
     public void fire() {

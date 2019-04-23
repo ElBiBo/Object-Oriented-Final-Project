@@ -121,8 +121,8 @@ public class Boss1 extends Alien {
     }
 
     /**
-     * Create a missile when activated. No more than num_missiles missiles can
-     * be fired without one of the previous missiles being destroyed first
+     * Create a missile when activated. If the boss is sufficiently damaged
+     * it will fire multiple missiles
      */
     @Override
     public void fire() {
@@ -166,8 +166,11 @@ public class Boss1 extends Alien {
     }
 
     /**
-     * Alien's AI moves to the left until it reaches the end of the screen then
-     * is destroyed. It also has a laser it fires.
+     * The boss first appears on the screen and moves up and down while firing 
+     * a single laser blast. Once it has lost 1/3 life it begins to move faster
+     * and fires 3 shots. After it has lost 2/3 life it moves even faster and 
+     * randomly crashes into the player. It tries to crash into the player at 
+     * each damage interval.
      */
     @Override
     public void move() {
@@ -307,6 +310,9 @@ public class Boss1 extends Alien {
         }
     }
 
+    /**
+     * Explosion animation for the boss
+     */
     private void blowup() {
         step++;
         if (step <= 300) {
@@ -323,6 +329,9 @@ public class Boss1 extends Alien {
         }
     }
 
+    /**
+     * generates little explosions all over the boss when it dies
+     */
     private void makeBoom() {
         SoundEffect.ALIEN_EXPLODE.play();
         int y_pos = ThreadLocalRandom.current().nextInt(y, y + height - 32);
@@ -330,6 +339,12 @@ public class Boss1 extends Alien {
         boom = new Explosion(x_pos, y_pos);
     }
 
+    /**
+     * lets board know that the boss is exploding for purposes of status
+     * change. Returns an explosion to draw if it is exploding, null otherwise
+     * @return null or an explosion
+     */
+    @Override
     public Explosion getBoom() {
         if (boom == null) {
             return null;
@@ -340,6 +355,9 @@ public class Boss1 extends Alien {
         }
     }
 
+    /**
+     * Aliens are randomly generated to act as backup for the boss
+     */
     public void update_reinforcements() {
         switch (DIFFICULTY) {
             case "normal": {
@@ -378,6 +396,11 @@ public class Boss1 extends Alien {
         }
     }
 
+    /**
+     * When aliens have been generated, this lets Board know they are ready to go
+     * returns an alien if there is an alien, otherwise it returns null
+     * @return 
+     */
     @Override
     public Sprite checkReinforcements() {
         if (reinforcement_list.size() <= 0) {

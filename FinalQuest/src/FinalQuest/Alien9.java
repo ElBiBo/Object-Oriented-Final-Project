@@ -1,10 +1,9 @@
-
 package FinalQuest;
 
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
+ * Defense missiles!
  * Alien child of our sprite class. Controls the AI of our alien.
  * These "aliens" are actually surface defense missiles fired from the alien
  * planet at our would-be hero.

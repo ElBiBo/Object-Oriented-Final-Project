@@ -1,5 +1,5 @@
 package FinalQuest;
-
+/*
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -24,12 +24,12 @@ public class BoardTest {
 	 */
 
 
-		private static final long serialVersionUID = 1L;
+	//	private static final long serialVersionUID = 1L;
 
 
 		/**
 		 * Get robot to press play from the Main Menu
-		 */
+		 *//*
 		@Test 
 		public void testdrawMainMenu(){
 			
@@ -53,7 +53,7 @@ public class BoardTest {
 		
 		/**
 		 * Check whether there is always a background in game
-		 */
+		 *//*
 		@Test  (expected=Exception.class)
 		public void testInitBG(){
 			
@@ -77,3 +77,4 @@ public class BoardTest {
 	
 
 }
+*/
