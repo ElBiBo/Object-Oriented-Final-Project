@@ -62,12 +62,14 @@ public class Sprite{
         
         try
         {
+            //image = ImageIO.read(getClass().getResource(imageName));
+        
             image = ImageIO.read(new File(imageName));
         }
         catch (IOException e)
         {
             System.out.print("Bad Image");
-        }        
+        }       
     }
     
     /**
@@ -121,6 +123,10 @@ public class Sprite{
         return new Rectangle(x, y, width, height);
     }
     
+    /**
+     * Gets a list of all missiles that have been fired
+     * @return  that list
+     */
     public List<Missile> getMissiles()
     {
         return missiles;
@@ -141,6 +147,11 @@ public class Sprite{
     {
         
     }
+
+    /**
+     * get the point value for this sprite, if any
+     * @return  points as an int
+     */
     public int getPoints(){
         return POINTS;
     }
@@ -200,6 +211,11 @@ public class Sprite{
     {
         return sprite_type;
     }
+
+    /**
+     * mostly used for bosses, generates an explosion. not used in this class
+     * @return  null
+     */
     public Explosion getBoom()
     {
         return null;

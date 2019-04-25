@@ -323,6 +323,9 @@ public class Boss1 extends Alien {
         }
     }
 
+    /**
+     * randomly generates explosions
+     */
     private void makeBoom() {
         SoundEffect.ALIEN_EXPLODE.play();
         int y_pos = ThreadLocalRandom.current().nextInt(y, y + height - 32);
@@ -330,6 +333,11 @@ public class Boss1 extends Alien {
         boom = new Explosion(x_pos, y_pos);
     }
 
+    /**
+     * Gets the latest explosion needed for drawing to the screen
+     * @return  an explosion if there is one, null otherwise
+     */
+    @Override
     public Explosion getBoom() {
         if (boom == null) {
             return null;
@@ -340,6 +348,9 @@ public class Boss1 extends Alien {
         }
     }
 
+    /**
+     * Creates a list of reinforcement enemies to help the boss out
+     */
     public void update_reinforcements() {
         switch (DIFFICULTY) {
             case "normal": {

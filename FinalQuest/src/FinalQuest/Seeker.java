@@ -27,6 +27,7 @@ public class Seeker extends Missile {
      *
      * @param x starting x coordinate for our missile
      * @param y starting y coordinate for our missile
+     * @param s Our spaceship object, used for finding their location
      
      */
     public Seeker(int x, int y, SpaceShip s) {
@@ -68,23 +69,6 @@ public class Seeker extends Missile {
         {
             dy--;
         }
-        /*
-        if (x+dx < ship.getX()+18)
-        {
-            dx++;
-        }
-        else if (x-dx > ship.getX()+18)
-        {
-            dx--;
-        }
-        if (y+dx < ship.getY()+19)
-        {
-            dy++;
-        }
-        else if (y-dy > ship.getY()+19)
-        {
-            dy--;
-        }*/
         int adjust = 5;
         if (dx > MAX_SPEED*adjust)
         {
@@ -149,7 +133,7 @@ public class Seeker extends Missile {
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the boss's shield animation.
+     * sprite sheet of images for animation.
      * @return returns the image currently assigned to our sprite
      */
     public BufferedImage getImage() {

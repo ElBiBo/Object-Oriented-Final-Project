@@ -34,7 +34,11 @@ public enum MusicPlayer{
       MUTE, LOW, MEDIUM, HIGH
    }
     
-   public static Volume volume = Volume.LOW;
+    /**
+     * sets our volume. technically there is a low, medium and high setting, but
+     * it's realistically just an on and off setting since I can't figure out volume
+     */
+    public static Volume volume = Volume.LOW;
    
    
    // Each sound effect has its own clip, loaded with its own sound file.
@@ -116,6 +120,9 @@ public enum MusicPlayer{
     
     }
     
+    /**
+     * stops the music
+     */
     public void stop(){
             clip.stop();//Stop music if dead
         }

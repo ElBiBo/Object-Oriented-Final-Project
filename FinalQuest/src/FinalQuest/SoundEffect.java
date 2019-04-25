@@ -28,11 +28,16 @@ public enum SoundEffect {
     TENTACLE("src/resources/tentaclehit.wav"),           // hit a tentacle
     POWERUP("src/resources/Powerup3.wav");               // Powerup
     
-    // Nested class for specifying volume
+    /** 
+     * Nested class for specifying volume
+    */
     public static enum Volume {
         MUTE, LOW, MEDIUM, HIGH
     }
     
+    /**
+     *technically a volume control, but it only controls from on to off
+     */
     public static Volume volume = Volume.LOW;
     
     // Each sound effect has its own clip, loaded with its own sound file.
@@ -60,7 +65,9 @@ public enum SoundEffect {
         
     }
     
-    // Play or Re-play the sound effect from the beginning, by rewinding.
+    /** 
+     * Play or Re-play the sound effect from the beginning, by rewinding.
+    */
     public void play() {
         
         

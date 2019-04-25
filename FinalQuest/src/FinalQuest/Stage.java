@@ -17,6 +17,12 @@ public class Stage {
     private static final int B_WIDTH = 1280;
     private static final int B_HEIGHT = 960;
     private static String difficulty;
+
+    /**
+     * This was not technically needed as it was already static in board, but
+     * I didn't know what I was doing when I started things and it's too much trouble
+     * to go back and fix it.
+     */
     public static SpaceShip spaceship;
     private static List<Sprite> aliens;
     private static List<Sprite> power_ups;
@@ -25,6 +31,11 @@ public class Stage {
     private static Background draw_sprite;
     private static MusicPlayer song;
     
+    /**
+     * constructor
+     * @param d Difficulty: normal, hard or unforgiving
+     * @param s our spaceship object
+     */
     public Stage(String d, SpaceShip s)
     {
         level = 1;
@@ -80,6 +91,9 @@ public class Stage {
         }
     }
     
+    /**
+     * Game starts over from the beginning
+     */
     public static void restart()
     {
         level = 1;
@@ -276,6 +290,7 @@ public class Stage {
     
     /**
      * level select! input the level you want to go to. must be between 1 and 8
+     * @param a the level we want to go to
      */
     public static void setLevel(int a)
     {
@@ -300,7 +315,11 @@ public class Stage {
         return wave_count;
     }
     
-    
+    /**
+     * Sends a wave of aliens
+     * there are 8 levels, each consisting of 10 waves an a boss
+     * @return  a list of aliens
+     */
     public static List<Sprite> sendWave(){
         aliens = new ArrayList<>();
         power_ups = new ArrayList<>();

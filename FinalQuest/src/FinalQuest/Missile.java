@@ -13,7 +13,11 @@ public class Missile extends Sprite {
     private String sprite_type;
     private String m_img;
     
-    
+    /**
+     * Constructor
+     * @param x starting x coordinate
+     * @param y starting y coordinate
+     */
     public Missile(int x, int y) {
         super(x, y);
     }

@@ -307,6 +307,9 @@ public class Boss7 extends Boss {
         }
     }
     
+    /**
+     * Firing alternates between lasers, spread fire and seekers
+     */
     public void attack_mode()
     {
         attack_mode = "fire";

@@ -5,7 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.*;
 /**
- *
+ * This class stores and manages the game's high scores
  * @author Nicholas Gacharich
  */
 
@@ -21,22 +21,30 @@ public class HighscoreManager {
     ObjectOutputStream outputStream = null;
     ObjectInputStream inputStream = null;
 
-public HighscoreManager() {
+    /**
+     * constructor
+     * default names are based on famous scifi captains
+     */
+    public HighscoreManager() {
         //initialising the scores-arraylist
         scores = new ArrayList<Score>();
-        scores.add(new Score("Reynolds", 100000));
-        scores.add(new Score("Adama", 90000));
-        scores.add(new Score("Solo", 80000));
-        scores.add(new Score("Picard", 70000));
-        scores.add(new Score("Global", 60000));
-        scores.add(new Score("Leela", 50000));
-        scores.add(new Score("Bowman", 40000));
-        scores.add(new Score("Beeblebrox", 30000));
-        scores.add(new Score("Robinson", 20000));
-        scores.add(new Score("Keys", 10000));
+        scores.add(new Score("Reynolds", 100000));  // Malcolm Reynolds (Firefly)
+        scores.add(new Score("Adama", 90000));      // William "Husker" Adama (New Battlestar Galactica)
+        scores.add(new Score("Solo", 80000));       // Han Solo (Star Wars)
+        scores.add(new Score("Picard", 70000));     // Jean-Luc Picard (Star Trek: The Next Generation)
+        scores.add(new Score("Global", 60000));     // Bruno J. Global (The Super Dimension Fortress Macross)
+        scores.add(new Score("Leela", 50000));      // Turanga Leela (Futurama)
+        scores.add(new Score("Bowman", 40000));     // David Bowman (2001: A Space Odyssey)
+        scores.add(new Score("Beeblebrox", 30000)); // Zaphod Beeblebrox (Hitchhiker's Guide to the Galaxy)
+        scores.add(new Score("Robinson", 20000));   // John Robinson (Lost in Space)
+        scores.add(new Score("Adams", 10000));      // John J. Adams (Forbidden Planet)
 }
 
-public ArrayList<Score> getScores() {
+    /**
+     * get an array of all our scores
+     * @return an array containing our scores
+     */
+    public ArrayList<Score> getScores() {
         loadScoreFile();
         sort();
         return scores;
@@ -47,13 +55,21 @@ private void sort() {
         Collections.sort(scores, comparator);
 }
      
-public void addScore(String name, int score) {
+    /**
+     * Adds a new score to the list
+     * @param name  name of the scorer
+     * @param score the score scored
+     */
+    public void addScore(String name, int score) {
         loadScoreFile();
         scores.add(new Score(name, score));
         updateScoreFile();
 }
       
-public void loadScoreFile() {
+    /**
+     *  Loads up our score file
+     */
+    public void loadScoreFile() {
         
         try {
             inputStream = new ObjectInputStream(new FileInputStream(HIGHSCORE_FILE));
@@ -78,7 +94,10 @@ public void loadScoreFile() {
         }
 }
           
-public void updateScoreFile() {
+    /**
+     * Changes the scores on our score file
+     */
+    public void updateScoreFile() {
         try {
             outputStream = new ObjectOutputStream(new FileOutputStream(HIGHSCORE_FILE));
             outputStream.writeObject(scores);
@@ -98,7 +117,11 @@ public void updateScoreFile() {
         }
 }
           
-public String getHighscoreString() {
+    /**
+     * Makes a string for printing onto our screen
+     * @return  a string of high scores for the board
+     */
+    public String getHighscoreString() {
         String highscoreString = "";
 	int max = 10;
 

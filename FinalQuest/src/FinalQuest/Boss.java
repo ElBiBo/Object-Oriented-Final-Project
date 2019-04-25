@@ -31,6 +31,12 @@ public abstract class Boss extends Sprite {
     private String status;
     private Explosion boom;
     
+    /**
+     * Constructor
+     * @param x starting x coordinate
+     * @param y starting y coordinate
+     * @param D game difficulty "normal", "hard" or "unforgiving"
+     */
     public Boss(int x, int y, String D) {
         super(x, y);
         this.sprite_type = "boss";

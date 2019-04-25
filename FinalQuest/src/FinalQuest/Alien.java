@@ -10,16 +10,55 @@ import java.util.List;
  */
 public abstract class Alien extends Sprite {
     
-    protected int POINTS = 100;
+    /**
+     * POINTS are the value of the alien
+     */
+    protected int POINTS;
     private final int INITIAL_X = 1280;
+
+    /**
+     * Game difficulty affects speed and toughness of the aliens
+     */
     protected String DIFFICULTY;
+
+    /**
+     * Type of sprite: boss, enemy, powerup, missile or player
+     */
     protected String sprite_type;
+
+    /**
+     * how often the sprite fires (if it fires at all)
+     */
     protected int laser_rate;
+
+    /**
+     * counter to determine when a sprite will fire
+     */
     protected int fire_count;
+
+    /**
+     * how quickly they shoot
+     */
     protected int fire_rate;
+
+    /**
+     * how much damage the alien can take before being destroyed
+     */
     protected int health;
+
+    /**
+     * how fast the alien moves
+     */
     protected int move_speed;
+
+    /**
+     *list of missiles the sprite has fired
+     */
     protected List<Missile> missiles;
+
+    /**
+     * how fast the sprite's missiles are
+     */
     protected int missile_speed;
 
     /**
@@ -30,6 +69,7 @@ public abstract class Alien extends Sprite {
      */
     public Alien(int x, int y, String D) {
         super(x, y);
+        this.POINTS = 100;
         this.sprite_type = "enemy";
         DIFFICULTY = D;
         initAlien();

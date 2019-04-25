@@ -15,6 +15,11 @@ public class Explosion extends Sprite{
     private int frame;
     private BufferedImage image;
 
+    /**
+     * Constructor
+     * @param x starting x coordinate
+     * @param y starting y coordinate
+     */
     public Explosion(int x, int y) {
         super(x, y);
         this.count = 0;

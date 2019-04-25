@@ -378,6 +378,10 @@ public class Boss2 extends Alien {
         boom = new Explosion(x_pos,y_pos);
     }
     
+    /**
+     * Gets the latest explosion needed for drawing to the screen
+     * @return  an explosion if there is one, null otherwise
+     */
     @Override
     public Explosion getBoom()
     {
@@ -394,7 +398,7 @@ public class Boss2 extends Alien {
     }
     
     /**
-     *
+     * Generates reinforcements for the boss
      */
     public void update_reinforcements()
     {

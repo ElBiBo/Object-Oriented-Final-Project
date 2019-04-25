@@ -277,6 +277,9 @@ public class SpaceShip extends Sprite {
         return formatted;
     }
     
+    /**
+     * Determines what cut scene we're about to play
+     */
     public void cutsceneMode()
     {
         count = 0;
@@ -545,8 +548,10 @@ public class SpaceShip extends Sprite {
         }
     }
     
-    
-    
+    /**
+     *  We've gotten a powerup, what does it do?
+     * @param power must be "invincibility", "bullet", "fast", "spread", "rapid", life" or "points"
+     */
     public void powerup(String power)
     {
         SoundEffect.POWERUP.play();
@@ -718,6 +723,7 @@ public class SpaceShip extends Sprite {
     /**
      * Used for options. Special bonus option that allows the player to start with
      * spread fire
+     * @param mode  "on" or "off"
      */
     public void fireMode(String mode)
     {

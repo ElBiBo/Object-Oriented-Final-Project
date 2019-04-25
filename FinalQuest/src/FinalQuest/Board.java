@@ -28,6 +28,10 @@ import javax.swing.Timer;
 public class Board extends JPanel implements ActionListener {
     
     private Timer timer;
+
+    /**
+     * our player. very important
+     */
     public static SpaceShip spaceship;
     private List<Sprite> aliens;
     private List<Sprite> power_ups;
@@ -57,6 +61,10 @@ public class Board extends JPanel implements ActionListener {
     private int options;
     private int cursor = 0;
     private String spread_fire_mode;
+
+    /**
+     * keep track of achievements
+     */
     public static AchievementManager am;
     private boolean[] achievements;
     private static int wait;
@@ -67,7 +75,6 @@ public class Board extends JPanel implements ActionListener {
     public Board() {
         this.difficulty = "normal";
         this.num_players = 1;
-        
         initBoard();
     }
     
@@ -130,10 +137,6 @@ public class Board extends JPanel implements ActionListener {
         aliens =  stage.sendWave();
     }
     
-    public void initPower_ups(){
-        power_ups = new ArrayList<>();
-        power_ups = stage.sendWave();
-    }
     /**
      * Ignore the default swing paintComponent function. This is where
      * we decide what screen we are on. It will also be what we have to edit
@@ -1500,6 +1503,14 @@ public class Board extends JPanel implements ActionListener {
         
     }
     
+    /**
+     * Generates the end credits at the end of the game. Credits appear at the 
+     * bottom of the screen, scroll up, and disappear at the top of the screen.
+     * Note that num1 must be initialized to 0 for this to work correctly
+     * @param g screen we are drawing to
+     * @param msg   our credits
+     * @return  true if the roll is finished, false otherwise
+     */
     public boolean creditRoll(Graphics g, String[] msg){
         boolean done = false;
         int adjust = 40;

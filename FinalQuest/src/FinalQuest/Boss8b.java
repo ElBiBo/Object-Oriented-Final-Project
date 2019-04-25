@@ -42,6 +42,7 @@ public class Boss8b extends Boss {
      * Constructor
      * @param ship Used to get info about the boss ship and coordinate movement
      * @param D is the difficulty of the alien: normal, hard, unforgiving
+     * @param a the starting angle of the miniboss relative to the main boss
      */
     public Boss8b(Boss ship, String D, double a) {
         super(ship.getX(), ship.getY()+20, D);

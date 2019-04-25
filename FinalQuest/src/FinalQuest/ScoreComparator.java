@@ -1,6 +1,10 @@
 package FinalQuest;
 import java.util.Comparator;
 
+/**
+ * Comparator to sort scores from highest to lowest
+ * @author Nicholas Gacharich
+ */
 public class ScoreComparator implements Comparator<Score>{
     public int compare(Score score1, Score score2) {
         

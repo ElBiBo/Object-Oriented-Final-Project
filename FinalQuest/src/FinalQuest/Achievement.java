@@ -42,7 +42,11 @@ public class Achievement extends Sprite {
     }
     
     /**
-     * gets the starting coordinates of the brick for later drawing
+     * gets the starting coordinates of the achievement for later drawing
+     * @param x starting x coordinate
+     * @param y starting y coordinate
+     * @param a Achievement code [0-15]
+     * @return a string message explaining how the achievement is scored
      */
     public String[] getPlace(int x, int y, int a)
     {
