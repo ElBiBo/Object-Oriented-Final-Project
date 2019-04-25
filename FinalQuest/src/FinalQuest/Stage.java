@@ -316,9 +316,12 @@ public class Stage {
     }
     
     /**
-     * Sends a wave of aliens
-     * there are 8 levels, each consisting of 10 waves an a boss
-     * @return  a list of aliens
+     * Used to keep track of what enemies should be sent. 
+     * This is organized into 8 levels which each consist of 
+     * 10 waves of enemies followed by a boss.
+     * Every time a wave is sent, we prepare the next wave
+     * 
+     * @return A list of enemies for whatever the current wave is.
      */
     public static List<Sprite> sendWave(){
         aliens = new ArrayList<>();
@@ -1680,6 +1683,9 @@ public class Stage {
         }
     }
     
+    /**
+     * Used to automatically determine the background based on the current level
+     */
     private static void pickBackground()
     {
         switch (level){
@@ -1713,6 +1719,10 @@ public class Stage {
         }
     }
 
+    /**
+     * level 1 background
+     * @return a sprite to print to the background
+     */
     private static Background level1BG()
     {
         draw_list = 2;
@@ -1731,6 +1741,10 @@ public class Stage {
         return null;
     }
     
+    /**
+     * level 2 background
+     * @return a sprite to print to the background
+     */
     private static Background level2BG()
     {
         draw_list = 2;
@@ -1749,6 +1763,10 @@ public class Stage {
         return null;
     }
     
+    /**
+     * level 3 background
+     * @return a sprite to print to the background
+     */
     private static Background level3BG()
     {
         draw_list = 2;
@@ -1767,6 +1785,10 @@ public class Stage {
         return null;
     }
     
+    /**
+     * level 4 background
+     * @return a sprite to print to the background
+     */
     private static Background level4BG()
     {
         draw_list = 2;
@@ -1785,6 +1807,10 @@ public class Stage {
         return null;
     }
     
+    /**
+     * level 5 background
+     * @return a sprite to print to the background
+     */
     private static Background level5BG()
     {
         draw_list = 2;
@@ -1803,6 +1829,10 @@ public class Stage {
         return null;
     }
     
+    /**
+     * level 6 background
+     * @return a sprite to print to the background
+     */
     private static Background level6BG()
     {
         draw_list = 2;
@@ -1821,6 +1851,10 @@ public class Stage {
         return null;
     }
     
+    /**
+     * level 7 background
+     * @return a sprite to print to the background
+     */
     private static Background level7BG()
     {
         draw_list = 2;
@@ -1839,6 +1873,10 @@ public class Stage {
         return null;
     }
     
+    /**
+     * level 8 background
+     * @return a sprite to print to the background
+     */
     private static Background level8BG()
     {
         draw_list = 2;
@@ -1857,4 +1895,3 @@ public class Stage {
         return null;
     }
 }
-

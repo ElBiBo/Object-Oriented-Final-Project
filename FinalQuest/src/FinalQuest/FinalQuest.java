@@ -20,7 +20,6 @@ public class FinalQuest extends JFrame {
     }
     
     private void initUI() {
-        
         add(new Board()); // creates our window
         
         setResizable(false); // can't resize the window

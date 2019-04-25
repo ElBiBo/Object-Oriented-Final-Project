@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
+ * Barrier ship
  * Alien child of our sprite class. Controls the AI of our alien.
  * This alien forms a wide beam shield, similar to the laser barriers, however 
  * this alien flies rapidly forward while firing missiles. 
@@ -102,7 +103,7 @@ public class Alien10 extends Alien {
     }
     
     /**
-     * Fire seeker missiles!
+     * Fire missiles!
      */
     @Override
     public void fire() {

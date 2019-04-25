@@ -140,7 +140,7 @@ public class Boss4 extends Boss {
     }
     
     /**
-     * This is just an accessor for the ship's score
+     * This is just an accessor for the alien's point value
      * @return  the number of points destroying the alien is worth
      */
     public int getPoints(){
@@ -186,8 +186,8 @@ public class Boss4 extends Boss {
     
     /**
      *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     * Swaps between moving around to avoid the player, to crashing into the player
+     * and firing at the player
      */
     public void move()
     {
@@ -325,6 +325,9 @@ public class Boss4 extends Boss {
         }
     }
     
+     /**
+     * Explosion animation for the boss
+     */
     public void blowup()
     {
         step++;
@@ -347,6 +350,9 @@ public class Boss4 extends Boss {
         }
     }
     
+    /**
+     * generates little explosions all over the boss when it dies
+     */
     private void makeBoom()
     {
         SoundEffect.ALIEN_EXPLODE.play();
@@ -355,6 +361,11 @@ public class Boss4 extends Boss {
         boom = new Explosion(x_pos,y_pos);
     }
     
+    /**
+     * lets board know that the boss is exploding for purposes of status
+     * change. Returns an explosion to draw if it is exploding, null otherwise
+     * @return null or an explosion
+     */
     public Explosion getBoom()
     {
         if (boom == null)
@@ -368,7 +379,9 @@ public class Boss4 extends Boss {
             return tmp;
         }
     }
-    
+     /**
+     * Aliens are randomly generated to act as backup for the boss
+     */
     public void update_reinforcements()
     {
         int ypos;
@@ -405,7 +418,11 @@ public class Boss4 extends Boss {
             reinforcement_list.add(new PowerUp(1200, ypos));
         }
     }
-    
+    /**
+     * When aliens have been generated, this lets Board know they are ready to go
+     * returns an alien if there is an alien, otherwise it returns null
+     * @return An alien sprite, or null
+     */
     public Sprite checkReinforcements()
     {
         if (reinforcement_list.size() <= 0)

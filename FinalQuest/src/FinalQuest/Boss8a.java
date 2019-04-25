@@ -98,7 +98,7 @@ public class Boss8a extends Boss {
     }
     
     /**
-     * This is just an accessor for the ship's score
+     * This is just an accessor for the boss's point value
      * @return  the number of points destroying the alien is worth
      */
     public int getPoints(){

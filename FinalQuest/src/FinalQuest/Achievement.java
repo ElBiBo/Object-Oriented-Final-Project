@@ -19,12 +19,12 @@ public class Achievement extends Sprite {
     private BufferedImage image;
     /**
      * Constructor
-     * Valid color strings are: dkbrown, mdbrown, ltbrown, dkgreen, mdgreen,
-     * ltgreen, dkblue, mdblue, ltblue and f# where the # is any of those listed
-     * strings
+     * Must be given an x/y coordinate as well as a numerical code for what
+     * achievement is being displayed. Anything outside of the 0-15 range is 
+     * assumed to be 0
      * @param x starting x coordinate for the achievement icon
      * @param y starting y coordinate for the achievement icon
-     * @param a achievement code, an int from 1 to 25
+     * @param a achievement code, an int from 0 to 15
      */
     public Achievement(int x, int y, int a) {
         super(x, y);
@@ -33,7 +33,7 @@ public class Achievement extends Sprite {
     }
     
     /**
-     * Init our brick by assigning it an image and getting it's dimensions
+     * Init the achievement
      */
     private void initAchievement() {
         loadImage("src/resources/achievementicons.png");
@@ -138,8 +138,8 @@ public class Achievement extends Sprite {
                 message = new String[] {"You destroyed an asteroid. Wow!"};
                 break;                
             default:
-                image_x = 0;
-                image_y = 0;
+                image_x = 3;
+                image_y = 6;
                 break;
         }
     
@@ -149,20 +149,14 @@ public class Achievement extends Sprite {
     }
     
     /**
-     *  Alien's AI
-     * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a laser it fires.
+     *  Achievements possess no AI, unlike other sprites. 
      */
     @Override
     public void move() {
-        
-        
     }
     
-    
-    
     /**
-     * Get the height and width of an image (used for collision)
+     * Get the height and width of an image (used for finding the image on an image map)
      */
     @Override
     protected void getImageDimensions() {
@@ -174,9 +168,9 @@ public class Achievement extends Sprite {
     /**
      * Get the coordinates of the sprite's bounding box.
      * This is used to check for collision with other sprites.
+     * Not really used for the achievements but required since it is a sprite
      * @return  returns the bounding box for our sprite
      */
-    @Override
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
@@ -199,8 +193,7 @@ public class Achievement extends Sprite {
     }
     
     /**
-     * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images to allow for the asteroid's rotation.
+     * Get the image currently assigned to our sprite from a sprite map
      * @return returns the image currently assigned to our sprite
      */
     @Override
@@ -208,6 +201,4 @@ public class Achievement extends Sprite {
         
         return image.getSubimage(image_x, image_y, width,height);
     }
-    
-        
 }

@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import javax.imageio.ImageIO;
 
 /**
+ * Tiny Biodrone
  * Alien child of our sprite class. Controls the AI of our alien.
  * It's basically a freakier looking and slightly animated version of Alien 1. 
  * It is otherwise identical

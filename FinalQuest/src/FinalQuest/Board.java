@@ -20,8 +20,8 @@ import javax.swing.Timer;
 /**
  *
  * This class primarily handles drawing various objects to the screen
- * It also keeps track of how many objects are on the screen, updates their
- * positions
+ * To do that, it needs to coordinate where everything is at any given time.
+ * Thus, this is basically the main brains of the game.
  *
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
  */
@@ -139,8 +139,8 @@ public class Board extends JPanel implements ActionListener {
     
     /**
      * Ignore the default swing paintComponent function. This is where
-     * we decide what screen we are on. It will also be what we have to edit
-     * to put our menus and possibly extra levels in
+     * we decide what screen we are on. It needs to keep track of the current
+     * game status to decide what needs to be drawn
      */
     @Override
     public void paintComponent(Graphics g) {
@@ -1504,12 +1504,13 @@ public class Board extends JPanel implements ActionListener {
     }
     
     /**
-     * Generates the end credits at the end of the game. Credits appear at the 
-     * bottom of the screen, scroll up, and disappear at the top of the screen.
-     * Note that num1 must be initialized to 0 for this to work correctly
-     * @param g screen we are drawing to
-     * @param msg   our credits
-     * @return  true if the roll is finished, false otherwise
+     * Used to scroll credits on the screen. Text appears on the bottom of the 
+     * screen and vanishes as it gets close to the top. It uses Num1 to determine
+     * position, so that should be initialized to 0 when this function is first 
+     * invoked
+     * @param g the place we're going to be drawing to
+     * @param msg   An array of strings to be drawn. #, ! and % maybe used to resize text
+     * @return  Returns true when the credit roll is complete, false otherwise.
      */
     public boolean creditRoll(Graphics g, String[] msg){
         boolean done = false;
@@ -2182,7 +2183,8 @@ public class Board extends JPanel implements ActionListener {
     }
     
     /**
-     * This the game's credits
+     * This the game's main credits, drawn from the main menu
+     * more extensive credits are shown at the end of the game
      */
     private void drawCredits(Graphics g) {
         Stage.setSong(MusicPlayer.MENU);
@@ -2298,7 +2300,7 @@ public class Board extends JPanel implements ActionListener {
         g.drawString(msg, (B_WIDTH - fm.stringWidth(msg)) / 2, B_HEIGHT / 2);
     }
     
-    /*
+    /**
     * Update all our objects and repaint
     */
     @Override
@@ -2559,7 +2561,8 @@ public class Board extends JPanel implements ActionListener {
     
     /**
      * Check our spaceship class for what to do when a button is pressed
-     * or released
+     * or released during the game. If we are in cutscenes or menus, then board
+     * handles the observing instead.
      */
     private class TAdapter extends KeyAdapter {
         
@@ -2595,6 +2598,10 @@ public class Board extends JPanel implements ActionListener {
         
     }
     
+    /**
+     * Key input when we aren't in the game (in game key input is in the spaceship class)
+     * @param e the last key pressed.
+     */
     private void non_game_input(KeyEvent e)
     {
         switch(game_mode){

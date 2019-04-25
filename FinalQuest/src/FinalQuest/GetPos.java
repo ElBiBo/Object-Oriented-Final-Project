@@ -1,7 +1,6 @@
 package FinalQuest;
 
 import java.util.concurrent.ThreadLocalRandom;
-
 /**
  * Found myself constantly in need of a random y position for enemy positioning.
  * So, decided to just make a class for it. This provides a random Y or X position

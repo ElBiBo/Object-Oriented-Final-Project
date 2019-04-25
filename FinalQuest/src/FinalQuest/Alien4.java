@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
+ * Ziggy Alien
  * Alien child of our sprite class. Controls the AI of our alien.
  * Behavior should be:
  * - fly in a straight line, zag back then continue on, in a Z pattern
@@ -140,5 +141,4 @@ public class Alien4 extends Alien {
         if (x < 0-width) //alien gets destroyed if it goes off the screen
             visible = false;
     }
-    
 }

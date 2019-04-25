@@ -1,4 +1,3 @@
-
 package FinalQuest;
 import java.io.Serializable;
 
@@ -12,25 +11,25 @@ public class Score  implements Serializable{
     private String name;
 
     /**
-     * getter for the player's score
-     * @return their score
+     * A getter for the score
+     * @return Returns the score as an int
      */
     public int getScore() {
         return score;
     }
 
     /**
-     * Getter for the player's name
-     * @return their name
+     * A getter for the name
+     * @return Returns the name as a string
      */
     public String getName() {
         return name;
     }
 
     /**
-     * constructor
-     * @param name  name of the player
-     * @param score player score
+     * Constructor for our object
+     * @param name  Name of our high scorer
+     * @param score Score of our high scorer
      */
     public Score(String name, int score) {
         this.score = score;

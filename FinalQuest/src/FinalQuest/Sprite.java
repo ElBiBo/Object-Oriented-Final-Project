@@ -8,8 +8,8 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
-        
-        
+
+
 /**
  * Our general sprite parent class
  * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
@@ -69,7 +69,7 @@ public class Sprite{
         catch (IOException e)
         {
             System.out.print("Bad Image");
-        }       
+        }
     }
     
     /**
@@ -124,8 +124,8 @@ public class Sprite{
     }
     
     /**
-     * Gets a list of all missiles that have been fired
-     * @return  that list
+     * Check all the missiles that the sprite is currently handling
+     * @return  all missiles the sprite has fired in a list 
      */
     public List<Missile> getMissiles()
     {
@@ -146,11 +146,12 @@ public class Sprite{
     public void move()
     {
         
+        
     }
-
     /**
-     * get the point value for this sprite, if any
-     * @return  points as an int
+     * Used to get the point value of this particular sprite, when destroyed
+     * Assuming it can be destroyed
+     * @return point value as an int
      */
     public int getPoints(){
         return POINTS;
@@ -187,7 +188,7 @@ public class Sprite{
     }
     
     /**
-     * mostly used to make things explode 
+     * mostly used to make things explode
      * @return  the current status of the sprite
      */
     public String getStatus()
@@ -196,7 +197,7 @@ public class Sprite{
     }
     
     /**
-     * sets status to exploding 
+     * sets status to exploding
      */
     public void explode()
     {

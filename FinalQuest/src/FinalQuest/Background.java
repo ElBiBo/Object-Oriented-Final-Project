@@ -76,8 +76,6 @@ public class Background extends Sprite {
             else
                 x = start_x;
         }
-
-        
     }
     /**
      *  shake the screen up and down

@@ -3,7 +3,7 @@ package FinalQuest;
 import java.awt.Rectangle;
 
 /**
- * a short range laser beam
+ * a short range laser beam used for barriers
  *
  * @author Marco Tacca
  */
@@ -53,15 +53,6 @@ public class Beam extends Missile {
         d--;
         if (d < 0) //missile gets destroyed if it goes off the screen
             visible = false;
-    }
-    
-    /**
-     * Certain missiles have special conditions for destruction
-     * @return  regular missiles don't. always return False
-     */
-    public boolean destroy()
-    {
-        return false;
     }
     
 }

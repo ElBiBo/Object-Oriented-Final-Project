@@ -39,8 +39,6 @@ public class AchievementManager {
     }
     
     /**
-     * Used to load up all of the achievements in the main program
-     * @return  an array of booleans. true cells are scored, false have not been scored yet
      */
     public boolean[] getAchievements() {
         loadAchievementFile();
@@ -71,8 +69,8 @@ public class AchievementManager {
     }
     
     /**
-     * When an achievement is scored, this updates the file
-     * @param i the achievement that has been scored
+     * Used when an achievement is scored to update the achievement list
+     * @param i the achievement that was scored (0-15)
      */
     public void addAchievement(int i) {
         if (!achievements[i])
@@ -85,8 +83,7 @@ public class AchievementManager {
     }
     
     /**
-     * loads up our achievement file so we can see what has been scored and
-     * what hasn't
+     * Loads up the file used for the achievement. Creates one if none exists.
      */
     public void loadAchievementFile() {
         
@@ -112,7 +109,7 @@ public class AchievementManager {
     }
     
     /**
-     * Update our achievement file, saving any changes to our achievements.
+     * 
      */
     public void updateAchievementFile() {
         try {
@@ -133,6 +130,4 @@ public class AchievementManager {
             }
         }
     }
-    
-    
 }

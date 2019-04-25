@@ -169,7 +169,7 @@ public class Boss8 extends Boss {
         fire_count +=1;
         if (fire_count % (fire_rate/2) == 0)
         {
-            reinforcement_list.add(new Alien1(x+width/2, y+height/2, DIFFICULTY,"launch"));
+            reinforcement_list.add(new Alien11(x+width/2, y+height/2, DIFFICULTY,"launch"));
         }
         
         if (fire_count % fire_rate == 0 && attack_mode == "fire" && !toggle)

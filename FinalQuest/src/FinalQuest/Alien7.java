@@ -1,10 +1,10 @@
-
 package FinalQuest;
 
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
+ * Seeker alien
  * Alien child of our sprite class. Controls the AI of our alien.
  * Behavior should be:
  * - fly in a straight line
@@ -82,7 +82,7 @@ public class Alien7 extends Alien {
     /**
      *  Alien's AI
      * moves to the left until it reaches the end of the screen
-     * then is destroyed. It also has a seeker it fires.
+     * then is destroyed. It also has a seeker missile it fires.
      */
     @Override
     public void move() {

@@ -5,6 +5,7 @@ import java.util.concurrent.ThreadLocalRandom;
 import java.util.ArrayList;
 
 /**
+ * Basic Alien
  * Alien child of our sprite class. Controls the AI of our alien.
  * Behavior should be:
  * - fly in a straight line

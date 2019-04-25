@@ -6,6 +6,7 @@ import java.util.Comparator;
  * @author Nicholas Gacharich
  */
 public class ScoreComparator implements Comparator<Score>{
+    @Override
     public int compare(Score score1, Score score2) {
         
         int sc1 = score1.getScore();

@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 /**
  * Special seeker missile, follows the player around until it eventually runs out of power
  *
- * @author Marco Tacca and Nicholas Gacharich with help from http://zetcode.com/tutorials/javagamestutorial/
+ * @author Marco Tacca 
  */
 public class Seeker extends Missile {
     
@@ -133,7 +133,7 @@ public class Seeker extends Missile {
     
     /**
      * Get the image currently assigned to our sprite. This flips through a
-     * sprite sheet of images for animation.
+     * sprite sheet of images to make the missile look like it is flashing.
      * @return returns the image currently assigned to our sprite
      */
     public BufferedImage getImage() {
